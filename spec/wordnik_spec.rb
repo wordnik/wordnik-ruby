@@ -2,9 +2,9 @@ require 'spec_helper'
 
 describe Wordnik do
 
-  context "some context" do
+  context "in the near future" do
 
-    it "should do some cool stuff"
+    it "does cool stuff"
     
   end
   

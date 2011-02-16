@@ -1,6 +1,7 @@
 class Request
   require 'uri'
   require 'addressable/uri'
+  require 'typhoeus'
   include ActiveModel::Validations
   include ActiveModel::Conversion
   extend ActiveModel::Naming
