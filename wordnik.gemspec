@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.email       = ["zeke@wordnik.com", "john@wordnik.com"]
   s.homepage    = "http://developer.wordnik.com"
   s.summary     = %q{A ruby wrapper for the Wordnik API}
-  s.description = %q{This gem provides a simple interface to the entire Wordnik API. Its methods are defined by the documentation that comes from the API itself, so it is guaranteed to be up to date.}
+  s.description = %q{This gem provides a simple interface to the entire Wordnik API. Its methods are defined by the documentation that comes from the API itself, so it's guaranteed to be up to date.}
 
   s.rubyforge_project = "wordnik"
 

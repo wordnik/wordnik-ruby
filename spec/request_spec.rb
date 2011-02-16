@@ -16,8 +16,8 @@ describe Request do
       @request.format.should == "json"
     end
     
-    it "sets default host to match configatron's" do
-      @request.host.should == configatron.api.base_uri
+    it "sets get default host from Wordnik.configuration" do
+      @request.host.should == Wordnik.configuration.base_uri
     end
         
   end
@@ -25,7 +25,7 @@ describe Request do
   describe "attr_accessors" do
 
     it "has working attributes" do
-      @request.host.should == configatron.api.base_uri
+      @request.host.should == Wordnik.configuration.base_uri
       @request.path.should == "words/fancy"
     end
 

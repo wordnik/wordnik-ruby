@@ -11,7 +11,7 @@ class Request
   
   def initialize(http_method, path, attributes={})
     attributes[:format] ||= "json"
-    attributes[:host] ||= configatron.api.base_uri
+    attributes[:host] ||= Wordnik.configuration.base_uri
     attributes[:params] ||= {}
 
     # Set default headers, but allow them to be overridden
