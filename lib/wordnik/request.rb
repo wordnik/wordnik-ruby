@@ -8,11 +8,11 @@ module Wordnik
     include ActiveModel::Validations
     include ActiveModel::Conversion
     extend ActiveModel::Naming
-  
+
     attr_accessor :host, :port, :path, :format, :params, :body, :http_method, :headers
-  
+
     validates_presence_of :host, :path, :format, :http_method
-  
+
     def initialize(http_method, path, attributes={})
       attributes[:format] ||= "json"
       attributes[:host] ||= Wordnik.configuration.base_uri
@@ -21,16 +21,20 @@ module Wordnik
       # Set default headers, but allow them to be overridden
       default_headers = {
         'Content-Type' => "application/#{attributes[:format].downcase}",
+        :api_key => Wordnik.configuration.api_key
       }
       attributes[:headers] = default_headers.merge(attributes[:headers] || {})
-    
+
+      # If a blank/nil api_key was passed in, remove it from the headers
+      attributes[:headers].delete(:api_key) if attributes[:headers][:api_key].blank?
+
       self.http_method = http_method.to_sym
       self.path = path
       attributes.each do |name, value|
         send("#{name.to_s.underscore.to_sym}=", value)
       end
     end
-  
+
     # Construct a base URL
     def url
       u = Addressable::URI.new
@@ -40,7 +44,7 @@ module Wordnik
       u.scheme = "http" # For some reason this must be set _after_ host, otherwise Addressable gets upset
       u.to_s
     end
-  
+
     # Iterate over the params hash, injecting any path values into the path string
     # e.g. /word.{format}/{word}/entries => /word.json/cat/entries
     def interpreted_path
@@ -48,7 +52,7 @@ module Wordnik
       self.params.each_pair do |key, value|
         p = p.gsub("{#{key}}", value.to_s)
       end
-    
+
       # Stick a .{format} placeholder into the path if there isn't
       # one already or an actual format like json or xml
       # e.g. /words/blah => /words.{format}/blah
