@@ -2,14 +2,15 @@ module Wordnik
 
   class Response
     require 'active_model'
+    require 'json'
     include ActiveModel::Validations
     include ActiveModel::Conversion
     extend ActiveModel::Naming
-  
+
     attr_accessor :raw
-  
+
     validates_presence_of :raw
-  
+
     def initialize(raw)
       self.raw = raw
     end
@@ -17,7 +18,7 @@ module Wordnik
     def code
       raw.code
     end
-  
+
     # If body is JSON, parse it
     # TODO: If body is XML, parse it
     # Otherwise return raw string
@@ -26,29 +27,29 @@ module Wordnik
     rescue
       raw.body
     end
-  
+
     def headers
       h = {}
       raw.headers_hash.each {|k,v| h[k] = v }
       h
     end
-  
+
     # Extract the response format from the header hash
     # e.g. {'Content-Type' => 'application/json'}
     def format
-      headers['Content-Type'].split("/").last.to_sym 
+      headers['Content-Type'].split("/").last.to_sym
     end
-  
+
     def json?
       format == :json
     end
-  
+
     def xml?
       format == :xml
     end
-  
+
     def pretty_body
-      return unless body.present?  
+      return unless body.present?
       case format
       when :json
         JSON.pretty_generate(body).gsub(/\n/, '<br/>').html_safe
@@ -59,11 +60,11 @@ module Wordnik
         coder.encode(xsl.apply_to(xml).to_s)
       end
     end
-  
+
     def pretty_headers
       JSON.pretty_generate(headers).gsub(/\n/, '<br/>').html_safe
     end
-  
+
     # It's an ActiveModel thing..
     def persisted?
       false
