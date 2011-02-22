@@ -48,3 +48,8 @@ Create config/initializers/wordnik.rb and drop this in:
 		config.api_key = '12345abcde'
 		config.response_format = :json # defaults to json, but xml is also supported
 	end
+	
+To Do
+-----
+* Give props to the guy who gave up the wordnik rubygem name
+* convert params to underscore(andBack)
