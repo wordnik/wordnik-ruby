@@ -14,7 +14,7 @@ module Wordnik
       attributes.each do |name, value|
         send("#{name.to_s.underscore.to_sym}=", value)
       end
-  
+
       # Generate Operations instances from JSON
       if self.operations
         self.operations = self.operations.map do |operationData|
@@ -29,5 +29,5 @@ module Wordnik
     end
 
   end
-  
+
 end

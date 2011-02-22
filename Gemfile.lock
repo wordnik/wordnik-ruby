@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    wordnik (0.0.1)
+    wordnik (0.0.2)
       activemodel (= 3.0.3)
       addressable (= 2.2.4)
       htmlentities (= 4.2.4)
@@ -45,13 +45,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  activemodel (= 3.0.3)
-  addressable (= 2.2.4)
-  htmlentities (= 4.2.4)
-  json (= 1.4.6)
-  nokogiri (= 1.4.4)
   rspec (= 2.4.0)
-  typhoeus (= 0.2.1)
   vcr (= 1.5.1)
   webmock (= 1.6.2)
   wordnik!

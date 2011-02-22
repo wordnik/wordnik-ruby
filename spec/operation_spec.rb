@@ -1,13 +1,13 @@
 require 'spec_helper'
 
-describe Operation do
+describe Wordnik::Operation do
 
   before(:each) do
     VCR.use_cassette('words', :record => :new_episodes) do
       @response = Typhoeus::Request.get("http://api.wordnik.com/v4/word.json")
     end
-    
-    @operation = Operation.new(JSON.parse(@response.body)['endPoints'].first['operations'].first)
+
+    @operation = Wordnik::Operation.new(JSON.parse(@response.body)['endPoints'].first['operations'].first)
   end
 
   describe "initialization" do
@@ -15,14 +15,14 @@ describe Operation do
     it "successfully initializes" do
       @operation.summary.should =~ /returns the WordObject/i
     end
-    
+
     it "sets parameters" do
       @operation.parameters.class.should == Array
-      @operation.parameters.first.class.should == OperationParameter
+      @operation.parameters.first.class.should == Wordnik::OperationParameter
     end
-        
+
   end
-  
+
   describe "instance methods" do
     it "knows if its HTTP method is GET" do
       @operation.http_method = "GET"
@@ -33,5 +33,5 @@ describe Operation do
       @operation.get?.should == true
     end
   end
-  
+
 end
