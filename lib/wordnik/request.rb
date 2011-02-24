@@ -20,6 +20,7 @@ module Wordnik
 
       # Set default headers, but allow them to be overridden
       default_headers = {
+        'User-Agent' => "Wordnik Ruby Gem #{Wordnik::VERSION}",
         'Content-Type' => "application/#{attributes[:format].downcase}",
         :api_key => Wordnik.configuration.api_key
       }
