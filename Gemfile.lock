@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    wordnik (0.0.2)
+    wordnik (0.3.0)
       activemodel (= 3.0.3)
       addressable (= 2.2.4)
       htmlentities (= 4.2.4)

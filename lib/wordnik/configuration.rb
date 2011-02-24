@@ -2,8 +2,11 @@ module Wordnik
 
   class Configuration
 
-    # The API key for your project, found on the project edit form.
+    # Wordnik API key
     attr_accessor :api_key
+    
+    # TODO: Steal all the auth stuff from the old gem!
+    # attr_accessor :auth_token    
     
     # Response format can be :json (default) or :xml
     attr_accessor :response_format
@@ -13,7 +16,7 @@ module Wordnik
 
     def initialize
       @response_format = :json
-      @base_uri = 'beta.wordnik.com/v4'
+      @base_uri = 'api.wordnik.com/v4'
     end
 
   end

@@ -149,6 +149,8 @@ describe Wordnik::Request do
       @request.query_string.should =~ /\?limit=100/
       @request.url_with_query_string.should =~ /\?limit=100/
     end
+    
+    it "camelCases parameters"
 
   end
 

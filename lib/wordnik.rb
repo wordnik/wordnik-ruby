@@ -1,3 +1,4 @@
+require 'wordnik/monkey_patches'
 require 'wordnik/endpoint'
 require 'wordnik/operation'
 require 'wordnik/operation_parameter'
@@ -15,6 +16,8 @@ module Wordnik
     # A Wordnik configuration object. Must act like a hash and return sensible
     # values for all Wordnik configuration options. See Wordnik::Configuration.
     attr_accessor :configuration
+
+    attr_accessor :resources
     
     # Call this method to modify defaults in your initializers.
     #
@@ -26,6 +29,33 @@ module Wordnik
     def configure
       self.configuration ||= Configuration.new
       yield(configuration) if block_given?
+      self.build_resources
+    end
+
+    # Iterate over each disk-cached JSON resource documentation file
+    # 
+    def build_resources
+      self.resources = {}
+      self.resource_names.map do |resource_name|
+        name = resource_name.underscore.to_sym # 'fooBar' => :foo_bar
+        filename = "api_docs/#{resource_name}.json"
+        resource = Resource.new(
+          :name => name,
+          :raw_data => JSON.parse(File.read(filename))
+        )
+        self.resources[name] = resource
+      end
+    end
+    
+    # The names of all the resources.
+    # This is used by Wordnik.build_resources and the rake task that fetches remote API docs
+    #
+    def resource_names
+      %w(account corpus document partners system tag user users word words wordList wordLists wordoftheday)
+    end
+    
+    def word
+      Wordnik.resources[:word]
     end
     
   end
