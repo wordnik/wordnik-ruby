@@ -2,28 +2,28 @@ PATH
   remote: .
   specs:
     wordnik (0.3.0)
-      activemodel (= 3.0.3)
-      addressable (= 2.2.4)
-      htmlentities (= 4.2.4)
-      json (= 1.4.6)
-      nokogiri (= 1.4.4)
-      typhoeus (= 0.2.1)
+      activemodel (>= 3.0.3)
+      addressable (>= 2.2.4)
+      htmlentities (>= 4.2.4)
+      json (>= 1.4.6)
+      nokogiri (>= 1.4.4)
+      typhoeus (>= 0.2.1)
 
 GEM
   remote: http://rubygems.org/
   specs:
-    activemodel (3.0.3)
-      activesupport (= 3.0.3)
+    activemodel (3.0.5)
+      activesupport (= 3.0.5)
       builder (~> 2.1.2)
       i18n (~> 0.4)
-    activesupport (3.0.3)
+    activesupport (3.0.5)
     addressable (2.2.4)
     builder (2.1.2)
     crack (0.1.8)
     diff-lcs (1.1.2)
     htmlentities (4.2.4)
     i18n (0.5.0)
-    json (1.4.6)
+    json (1.5.1)
     mime-types (1.16)
     nokogiri (1.4.4)
     rspec (2.4.0)
@@ -45,7 +45,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  rspec (= 2.4.0)
-  vcr (= 1.5.1)
-  webmock (= 1.6.2)
+  rspec (>= 2.4.0)
+  vcr (>= 1.5.1)
+  webmock (>= 1.6.2)
   wordnik!
