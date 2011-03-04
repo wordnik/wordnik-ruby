@@ -14,16 +14,16 @@ Gem::Specification.new do |s|
 
   s.rubyforge_project = "wordnik"
 
-  s.add_dependency 'typhoeus', '0.2.1'
-  s.add_dependency 'htmlentities', '4.2.4'
-  s.add_dependency 'addressable', '2.2.4'
-  s.add_dependency 'nokogiri', '1.4.4'
-  s.add_dependency 'activemodel', '3.0.3'
-  s.add_dependency 'json', '1.4.6'
+  s.add_dependency 'typhoeus', '>=0.2.1'
+  s.add_dependency 'htmlentities', '>=4.2.4'
+  s.add_dependency 'addressable', '>=2.2.4'
+  s.add_dependency 'nokogiri', '>=1.4.4'
+  s.add_dependency 'activemodel', '>=3.0.3'
+  s.add_dependency 'json', '>=1.4.6'
 
-  s.add_development_dependency 'rspec', '2.4.0'
-  s.add_development_dependency 'vcr', '1.5.1'
-  s.add_development_dependency 'webmock', '1.6.2'
+  s.add_development_dependency 'rspec', '>=2.4.0'
+  s.add_development_dependency 'vcr', '>=1.5.1'
+  s.add_development_dependency 'webmock', '>=1.6.2'
 
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
