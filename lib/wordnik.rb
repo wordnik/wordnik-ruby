@@ -5,6 +5,7 @@ require 'wordnik/request'
 require 'wordnik/resource'
 require 'wordnik/response'
 require 'wordnik/configuration'
+require 'wordnik/version'
 
 module Wordnik
   
@@ -37,7 +38,7 @@ module Wordnik
       self.resources = {}
       self.resource_names.map do |resource_name|
         name = resource_name.underscore.to_sym # 'fooBar' => :foo_bar
-        filename = "api_docs/#{resource_name}.json"
+        filename = File.join(ENV['GEM_HOME'], "gems", "wordnik-#{Wordnik::VERSION}", "api_docs/#{resource_name}.json")
         resource = Resource.new(
           :name => name,
           :raw_data => JSON.parse(File.read(filename))

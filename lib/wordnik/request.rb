@@ -5,6 +5,7 @@ module Wordnik
     require 'addressable/uri'
     require 'typhoeus'
     require 'active_model'
+    require "wordnik/version"
     include ActiveModel::Validations
     include ActiveModel::Conversion
     extend ActiveModel::Naming
@@ -24,11 +25,13 @@ module Wordnik
         'Content-Type' => "application/#{attributes[:format].downcase}",
         :api_key => Wordnik.configuration.api_key
       }
+
+      # If a nil/blank api_key was passed in, remove it from the headers, even if the override is nil/blank
+      default_headers.delete(:api_key) if attributes[:headers].present? && attributes[:headers].has_key?(:api_key)
+      default_headers.delete(:api_key) if attributes[:params].present? && attributes[:params].has_key?(:api_key)
+      
       attributes[:headers] = default_headers.merge(attributes[:headers] || {})
-
-      # If a blank/nil api_key was passed in, remove it from the headers
-      attributes[:headers].delete(:api_key) if attributes[:headers][:api_key].blank?
-
+            
       self.http_method = http_method.to_sym
       self.path = path
       attributes.each do |name, value|

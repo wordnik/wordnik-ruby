@@ -2,7 +2,13 @@ require 'spec_helper'
 
 describe Wordnik do
 
-  
+  before(:each) do
+    Wordnik.configure do |config|
+      config.api_key =  ENV['KEY']
+      config.base_uri = "beta.wordnik.com/v4"
+    end
+  end
+
   context "instantiation" do
 
     context "resources" do

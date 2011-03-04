@@ -16,7 +16,7 @@ describe Wordnik::Request do
       @request.format.should == "json"
     end
 
-    it "sets get default host from Wordnik.configuration" do
+    it "gets default host from Wordnik.configuration" do
       @request.host.should == Wordnik.configuration.base_uri
     end
 
@@ -112,23 +112,6 @@ describe Wordnik::Request do
       @request.query_string.should == "?foo=criminy&word=dog"
     end
 
-    it "obfuscates the API key when needed" do
-      @request = Wordnik::Request.new(:get, "words/fancy", @default_params.merge({
-        :params => {
-          :word => "dog",
-          :api_key => "123456"
-        }
-      }))
-      @request.query_string_params.should == {:word => "dog", :api_key => "123456"}
-      @request.query_string_params(true).should == {:word => "dog", :api_key => "YOUR_API_KEY"}
-
-      @request.query_string.should == "?api_key=123456&word=dog"
-      @request.query_string(:obfuscated => true).should == "?api_key=YOUR_API_KEY&word=dog"
-
-      @request.url_with_query_string.should =~ /123456/
-      @request.url_with_query_string(:obfuscated => true).should =~ /YOUR\_API\_KEY/
-    end
-
     it "URI encodes the path" do
       @request = Wordnik::Request.new(:get, "word.{format}/{word}/definitions", @default_params.merge({
         :params => {
@@ -151,6 +134,50 @@ describe Wordnik::Request do
     end
     
     it "camelCases parameters"
+    
+  end
+  
+  describe "API key" do
+    
+    it "is inferred from the Wordnik base configuration by default" do
+      Wordnik.configure {|c| c.api_key = "xyz" }
+      Wordnik::Request.new(:get, "word/json").headers[:api_key].should == "xyz"
+    end
+    
+    it "gets obfuscated for public display" do
+      @request = Wordnik::Request.new(:get, "words/fancy", @default_params.merge({
+        :params => {
+          :word => "dog",
+          :api_key => "123456"
+        }
+      }))
+      @request.query_string_params.should == {:word => "dog", :api_key => "123456"}
+      @request.query_string_params(true).should == {:word => "dog", :api_key => "YOUR_API_KEY"}
+
+      @request.query_string.should == "?api_key=123456&word=dog"
+      @request.query_string(:obfuscated => true).should == "?api_key=YOUR_API_KEY&word=dog"
+
+      @request.url_with_query_string.should =~ /123456/
+      @request.url_with_query_string(:obfuscated => true).should =~ /YOUR\_API\_KEY/
+    end
+
+    it "allows a key in the params to override the configuration-level key, even if it's blank" do
+      Wordnik.configure {|c| c.api_key = "abc" }
+      @request_with_key = Wordnik::Request.new(:get, "word/json", :params => {:api_key => "jkl"})
+      @request_with_key.headers[:api_key].should be_nil
+      @request_with_key.params[:api_key].should == "jkl"
+      
+      @request_without_key = Wordnik::Request.new(:get, "word/json", :params => {:api_key => nil})
+      @request_without_key.headers[:api_key].should be_nil
+      @request_without_key.params[:api_key].should be_nil
+    end
+
+    it "allows a key in the headers to override the configuration-level key, even if it's blank" do
+      Wordnik.configure {|c| c.api_key = "hij" }
+      Wordnik::Request.new(:get, "word/json").headers[:api_key].should == "hij"
+      Wordnik::Request.new(:get, "word/json", :headers => {:api_key => "jkl"}).headers[:api_key].should == "jkl"
+      Wordnik::Request.new(:get, "word/json", :headers => {:api_key => nil}).headers[:api_key].should be_nil
+    end
 
   end
 
