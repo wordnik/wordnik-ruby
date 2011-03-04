@@ -1,4 +1,3 @@
-require 'wordnik/monkey_patches'
 require 'wordnik/endpoint'
 require 'wordnik/operation'
 require 'wordnik/operation_parameter'
