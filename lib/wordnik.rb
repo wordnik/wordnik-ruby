@@ -38,18 +38,10 @@ module Wordnik
       self.resources = {}
       self.resource_names.map do |resource_name|
         name = resource_name.underscore.to_sym # 'fooBar' => :foo_bar
-        begin
-          # This is the path the installed gem will want
-          filename = File.join(ENV['GEM_HOME'], "gems", "wordnik-#{Wordnik::VERSION}", "api_docs/#{resource_name}.json")
-          raw_data = JSON.parse(File.read(filename))
-        rescue
-          # This is the path the not-installed gem in development will want
-          filename = File.join("api_docs/#{resource_name}.json")
-          raw_data = JSON.parse(File.read(filename))
-        end
+        filename = File.join(File.dirname(__FILE__), "../api_docs/#{resource_name}.json")
         resource = Resource.new(
           :name => name,
-          :raw_data => raw_data
+          :raw_data => JSON.parse(File.read(filename))
         )
         self.resources[name] = resource
       end
