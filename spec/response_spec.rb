@@ -45,5 +45,25 @@ describe Wordnik::Response do
     end
 
   end
+  
+  describe "prettiness" do
+    
+    it "has a pretty json body" do
+      @response.pretty_body.should =~ /\{.*\}/
+    end
+    
+    it "has a pretty xml body" do
+      VCR.use_cassette('xml_response_request', :record => :new_episodes) do
+        @raw = Typhoeus::Request.get("http://api.wordnik.com/v4/word.xml/help")
+      end
+      @response = Wordnik::Response.new(@raw)
+      @response.pretty_body.should =~ /\?xml/
+    end
+    
+    it "has pretty headers" do
+      @response.pretty_headers.should =~ /\{.*\}/
+    end
+
+  end
 
 end

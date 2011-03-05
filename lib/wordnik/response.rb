@@ -3,6 +3,8 @@ module Wordnik
   class Response
     require 'active_model'
     require 'json'
+    require 'nokogiri'
+    require 'htmlentities'
     include ActiveModel::Validations
     include ActiveModel::Conversion
     extend ActiveModel::Naming
@@ -52,9 +54,9 @@ module Wordnik
       return unless body.present?
       case format
       when :json
-        JSON.pretty_generate(body).gsub(/\n/, '<br/>').html_safe
+        JSON.pretty_generate(body).gsub(/\n/, '<br/>')
       when :xml
-        xsl = Nokogiri::XSLT(File.open(Rails.root.join("config", "pretty_print.xsl")))
+        xsl = Nokogiri::XSLT(File.open(File.join(File.dirname(__FILE__), "../../config/pretty_print.xsl")))
         xml = Nokogiri(body)
         coder = HTMLEntities.new
         coder.encode(xsl.apply_to(xml).to_s)
@@ -62,7 +64,7 @@ module Wordnik
     end
 
     def pretty_headers
-      JSON.pretty_generate(headers).gsub(/\n/, '<br/>').html_safe
+      JSON.pretty_generate(headers).gsub(/\n/, '<br/>')
     end
 
     # It's an ActiveModel thing..

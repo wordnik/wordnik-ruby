@@ -166,8 +166,8 @@ module Wordnik
   
     def response_headers_pretty
       return unless @response.present?
-      # JSON.pretty_generate(@response.headers).gsub(/\n/, '<br/>').html_safe # <- This was for RestClient
-      @response.headers.gsub(/\n/, '<br/>').html_safe # <- This is for Typhoeus
+      # JSON.pretty_generate(@response.headers).gsub(/\n/, '<br/>') # <- This was for RestClient
+      @response.headers.gsub(/\n/, '<br/>') # <- This is for Typhoeus
     end
 
     # It's an ActiveModel thing..
