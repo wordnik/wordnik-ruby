@@ -27,8 +27,16 @@ module Wordnik
       }
 
       # If a nil/blank api_key was passed in, remove it from the headers, even if the override is nil/blank
-      default_headers.delete(:api_key) if attributes[:headers].present? && attributes[:headers].has_key?(:api_key)
-      default_headers.delete(:api_key) if attributes[:params].present? && attributes[:params].has_key?(:api_key)
+      if attributes[:headers].present? && attributes[:headers].has_key?(:api_key)
+        default_headers.delete(:api_key)
+      end
+      
+      # If nil/blank api_key was passed in in the params, it overrides both the default
+      # headers and the argument headers
+      if attributes[:params].present? && attributes[:params].has_key?(:api_key)
+        default_headers.delete(:api_key)
+        attributes[:headers].delete(:api_key) if attributes[:headers].present?
+      end
       
       attributes[:headers] = default_headers.merge(attributes[:headers] || {})
             
