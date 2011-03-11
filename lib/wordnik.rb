@@ -23,8 +23,10 @@ module Wordnik
     #
     # @example
     #   Wordnik.configure do |config|
-    #     config.api_key = '1234567890abcdef'
-    #     config.response_format = :json
+    #     config.api_key = '1234567890abcdef'     # required
+    #     config.username = 'wordlover'           # optional, but needed for user-related functions
+    #     config.password = 'i<3words'            # optional, but needed for user-related functions
+    #     config.response_format = :json          # optional, defaults to json
     #   end
     def configure
       self.configuration ||= Configuration.new
@@ -54,6 +56,8 @@ module Wordnik
       %w(account corpus document partners system tag user users word words wordList wordLists wordoftheday)
     end
     
+    # An alias. For convenience.
+    #
     def word
       Wordnik.resources[:word]
     end

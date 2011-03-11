@@ -3,10 +3,7 @@ require 'spec_helper'
 describe Wordnik do
 
   before(:each) do
-    Wordnik.configure do |config|
-      config.api_key =  ENV['KEY']
-      config.base_uri = "beta.wordnik.com/v4"
-    end
+    configure_wordnik
   end
 
   context "instantiation" do
@@ -24,7 +21,14 @@ describe Wordnik do
       it "assigns resource keys that match the resource names" do
         Wordnik.resources[:word].name.should == :word
       end
-            
+
+    end
+    
+    context "authentication" do
+      
+      before(:each) do
+      end
+      
     end
     
   end
@@ -65,7 +69,9 @@ describe Wordnik do
     
     context "wordlists" do
       
-      it "creates a wordlist"
+      it "creates a wordlist" do
+        
+      end
       
       it "adds words"
       

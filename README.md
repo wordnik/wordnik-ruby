@@ -22,8 +22,10 @@ Then from your project's RAILS_ROOT, run:
 Create config/initializers/wordnik.rb and drop this in:
 
 	Wordnik.configure do |config|
-		config.api_key = '12345abcde'
-		config.response_format = :json # defaults to json, but xml is also supported
+		config.api_key = '12345abcde'			# required
+		config.username = 'bozo'					# optional, but needed for user-related functions
+		config.password = 'cl0wnt0wn'			# optional, but needed for user-related functions
+		config.response_format = :json		# defaults to json, but xml is also supported
 	end
 
 ### Rails 2.x
@@ -72,6 +74,11 @@ Contributing
 * Start a feature/bugfix branch
 * Commit and push until you are happy with your contribution
 * Make sure to add tests for the feature/bugfix. This is important so we don't break it in a future version unintentionally.
+
+Wishlist
+--------
+
+* Allow boolean params to really party like booleans (instead of 'true')
 
 Props
 -----
