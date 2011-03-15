@@ -89,9 +89,10 @@ module Wordnik
     def query_string_params(obfuscated=false)
       qsp = {}
       self.params.each_pair do |key, value|
-        next if self.path.include? "{#{key}}"
-        next if value.blank?
-        value = "YOUR_API_KEY" if key.to_sym == :api_key && obfuscated
+        next if self.path.include? "{#{key}}"                                   # skip path params
+        next if value.blank?                                                    # skip empties
+        value = "YOUR_API_KEY" if key.to_sym == :api_key && obfuscated          # obscure the API key
+        key = key.to_s.camelize(:lower).to_sym unless key.to_sym == :api_key    # api_key is not a camelCased param
         qsp[key] = value.to_s
       end
       qsp

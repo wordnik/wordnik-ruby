@@ -133,7 +133,15 @@ describe Wordnik::Request do
       @request.url_with_query_string.should =~ /\?limit=100/
     end
     
-    it "camelCases parameters"
+    it "camelCases parameters" do
+      @request = Wordnik::Request.new(@default_http_method, @default_path, @default_params.merge({
+        :params => {
+          :bad_dog => 'bud',
+          :goodDog => "dud"
+        }
+      }))
+      @request.query_string.should == "?badDog=bud&goodDog=dud"
+    end
     
   end
   
