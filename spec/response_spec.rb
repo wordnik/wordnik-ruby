@@ -52,6 +52,15 @@ describe Wordnik::Response do
       @response.pretty_body.should =~ /\{.*\}/
     end
     
+    it "has a pretty XML body even in the face of adverse characters" do
+      configure_wordnik
+      VCR.use_cassette('crazier_json_request', :record => :new_episodes) do
+        # @request = Wordnik::Request.new(:get, "word.xml/cat/definitions", :params => {:source_dictionaries => "century"})
+        @request = Wordnik::Request.new(:get, "word.xml/hero/pronunciations", :params => {:limit => 1})
+      end
+      @request.response.pretty_body.should =~ /\?xml/
+    end    
+    
     it "has a pretty xml body" do
       VCR.use_cassette('xml_response_request', :record => :new_episodes) do
         @raw = Typhoeus::Request.get("http://api.wordnik.com/v4/word.xml/help")
