@@ -6,7 +6,7 @@ describe Wordnik do
     configure_wordnik
   end
 
-  context "instantiation" do
+  context "initialization" do
 
     context "resources" do
       it "instantiates resources from cached JSON" do
@@ -28,6 +28,31 @@ describe Wordnik do
       
       before(:each) do
       end
+      
+      it "succeeds if a username and password are present in the configuration" do
+        Wordnik.authenticate
+        Wordnik.authenticated?.should == true
+      end
+      
+      it "de_authenticates" do
+        Wordnik.authenticate
+        Wordnik.authenticated?.should == true
+        Wordnik.de_authenticate
+        Wordnik.authenticated?.should == false
+      end
+      
+      it "fails if credentials are invalid" do
+        Wordnik.de_authenticate
+        Wordnik.configure do |config|
+          config.api_key = CREDENTIALS[:api_key]
+          config.username = CREDENTIALS[:username]
+          config.password = 'wrong!'
+          config.base_uri = "beta.wordnik.com/v4"
+        end
+        Wordnik.authenticated?.should == false
+      end
+      
+      it "fails if username and/or password are absent"
       
     end
     

@@ -8,7 +8,8 @@ module Wordnik
     attr_accessor :password
     
     # TODO: Steal all the auth stuff from the old gem!
-    attr_accessor :auth_token 
+    attr_accessor :auth_token
+    attr_accessor :user_id
     
     # Response format can be :json (default) or :xml
     attr_accessor :response_format

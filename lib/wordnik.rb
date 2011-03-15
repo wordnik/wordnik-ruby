@@ -31,6 +31,7 @@ module Wordnik
     def configure
       self.configuration ||= Configuration.new
       yield(configuration) if block_given?
+
       self.build_resources
     end
 
@@ -48,6 +49,26 @@ module Wordnik
         self.resources[name] = resource
       end
     end
+
+    def authenticated?
+      Wordnik.configuration.user_id.present? && Wordnik.configuration.auth_token.present?
+    end
+    
+    def de_authenticate
+      Wordnik.configuration.user_id = nil
+      Wordnik.configuration.auth_token = nil
+    end
+    
+    def authenticate
+      return if Wordnik.authenticated?
+      response_body = Wordnik.account.get_authenticate(Wordnik.configuration.username, :password => Wordnik.configuration.password)
+      if response_body.is_a?(Hash) && response_body['userId'].present? && response_body['token'].present?
+        Wordnik.configuration.user_id = response_body['userId']
+        Wordnik.configuration.auth_token = response_body['token']
+      else
+        raise response.inspect
+      end
+    end
     
     # The names of all the resources.
     # This is used by Wordnik.build_resources and the rake task that fetches remote API docs
@@ -60,6 +81,10 @@ module Wordnik
     #
     def word
       Wordnik.resources[:word]
+    end
+    
+    def account
+      Wordnik.resources[:account]
     end
     
   end
