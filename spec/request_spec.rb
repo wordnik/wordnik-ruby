@@ -19,6 +19,11 @@ describe Wordnik::Request do
     it "gets default host from Wordnik.configuration" do
       @request.host.should == Wordnik.configuration.base_uri
     end
+    
+    it "allows params to be nil" do
+      @request = Wordnik::Request.new(@default_http_method, @default_path, :params => nil)
+      @request.query_string.should == ""
+    end
 
   end
 

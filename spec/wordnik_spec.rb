@@ -5,6 +5,9 @@ describe Wordnik do
   before(:each) do
     configure_wordnik
   end
+  
+  after(:each) do
+  end
 
   context "initialization" do
 
@@ -49,10 +52,21 @@ describe Wordnik do
           config.password = 'wrong!'
           config.base_uri = "beta.wordnik.com/v4"
         end
+        lambda { Wordnik.authenticate }.should raise_error(ApiServerError)
         Wordnik.authenticated?.should == false
       end
       
-      it "fails if username and/or password are absent"
+      it "fails if username and/or password are absent" do
+        Wordnik.de_authenticate
+        Wordnik.configure do |config|
+          config.api_key = CREDENTIALS[:api_key]
+          config.username = nil
+          config.password = nil
+          config.base_uri = "beta.wordnik.com/v4"
+        end
+        lambda { Wordnik.authenticate }.should raise_error(ConfigurationError, /username and password are required/i)
+        Wordnik.authenticated?.should == false
+      end
       
     end
     
