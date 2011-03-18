@@ -64,6 +64,20 @@ describe Wordnik::Request do
     end
 
   end
+  
+  describe "body" do
+
+    it "camelCases parameters" do
+      @request = Wordnik::Request.new(@default_http_method, @default_path, @default_params.merge({
+        :body => {
+          :bad_dog => 'bud',
+          :goodDog => "dud"
+        }
+      }))
+      @request.body.keys.should == [:badDog, :goodDog]
+    end
+    
+  end
 
   describe "path" do
 

@@ -10,23 +10,26 @@ module Wordnik
     include ActiveModel::Conversion
     extend ActiveModel::Naming
 
-    attr_accessor :host, :port, :path, :format, :params, :body, :http_method, :headers
+    attr_accessor :host, :path, :format, :params, :body, :http_method, :headers
 
     validates_presence_of :host, :path, :format, :http_method
 
+    # All requests must have an HTTP method and a path
+    # Optionals parameters are :params, :headers, :body, :format, :host
+    # 
     def initialize(http_method, path, attributes={})
       attributes[:format] ||= "json"
       attributes[:host] ||= Wordnik.configuration.base_uri
       attributes[:params] ||= {}
 
-      # Set default headers, but allow them to be overridden
+      # Set default headers
       default_headers = {
         'User-Agent' => "Wordnik Ruby Gem #{Wordnik::VERSION}",
         'Content-Type' => "application/#{attributes[:format].downcase}",
         :api_key => Wordnik.configuration.api_key
       }
 
-      # If a nil/blank api_key was passed in, remove it from the headers, even if the override is nil/blank
+      # If a nil/blank api_key was passed in, remove it from the headers, even if the override value is nil/blank
       if attributes[:headers].present? && attributes[:headers].has_key?(:api_key)
         default_headers.delete(:api_key)
       end
@@ -38,7 +41,13 @@ module Wordnik
         attributes[:headers].delete(:api_key) if attributes[:headers].present?
       end
       
+      # Merge argument headers into defaults
       attributes[:headers] = default_headers.merge(attributes[:headers] || {})
+      
+      # Stick in the auth token if there is one
+      if Wordnik.authenticated?
+        attributes[:headers].merge!({:auth_token => Wordnik.configuration.auth_token})
+      end
             
       self.http_method = http_method.to_sym
       self.path = path
@@ -50,8 +59,7 @@ module Wordnik
     # Construct a base URL
     def url
       u = Addressable::URI.new
-      u.host = self.host.sub(/\/$/, '')
-      u.port = self.port if self.port.present?
+      u.host = self.host.sub(/\/$/, '') # Remove trailing slash
       u.path = self.interpreted_path
       u.scheme = "http" # For some reason this must be set _after_ host, otherwise Addressable gets upset
       u.to_s
@@ -76,10 +84,17 @@ module Wordnik
       URI.encode(p)
     end
   
-    def interpreted_body
-      return unless self.body.present?
-      return self.body.to_json if self.body.is_a?(Hash)
-      self.body
+    # Massage the request body into a state of readiness
+    # If body is a hash, camelize all keys then convert to a json string
+    #
+    def body=(value)      
+      if value.is_a?(Hash)
+        value = value.inject({}) do |memo, (k,v)|
+          memo[k.to_s.camelize(:lower).to_sym] = v
+          memo
+        end
+      end
+      @body = value
     end
   
     # Iterate over all params,
@@ -132,21 +147,21 @@ module Wordnik
       when :post
         Typhoeus::Request.post(
           self.url_with_query_string,
-          :body => self.interpreted_body,
+          :body => self.body.to_json,
           :headers => self.headers.stringify_keys
         )
 
       when :put
         Typhoeus::Request.put(
           self.url_with_query_string,
-          :body => self.interpreted_body,
+          :body => self.body.to_json,
           :headers => self.headers.stringify_keys
         )
       
       when :delete
         Typhoeus::Request.delete(
           self.url_with_query_string,
-          :body => self.interpreted_body,
+          :body => self.body.to_json,
           :headers => self.headers.stringify_keys
         )
       end
