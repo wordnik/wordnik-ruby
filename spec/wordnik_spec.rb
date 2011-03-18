@@ -104,15 +104,36 @@ describe Wordnik do
          @request.query_string.should == "?limit=10&skip=2"
        end
        
+       it "puts key-value arguments in the request body instead of the query params"
+       
     end
     
     context "wordlists" do
       
-      it "creates a wordlist" do
-        
+      before do
+        configure_wordnik
+        Wordnik.authenticate        
       end
       
-      it "adds words"
+      it "creates a wordlist" do
+        body = {
+          :name=> "Wordnik Ruby Test List #{RAND}",
+          :description => 'This is created by the test suite.',
+          :type => 'PUBLIC',
+          :user_id => Wordnik.configuration.user_id
+        }
+        request = Wordnik::Request.new(:post, "wordLists", :body => body)
+        request.response.body.should be_a_kind_of(Hash)
+        request.response.body.should have_key('permalink')
+      end
+      
+      it "finds the new wordlist" do
+        lists = Wordnik.account.get_word_lists
+        permalinks = lists.map { |list| list['permalink'] }
+        permalinks.should include("wordnik-ruby-test-list-#{RAND}")
+      end
+
+      it "finds the new wordlist and adds words to it"
       
       it "updates words"
       
