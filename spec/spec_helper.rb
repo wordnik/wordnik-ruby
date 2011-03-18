@@ -43,3 +43,7 @@ def configure_wordnik
 end
 
 configure_wordnik
+
+# A random string to tack onto stuff to ensure we're not seeing 
+# data from a previous test run
+RAND = ("a".."z").to_a.sample(4).join
