@@ -32,6 +32,8 @@ describe Wordnik do
       before(:each) do
       end
       
+      it "auto-authenticates at load time if username and password are present"
+      
       it "succeeds if a username and password are present in the configuration" do
         Wordnik.authenticate
         Wordnik.authenticated?.should == true
