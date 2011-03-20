@@ -19,7 +19,7 @@ Then from your project's RAILS_ROOT, run:
 
     bundle install
 
-Create config/initializers/wordnik.rb and drop this in:
+Create a file named config/initializers/wordnik.rb and drop this in:
 
 	Wordnik.configure do |config|
 		config.api_key = '12345abcde'			# required
@@ -32,7 +32,7 @@ Create config/initializers/wordnik.rb and drop this in:
 
 Add the wordnik gem to your app. In config/environment.rb:
 
-    config.gem 'hoptoad_notifier'
+    config.gem 'wordnik'
 
 Then from your project's RAILS_ROOT, run:
 

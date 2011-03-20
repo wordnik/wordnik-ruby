@@ -80,16 +80,23 @@ module Wordnik
       %w(account corpus document partners system tag user users word words wordList wordLists wordoftheday)
     end
     
-    # An alias. For convenience.
+    # Aliases. For convenience.
     #
-    def word
-      Wordnik.resources[:word]
-    end
-    
-    def account
-      Wordnik.resources[:account]
-    end
-    
+    def account; Wordnik.resources[:account]; end
+    def analytics; Wordnik.resources[:analytics]; end
+    def corpus; Wordnik.resources[:corpus]; end
+    def document; Wordnik.resources[:document]; end
+    def partners; Wordnik.resources[:partners]; end
+    def system; Wordnik.resources[:system]; end
+    def tag; Wordnik.resources[:tag]; end
+    def user; Wordnik.resources[:user]; end
+    def users; Wordnik.resources[:users]; end
+    def word; Wordnik.resources[:word]; end
+    def words; Wordnik.resources[:words]; end
+    def word_list; Wordnik.resources[:word_list]; end
+    def word_lists; Wordnik.resources[:word_lists]; end
+    def wordoftheday; Wordnik.resources[:wordoftheday]; end
+        
   end
   
 end
