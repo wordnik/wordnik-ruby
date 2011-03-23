@@ -12,6 +12,12 @@ module Wordnik
       attributes.each do |name, value|
         send("#{name.to_s.underscore.to_sym}=", value)
       end
+      
+      # Fudge body param into having the name :body      
+      self.name = :body if self.name.blank?
+      
+      # Change camelcase to underscore      
+      self.name = self.name.to_s.underscore
     end
 
     def human_name
@@ -24,7 +30,11 @@ module Wordnik
     end
 
     def required?
-      self.required
+      self.required || self.param_type == "path"
+    end
+    
+    def positional?
+      self.param_type == "path" && self.name != :format
     end
 
     # It's an ActiveModel thing..

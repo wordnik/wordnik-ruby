@@ -19,7 +19,7 @@ module Wordnik
       # Generate Endpoint instances from JSON
       if self.raw_data['endPoints']
         self.endpoints = self.raw_data['endPoints'].map do |endpointData|
-          Endpoint.new(endpointData)
+          Endpoint.new(self, endpointData)
         end
       end
     end

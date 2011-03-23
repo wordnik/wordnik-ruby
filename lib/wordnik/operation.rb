@@ -6,15 +6,18 @@ module Wordnik
     include ActiveModel::Conversion
     extend ActiveModel::Naming
   
-    attr_accessor :http_method, :summary, :notes, :parameters, :response, :open
+    attr_accessor :endpoint, :http_method, :summary, :notes, :parameters, :response, :open, :nickname
   
-    validates_presence_of :http_method, :summary, :notes, :parameters, :response, :open
+    validates_presence_of :endpoint, :http_method, :summary, :notes, :parameters, :response, :open
   
-    def initialize(attributes = {})
+    def initialize(endpoint, attributes = {})
+      self.endpoint = endpoint
+      
       attributes.each do |name, value|
         send("#{name.to_s.underscore.to_sym}=", value)
       end
-    
+      
+      # munge that meth!
       self.http_method = self.http_method.to_s.downcase
     
       # Generate OperationParameter instances from JSON
@@ -23,6 +26,17 @@ module Wordnik
           OperationParameter.new(parameterData)
         end
       end
+      
+      # Define nickname
+      self.nickname = [self.http_method, self.endpoint.path].
+        join("_").                                                        # join http method and path
+        gsub(/\{\w+\}/, "").                                              # remove path params
+        tr("/", "_").                                                     # replace slashes with underscores
+        tr(' .', '').                                                     # remove spaces and dots
+        underscore.                                                        # underscore
+        gsub(/_+/, "_").                                                  # reduce multiple consective underscores to one
+        gsub("_#{self.endpoint.resource.name.to_s.underscore}", "").      # remove resource name
+        gsub(/_$/, "")                                                    # remove underscore from end of string
 
     end
   
@@ -38,6 +52,27 @@ module Wordnik
     # It's an ActiveModel thing..
     def persisted?
       false
+    end
+
+    def positional_parameter_names
+      self.parameters.map do |parameter|
+        parameter.name if parameter.positional?
+      end.compact
+    end
+    
+    def required_kwargs
+      self.parameters.map do |parameter|
+        next if parameter.positional?
+        next unless parameter.required?
+        parameter
+      end.compact
+    end
+    
+    def optional_kwargs
+      self.parameters.map do |parameter|
+        next if parameter.required?
+        parameter
+      end.compact      
     end
 
   end

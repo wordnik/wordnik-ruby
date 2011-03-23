@@ -6,8 +6,8 @@ describe Wordnik::Endpoint do
     VCR.use_cassette('words', :record => :new_episodes) do
       @response = Typhoeus::Request.get("http://api.wordnik.com/v4/word.json")
     end
-
-    @endpoint = Wordnik::Endpoint.new(JSON.parse(@response.body)['endPoints'].first)
+    @resource = Wordnik::Resource.new(:name => "word", :raw_data => JSON.parse(@response.body))
+    @endpoint = @resource.endpoints.first
   end
 
   describe "initialization" do

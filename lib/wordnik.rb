@@ -73,7 +73,7 @@ module Wordnik
       end
     end
     
-    # The names of all the resources.
+    # The names of all the resources (in the production API).
     # This is used by Wordnik.build_resources and the rake task that fetches remote API docs
     #
     def resource_names

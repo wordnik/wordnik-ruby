@@ -6,11 +6,13 @@ module Wordnik
     include ActiveModel::Conversion
     extend ActiveModel::Naming
 
-    attr_accessor :path, :description, :operations
+    attr_accessor :path, :description, :operations, :resource
 
     validates_presence_of :path, :description, :operations
 
-    def initialize(attributes = {})
+    def initialize(resource, attributes = {})
+      self.resource = resource
+      
       attributes.each do |name, value|
         send("#{name.to_s.underscore.to_sym}=", value)
       end
@@ -18,7 +20,7 @@ module Wordnik
       # Generate Operations instances from JSON
       if self.operations
         self.operations = self.operations.map do |operationData|
-          Operation.new(operationData)
+          Operation.new(self, operationData)
         end
       end
     end

@@ -56,6 +56,12 @@ Put this somewhere in your app's initialization process:
 		config.api_key = '12345abcde'
 		config.response_format = :json # defaults to json, but xml is also supported
 	end
+	
+	
+Usage
+-----
+
+The wordnik gem automatically generates its convenience methods by parsing the [Wordnik API documentation](http://developer.wordnik.com/docs).
 
 Specs
 -----
@@ -79,6 +85,7 @@ Wishlist
 --------
 
 * Allow boolean params to really party like booleans (instead of 'true')
+* Remove the now-antiquated method_missing approach
 
 Props
 -----
