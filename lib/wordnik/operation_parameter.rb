@@ -33,8 +33,9 @@ module Wordnik
       self.required || self.param_type == "path"
     end
     
+    # Is this a required positional param used in a convenience method?
     def positional?
-      self.param_type == "path" && self.name != :format
+      self.param_type == "path" && self.name.to_sym != :format
     end
 
     # It's an ActiveModel thing..

@@ -24,25 +24,35 @@ module Wordnik
       end
     end
   
-    def operation_nickname_pairs
-      return @pairs if @pairs
-      return unless self.endpoints.present?
-      @pairs = {}
-      self.endpoints.map do |endpoint|
-        endpoint.operations.map do |operation|
-          nickname_parts = []
-          nickname_parts << operation.http_method
-          nickname_parts << endpoint.path.gsub(/\{\w+\}/, "").tr("/", "_").tr(' .', '').underscore
-          nickname = nickname_parts.
-            join("_").
-            gsub(/_+/, "_").
-            gsub("_#{self.name.to_s.underscore}", "").
-            gsub(/_$/, "")
-          @pairs[nickname] = endpoint.path
+    # Cycle through endpoints and their operations in search of
+    # the path that corresponds to the given nickname
+    def path_for_operation_nickname(nickname)
+      self.endpoints.each do |endpoint|
+        endpoint.operations.each do |operation|
+          return endpoint.path if operation.nickname == nickname
         end
       end
-      @pairs
     end
+  
+    # def operation_nickname_pairs
+    #   return @pairs if @pairs
+    #   return unless self.endpoints.present?
+    #   @pairs = {}
+    #   self.endpoints.map do |endpoint|
+    #     endpoint.operations.map do |operation|
+    #       nickname_parts = []
+    #       nickname_parts << operation.http_method
+    #       nickname_parts << endpoint.path.gsub(/\{\w+\}/, "").tr("/", "_").tr(' .', '').underscore
+    #       nickname = nickname_parts.
+    #         join("_").
+    #         gsub(/_+/, "_").
+    #         gsub("_#{self.name.to_s.underscore}", "").
+    #         gsub(/_$/, "")
+    #       @pairs[nickname] = endpoint.path
+    #     end
+    #   end
+    #   @pairs
+    # end
     
     # Uses the received method name and arguments to dynamically construct a Request
     # If the method name is prefixed with 'build_', then the 'unmade' Request
@@ -71,7 +81,7 @@ module Wordnik
       
       # Find the path that corresponds to this method nickname
       # e.g. post_words -> "/wordList.{format}/{wordListId}/words"
-      path = operation_nickname_pairs[nickname]
+      path = self.path_for_operation_nickname(nickname)
       
       # Take the '.{format}' portion out of the string so it doesn't interfere with 
       # the interpolation we're going to do on the path.
@@ -81,6 +91,8 @@ module Wordnik
       args.each do |arg|
         path.sub!(/\{\w+\}/, arg)
       end
+      
+      # TODO: treat kwargs as body instead of params if request method is post or put
 
       request = Wordnik::Request.new(http_method, path, :params => params)
       

@@ -62,6 +62,7 @@ module Wordnik
     
     def required_kwargs
       self.parameters.map do |parameter|
+        next if parameter.name.to_sym == :format
         next if parameter.positional?
         next unless parameter.required?
         parameter
