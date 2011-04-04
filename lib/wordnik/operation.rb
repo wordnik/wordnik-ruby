@@ -39,6 +39,11 @@ module Wordnik
         gsub(/_$/, "")                                                    # remove underscore from end of string
 
     end
+    
+    # A globally unique identifier for the operation
+    def slug
+      [self.endpoint.resource.name, self.nickname].join("_")
+    end
   
     def get?
       self.http_method.downcase == "get"
