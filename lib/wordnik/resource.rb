@@ -32,28 +32,9 @@ module Wordnik
           return endpoint.path if operation.nickname == nickname
         end
       end
+      nil
     end
-  
-    # def operation_nickname_pairs
-    #   return @pairs if @pairs
-    #   return unless self.endpoints.present?
-    #   @pairs = {}
-    #   self.endpoints.map do |endpoint|
-    #     endpoint.operations.map do |operation|
-    #       nickname_parts = []
-    #       nickname_parts << operation.http_method
-    #       nickname_parts << endpoint.path.gsub(/\{\w+\}/, "").tr("/", "_").tr(' .', '').underscore
-    #       nickname = nickname_parts.
-    #         join("_").
-    #         gsub(/_+/, "_").
-    #         gsub("_#{self.name.to_s.underscore}", "").
-    #         gsub(/_$/, "")
-    #       @pairs[nickname] = endpoint.path
-    #     end
-    #   end
-    #   @pairs
-    # end
-    
+
     # Uses the received method name and arguments to dynamically construct a Request
     # If the method name is prefixed with 'build_', then the 'unmade' Request
     # object will be returned instead of the Request Response's body

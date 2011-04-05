@@ -28,23 +28,14 @@ module Wordnik
       end
       
       # Define nickname
-      self.nickname = [self.http_method, self.endpoint.path].
-        join("_").                                                        # join http method and path
-        gsub(/\{\w+\}/, "").                                              # remove path params
-        tr("/", "_").                                                     # replace slashes with underscores
-        tr(' .', '').                                                     # remove spaces and dots
-        underscore.                                                        # underscore
-        gsub(/_+/, "_").                                                  # reduce multiple consective underscores to one
-        gsub("_#{self.endpoint.resource.name.to_s.underscore}", "").      # remove resource name
-        gsub(/_$/, "")                                                    # remove underscore from end of string
-
+      self.nickname = Operation.nicknameify(self.http_method, self.endpoint.path, self.endpoint.resource.name)
     end
     
     # A globally unique identifier for the operation
     def slug
       [self.endpoint.resource.name, self.nickname].join("_")
     end
-  
+      
     def get?
       self.http_method.downcase == "get"
     end
@@ -80,6 +71,21 @@ module Wordnik
         parameter
       end.compact      
     end
+    
+    # Generate a nickname using an HTTP method. This is used at operations initialization
+    # and for doing backward searches to generate sample convenience calls from raw requests.
+    def self.nicknameify(http_method, path, resource_name)
+      [http_method, path].
+        join("_").                                                        # join http method and path
+        gsub(/\{\w+\}/, "").                                              # remove path params
+        tr("/", "_").                                                     # replace slashes with underscores
+        tr(' .', '').                                                     # remove spaces and dots
+        underscore.                                                       # underscore
+        gsub(/_+/, "_").                                                  # reduce multiple consective underscores to one
+        gsub("_#{resource_name.to_s.underscore}", "").                    # remove resource name
+        gsub(/_$/, "")                                                    # remove underscore from end of string      
+    end
+
 
   end
   
