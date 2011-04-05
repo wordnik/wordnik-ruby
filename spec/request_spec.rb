@@ -162,6 +162,8 @@ describe Wordnik::Request do
       @request.query_string.should == "?badDog=bud&goodDog=dud"
     end
     
+    it "converts boolean values to their string representation"
+    
   end
   
   describe "API key" do
