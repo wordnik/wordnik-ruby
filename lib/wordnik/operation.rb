@@ -6,7 +6,7 @@ module Wordnik
     include ActiveModel::Conversion
     extend ActiveModel::Naming
   
-    attr_accessor :endpoint, :http_method, :summary, :notes, :parameters, :response, :open, :nickname
+    attr_accessor :endpoint, :http_method, :summary, :notes, :parameters, :response, :open, :nickname, :deprecated
   
     validates_presence_of :endpoint, :http_method, :summary, :notes, :parameters, :response, :open
   
