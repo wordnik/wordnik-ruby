@@ -50,12 +50,12 @@ task :generate_usage_docs do
         
         # Required kwargs
         operation.required_kwargs.each do |parameter|
-          file.write "    :#{parameter.name}* #{' ' * (29-parameter.name.size)} #{parameter.description}\n"
+          file.write "    :#{parameter.name.underscore}* #{' ' * (29-parameter.name.underscore.size)} #{parameter.description}\n"
         end
 
         # Optional kwargs
         operation.optional_kwargs.each do |parameter|
-          file.write "    :#{parameter.name} #{' ' * (30-parameter.name.size)} #{parameter.description}\n"
+          file.write "    :#{parameter.name.underscore} #{' ' * (30-parameter.name.underscore.size)} #{parameter.description}\n"
         end
       end
       

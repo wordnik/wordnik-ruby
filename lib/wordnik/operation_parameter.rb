@@ -15,14 +15,11 @@ module Wordnik
       
       # Fudge body param into having the name :body      
       self.name = :body if self.name.blank?
-      
-      # Change camelcase to underscore      
-      self.name = self.name.to_s.underscore
     end
 
     def human_name
       return "request body" if self.param_type == 'body'
-      self.name
+      self.name.to_s
     end
 
     def has_allowable_array?
