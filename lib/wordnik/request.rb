@@ -165,14 +165,11 @@ module Wordnik
           :headers => self.headers.stringify_keys
         )
       end
-
-      @response_obj = Response.new(response)
+      Response.new(response)
     end
   
-    # If the request has been made, return the existing response
-    # If not, make the request and return the response
     def response
-      @response_obj || self.make
+      self.make
     end
   
     def response_code_pretty

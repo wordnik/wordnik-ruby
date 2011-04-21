@@ -58,11 +58,25 @@ module Wordnik
       # Ruby turns all key-value arguments at the end into a single hash
       # e.g. Wordnik.word.get_examples('dingo', :limit => 10, :part_of_speech => 'verb')
       # becomes {:limit => 10, :part_of_speech => 'verb'}
-      params = args.last.is_a?(Hash) ? args.pop : {}
+      last_arg = args.pop if args.last.is_a?(Hash)
+      last_arg = args.pop if args.last.is_a?(Array)
+      last_arg ||= {}
+      
+      if [:post, :put].include?(http_method)
+        params = nil
+        body = last_arg
+      else
+        params = last_arg
+        body = nil
+      end
       
       # Find the path that corresponds to this method nickname
       # e.g. post_words -> "/wordList.{format}/{wordListId}/words"
-      path = self.path_for_operation_nickname(nickname)
+      begin
+        path = self.path_for_operation_nickname(nickname)
+      rescue
+        raise "Cannot find a resource path that corresponds to the method nickname '#{nickname}'"
+      end
       
       # Take the '.{format}' portion out of the string so it doesn't interfere with 
       # the interpolation we're going to do on the path.
@@ -75,7 +89,7 @@ module Wordnik
       
       # TODO: treat kwargs as body instead of params if request method is post or put
 
-      request = Wordnik::Request.new(http_method, path, :params => params)
+      request = Wordnik::Request.new(http_method, path, :params => params, :body => body)
       
       if build_only
         request 
