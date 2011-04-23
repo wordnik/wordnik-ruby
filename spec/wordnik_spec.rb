@@ -92,6 +92,12 @@ describe Wordnik do
       @response_body.keys.sort.should == %w(canonicalForm word)
     end
     
+    it "allows the same magic method to be called with different parameters" do
+      request1 = Wordnik.word_list.build_get('dog')
+      request2 = Wordnik.word_list.build_get('cat')
+      request1.path.should_not == request2.path
+    end
+    
     context "argument handling" do
 
       before(:each) do
@@ -121,7 +127,7 @@ describe Wordnik do
        end
        
     end
-    
+        
     context "wordlists" do
       
       before do

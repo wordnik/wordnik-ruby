@@ -25,6 +25,10 @@ describe Wordnik::Resource do
       @resource.endpoints.size.should == 10
       @resource.endpoints.first.class.should == Wordnik::Endpoint
     end
+    
+    it "does define_method" do
+      @resource.bozo.should == 'wawawa'
+    end
 
   end
 

@@ -2,6 +2,7 @@
 
 module Wordnik
   class Resource
+    
     require 'active_model'
     include ActiveModel::Validations
     include ActiveModel::Conversion
@@ -10,6 +11,10 @@ module Wordnik
     attr_accessor :name, :raw_data, :endpoints, :models
   
     validates_presence_of :name, :raw_data, :endpoints, :models
+    
+    class << self
+        public :define_method
+    end
   
     def initialize(attributes = {})
       attributes.each do |name, value|
@@ -22,7 +27,38 @@ module Wordnik
           Endpoint.new(self, endpointData)
         end
       end
+      
+
+      # Define methods
+      # nicknames = (self.endpoints || []).map do |endpoint|
+      #   (endpoint.operations || []).map do |operation|
+      #     operation.nickname
+      #   end
+      # end.flatten
+      # Resource.define_methods(nicknames)
+
+      # Define methods
+      Resource.define_method(:bozo) do |*args|
+        "wawawa"
+      end
+      
+      # self.endpoints.each do |endpoint|
+      #   endpoint.operations.each do |operation|
+      #     Resource.define_method("bozo".to_sym) do |*args|
+      #       puts "wawawa"
+      #     end
+      #   end
+      # end
+      
     end
+    
+    # def self.define_methods(nicknames)
+    #   nicknames.each do |nickname|
+    #     Resource.define_method("bozo_#{nickname}".to_sym) do |*args|
+    #       puts "wawawa"
+    #     end
+    #   end
+    # end
   
     # Cycle through endpoints and their operations in search of
     # the path that corresponds to the given nickname
@@ -74,6 +110,7 @@ module Wordnik
       # e.g. post_words -> "/wordList.{format}/{wordListId}/words"
       begin
         path = self.path_for_operation_nickname(nickname)
+        raise if path.blank?
       rescue
         raise "Cannot find a resource path that corresponds to the method nickname '#{nickname}'"
       end
@@ -86,8 +123,6 @@ module Wordnik
       args.each do |arg|
         path.sub!(/\{\w+\}/, arg)
       end
-      
-      # TODO: treat kwargs as body instead of params if request method is post or put
 
       request = Wordnik::Request.new(http_method, path, :params => params, :body => body)
       
