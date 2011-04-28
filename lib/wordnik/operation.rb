@@ -27,8 +27,7 @@ module Wordnik
         end
       end
       
-      # Define nickname
-      self.nickname = Operation.nicknameify(self.http_method, self.endpoint.path, self.endpoint.resource.name)
+      self.nickname = self.suggested_name.underscore
     end
     
     # A globally unique identifier for the operation
@@ -71,21 +70,6 @@ module Wordnik
         parameter
       end.compact      
     end
-    
-    # Generate a nickname using an HTTP method. This is used at operations initialization
-    # and for doing backward searches to generate sample convenience calls from raw requests.
-    def self.nicknameify(http_method, path, resource_name)
-      [http_method, path].
-        join("_").                                                        # join http method and path
-        gsub(/\{\w+\}/, "").                                              # remove path params
-        tr("/", "_").                                                     # replace slashes with underscores
-        tr(' .', '').                                                     # remove spaces and dots
-        underscore.                                                       # underscore
-        gsub(/_+/, "_").                                                  # reduce multiple consective underscores to one
-        gsub("_#{resource_name.to_s.underscore}", "").                    # remove resource name
-        gsub(/_$/, "")                                                    # remove underscore from end of string      
-    end
-
 
   end
   

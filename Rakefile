@@ -13,7 +13,7 @@ task :default => :spec
 desc 'Download the API docs to disk'
 task :fetch_api_docs do
   
-  Wordnik.configure
+  Wordnik.configure {|c| c.base_uri = 'beta.wordnik.com/v4' }
   
   Wordnik.resource_names.each do |resource_name|
 
@@ -64,4 +64,73 @@ task :generate_usage_docs do
   end
 
   file.close
+end
+
+
+desc 'Write ruby with ruby.'
+task :write_resource_methods do
+  Wordnik.configure  
+  Wordnik.resources.each_pair do |resource_name, resource|
+
+    next unless resource.endpoints.present?
+    
+    filename = "lib/wordnik/resource_modules/#{resource_name}.rb"
+    file = File.new(filename, "w")
+
+    file.write "module #{resource_name.to_s.camelize}Methods\n\n"
+    
+    resource.endpoints.each do |endpoint|
+      endpoint.operations.each do |operation|
+        
+        next if operation.nickname.blank?
+
+        file.write "  def #{operation.nickname}(#{[operation.positional_parameter_names, '*args'].flatten.join(', ')})\n"
+
+        # HTTP Method
+        file.write "    # HTTP Method\n"
+        file.write "    http_method = :#{operation.http_method}\n\n"
+
+        # Path
+        file.write "    # Path\n"
+        file.write "    path = '#{endpoint.path.sub(".{format}", "")}'\n"
+        operation.positional_parameter_names.each do |param|
+          file.write "    path.sub!('\{#{param}\}', #{param})\n\n"
+        end
+
+        # Ruby turns all key-value arguments at the end into a single hash
+        # e.g. Wordnik.word.get_examples('dingo', :limit => 10, :part_of_speech => 'verb')
+        # becomes {:limit => 10, :part_of_speech => 'verb'}
+        file.write "    # args\n"
+        file.write "    last_arg = args.pop if args.last.is_a?(Hash)\n"
+        file.write "    last_arg = args.pop if args.last.is_a?(Array)\n"
+        file.write "    last_arg ||= {}\n\n"
+        
+        # Look for a kwarg called :request_only, whose presence indicates
+        # that we want the request itself back, not the response body
+        file.write "    if last_arg.is_a?(Hash) && last_arg[:request_only].present?\n"
+        file.write "      request_only = true\n"
+        file.write "      last_arg.delete(:request_only)\n"
+        file.write "    end\n\n"
+        
+        file.write "    if [:post, :put].include?(http_method)\n"
+        file.write "      params = nil\n"
+        file.write "      body = last_arg\n"
+        file.write "    else\n"
+        file.write "      params = last_arg\n"
+        file.write "      body = nil\n"
+        file.write "    end\n\n"
+        
+        # Construct the request
+        file.write "    request = Wordnik::Request.new(http_method, path, :params => params, :body => body)\n"
+        file.write "    request_only ? request : request.response.body\n"
+        file.write "  end\n\n"
+        
+      end      
+    end
+
+    file.write "end"
+    file.close
+    
+  end
+
 end

@@ -89,6 +89,11 @@ module Wordnik
       %w(account corpus document partners system tag user users word words wordList wordLists wordoftheday)
     end
     
+    
+    Wordnik.word.get_definitions('wonker')
+    
+    Wordnik.resources[:word]
+    
     # Aliases. For convenience.
     #
     def account; Wordnik.resources[:account]; end
