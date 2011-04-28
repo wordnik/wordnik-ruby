@@ -26,9 +26,7 @@ describe Wordnik::Resource do
       @resource.endpoints.first.class.should == Wordnik::Endpoint
     end
     
-    it "does define_method" do
-      @resource.bozo.should == 'wawawa'
-    end
+    it "defines a method for each operation nickname"
 
   end
 

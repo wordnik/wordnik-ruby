@@ -146,24 +146,24 @@ words
 word_list
 =========
 
-[Wordnik.word_list.get(word_list_id)](http://developer.wordnik.com/docs/#!/word_list/get)
+[Wordnik.word_list.get(wordListId)](http://developer.wordnik.com/docs/#!/word_list/get)
 
-[Wordnik.word_list.post_delete_words(word_list_id)](http://developer.wordnik.com/docs/#!/word_list/post_delete_words)
+[Wordnik.word_list.post_delete_words(wordListId)](http://developer.wordnik.com/docs/#!/word_list/post_delete_words)
     :body                            Words to remove from WordList
 
-[Wordnik.word_list.get_words(word_list_id)](http://developer.wordnik.com/docs/#!/word_list/get_words)
+[Wordnik.word_list.get_words(wordListId)](http://developer.wordnik.com/docs/#!/word_list/get_words)
     :sort_by                         Field to sort by
     :sort_order                      Direction to sort
     :skip                            Results to skip
     :limit                           Maximum number of results to return
 
-[Wordnik.word_list.post_words(word_list_id)](http://developer.wordnik.com/docs/#!/word_list/post_words)
+[Wordnik.word_list.post_words(wordListId)](http://developer.wordnik.com/docs/#!/word_list/post_words)
     :body                            Words to add to WordList
 
-[Wordnik.word_list.put(word_list_id)](http://developer.wordnik.com/docs/#!/word_list/put)
+[Wordnik.word_list.put(wordListId)](http://developer.wordnik.com/docs/#!/word_list/put)
     :body                            Updated WordList
 
-[Wordnik.word_list.delete(word_list_id)](http://developer.wordnik.com/docs/#!/word_list/delete)
+[Wordnik.word_list.delete(wordListId)](http://developer.wordnik.com/docs/#!/word_list/delete)
 
 
 word_lists

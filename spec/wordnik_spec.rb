@@ -1,4 +1,5 @@
-require 'spec_helper'
+# require 'spec_helper'
+require File.dirname(__FILE__) + '/spec_helper'
 
 describe Wordnik do
 
@@ -22,7 +23,7 @@ describe Wordnik do
       end
 
       it "assigns resource keys that match the resource names" do
-        Wordnik.resources[:word].name.should == :word
+        Wordnik.resources[:word].name.should == :word 
       end
 
     end
@@ -81,27 +82,27 @@ describe Wordnik do
       Wordnik.word.name.should == :word
     end
 
-    it "builds requests but doesn't run them if method name begins with 'build_'" do
-      @request = Wordnik.word.build_get('dynamo')
+    it "builds requests but doesn't run them if :request_only is passed" do
+      @request = Wordnik.word.get('dynamo', :request_only => true)
       @request.class.should == Wordnik::Request
     end
 
-    it "runs requests and returns their body if method name doesn't begin with 'build_'" do
+    it "runs requests and returns their body if :request_only is absent" do
       @response_body = Wordnik.word.get('dynamo')
       @response_body.class.should == Hash
       @response_body.keys.sort.should == %w(canonicalForm word)
     end
     
     it "allows the same magic method to be called with different parameters" do
-      request1 = Wordnik.word_list.build_get('dog')
-      request2 = Wordnik.word_list.build_get('cat')
+      request1 = Wordnik.word_list.get('dog', :request_only => true)
+      request2 = Wordnik.word_list.get('cat', :request_only => true)
       request1.path.should_not == request2.path
     end
     
     context "argument handling" do
 
       before(:each) do
-         @request = Wordnik.word.build_get_examples('dynamo', :skip => 2, :limit => 10)
+         @request = Wordnik.word.get_examples('dynamo', :skip => 2, :limit => 10, :request_only => true)
        end
        
        it "injects required arguments into the path" do
@@ -119,7 +120,7 @@ describe Wordnik do
            :type => 'PUBLIC',
            :user_id => Wordnik.configuration.user_id         
          }
-         @request = Wordnik.word_lists.build_post(body)
+         @request = Wordnik.word_lists.post(body, :request_only => true)
          @request.body.should have_key(:name)
          @request.body.should have_key(:description)
          @request.body.should have_key(:type)
@@ -143,7 +144,7 @@ describe Wordnik do
           :type => 'PUBLIC',
           :user_id => Wordnik.configuration.user_id
         }
-        request = Wordnik.word_lists.build_post(body)
+        request = Wordnik.word_lists.post(body, :request_only => true)
         response = request.response
         response.body.should be_a_kind_of(Hash)
         response.body.should have_key('permalink')
@@ -162,18 +163,18 @@ describe Wordnik do
         permalinks.should include(@permalink)
       end
 
-      it "adds words to it" do
-        body = [
-          {:word => 'foo'},
-          {:word => 'bar'},
-          {:word => 'metasyntactic'},
-        ]
-        request = Wordnik.word_list.build_post_words(@permalink, body)
-        # raise request.response.inspect
-        
-        list = Wordnik.word_list.get(@permalink)
-        # raise list.inspect
-      end
+      it "adds words to it" #do
+      #   body = [
+      #     {:word => 'foo'},
+      #     {:word => 'bar'},
+      #     {:word => 'metasyntactic'},
+      #   ]
+      #   request = Wordnik.word_list.post_words(@permalink, body)
+      #   # raise request.response.inspect
+      #   
+      #   list = Wordnik.word_list.get(@permalink)
+      #   # raise list.inspect
+      # end
       
       it "updates words"
       

@@ -5,6 +5,7 @@ require 'vcr'
 require 'typhoeus'
 require 'json'
 require 'yaml'
+require 'rspec'
 
 RSpec.configure do |config|
   # some (optional) config here

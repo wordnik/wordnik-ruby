@@ -27,38 +27,76 @@ module Wordnik
           Endpoint.new(self, endpointData)
         end
       end
-      
 
-      # Define methods
-      # nicknames = (self.endpoints || []).map do |endpoint|
-      #   (endpoint.operations || []).map do |operation|
-      #     operation.nickname
-      #   end
-      # end.flatten
-      # Resource.define_methods(nicknames)
-
-      # Define methods
-      Resource.define_method(:bozo) do |*args|
-        "wawawa"
-      end
-      
-      # self.endpoints.each do |endpoint|
-      #   endpoint.operations.each do |operation|
-      #     Resource.define_method("bozo".to_sym) do |*args|
-      #       puts "wawawa"
-      #     end
-      #   end
-      # end
-      
+      # Collect all of this resource's operation nicknames
+      nicknames = (self.endpoints || []).map do |endpoint|
+        (endpoint.operations || []).map do |operation|
+          operation.nickname.to_sym
+        end.compact.flatten
+      end.compact.flatten
+      Resource.define_methods(nicknames)
     end
-    
-    # def self.define_methods(nicknames)
-    #   nicknames.each do |nickname|
-    #     Resource.define_method("bozo_#{nickname}".to_sym) do |*args|
-    #       puts "wawawa"
-    #     end
-    #   end
-    # end
+
+    # Define a method for each operation nickname    
+    def self.define_methods(nicknames)
+      nicknames.each do |nickname|
+        Resource.define_method(nickname) do |*args|
+          nickname = __method__.to_s
+          
+          # Extrapolate HTTP method from beginning of method name
+          # e.g. 'post_words' -> :post
+          http_method = nickname.split("_").first.to_sym
+
+          # Ruby turns all key-value arguments at the end into a single hash
+          # e.g. Wordnik.word.get_examples('dingo', :limit => 10, :part_of_speech => 'verb')
+          # becomes {:limit => 10, :part_of_speech => 'verb'}
+          last_arg = args.pop if args.last.is_a?(Hash)
+          last_arg = args.pop if args.last.is_a?(Array)
+          last_arg ||= {}
+          
+          # Look for a kwarg called :request_only, whose presence indicates
+          # that we want the request itself back, not the response body
+          if last_arg.is_a?(Hash) && last_arg[:request_only].present?
+            build_only = true
+            last_arg.delete(:request_only)
+          end
+
+          if [:post, :put].include?(http_method)
+            params = nil
+            body = last_arg
+          else
+            params = last_arg
+            body = nil
+          end
+
+          # Find the path that corresponds to this method nickname
+          # e.g. post_words -> "/wordList.{format}/{wordListId}/words"
+          begin
+            path = self.path_for_operation_nickname(nickname)
+            raise if path.blank?
+          rescue
+            raise "Cannot find a resource path that corresponds to the method nickname '#{nickname}'"
+          end
+
+          # Take the '.{format}' portion out of the string so it doesn't interfere with 
+          # the interpolation we're going to do on the path.
+          path.gsub!('.{format}', '')
+
+          # Stick the remaining (required) arguments into the path string
+          args.each do |arg|
+            path.sub!(/\{\w+\}/, arg)
+          end
+
+          request = Wordnik::Request.new(http_method, path, :params => params, :body => body)
+
+          if build_only
+            request 
+          else
+            request.response.body
+          end
+        end
+      end
+    end
   
     # Cycle through endpoints and their operations in search of
     # the path that corresponds to the given nickname
@@ -69,68 +107,6 @@ module Wordnik
         end
       end
       nil
-    end
-
-    # Uses the received method name and arguments to dynamically construct a Request
-    # If the method name is prefixed with 'build_', then the 'unmade' Request
-    # object will be returned instead of the Request Response's body
-    # 
-    # Wordnik.word.get('dingo')
-    # Wordnik.word.get_definitions('dingo', :limit => 20, )
-    def method_missing(sym, *args, &block)
-      nickname = sym.to_s
-
-      # If method nickname starts with 'build_', 
-      # then just build the request but don't run it.
-      if nickname =~ /^build_/
-        nickname.gsub!('build_', '')
-        build_only = true
-      end
-      
-      # Extrapolate HTTP method from beginning of method name
-      # e.g. 'post_words' -> :post
-      http_method = nickname.split("_").first.to_sym
-      
-      # Ruby turns all key-value arguments at the end into a single hash
-      # e.g. Wordnik.word.get_examples('dingo', :limit => 10, :part_of_speech => 'verb')
-      # becomes {:limit => 10, :part_of_speech => 'verb'}
-      last_arg = args.pop if args.last.is_a?(Hash)
-      last_arg = args.pop if args.last.is_a?(Array)
-      last_arg ||= {}
-      
-      if [:post, :put].include?(http_method)
-        params = nil
-        body = last_arg
-      else
-        params = last_arg
-        body = nil
-      end
-      
-      # Find the path that corresponds to this method nickname
-      # e.g. post_words -> "/wordList.{format}/{wordListId}/words"
-      begin
-        path = self.path_for_operation_nickname(nickname)
-        raise if path.blank?
-      rescue
-        raise "Cannot find a resource path that corresponds to the method nickname '#{nickname}'"
-      end
-      
-      # Take the '.{format}' portion out of the string so it doesn't interfere with 
-      # the interpolation we're going to do on the path.
-      path.gsub!('.{format}', '')
-      
-      # Stick the remaining (required) arguments into the path string
-      args.each do |arg|
-        path.sub!(/\{\w+\}/, arg)
-      end
-
-      request = Wordnik::Request.new(http_method, path, :params => params, :body => body)
-      
-      if build_only
-        request 
-      else
-        request.response.body
-      end
     end
 
     # It's an ActiveModel thing..
