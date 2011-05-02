@@ -1,18 +1,24 @@
+# HEY HACKER! THIS IS AN AUTO-GENERATED FILE.
+# So don't bother editing it. To see how it's built, take a look at the Rakefile
+
 module AccountMethods
 
+  # Authenticates a User
+  #
   def authenticate(username, *args)
-    # HTTP Method
     http_method = :get
-
-    # Path
     path = '/account/authenticate/{username}'
     path.sub!('{username}', username)
 
-    # args
+    # Ruby turns all key-value arguments at the end into a single hash
+    # e.g. Wordnik.word.get_examples('dingo', :limit => 10, :part_of_speech => 'verb')
+    # becomes {:limit => 10, :part_of_speech => 'verb'}
     last_arg = args.pop if args.last.is_a?(Hash)
     last_arg = args.pop if args.last.is_a?(Array)
     last_arg ||= {}
 
+    # Look for a kwarg called :request_only, whose presence indicates
+    # that we want the request itself back, not the response body
     if last_arg.is_a?(Hash) && last_arg[:request_only].present?
       request_only = true
       last_arg.delete(:request_only)
@@ -30,17 +36,20 @@ module AccountMethods
     request_only ? request : request.response.body
   end
 
+  # Returns usage statistics for the API account.
+  #
   def get_api_token_status(*args)
-    # HTTP Method
     http_method = :get
-
-    # Path
     path = '/account/apiTokenStatus'
-    # args
+    # Ruby turns all key-value arguments at the end into a single hash
+    # e.g. Wordnik.word.get_examples('dingo', :limit => 10, :part_of_speech => 'verb')
+    # becomes {:limit => 10, :part_of_speech => 'verb'}
     last_arg = args.pop if args.last.is_a?(Hash)
     last_arg = args.pop if args.last.is_a?(Array)
     last_arg ||= {}
 
+    # Look for a kwarg called :request_only, whose presence indicates
+    # that we want the request itself back, not the response body
     if last_arg.is_a?(Hash) && last_arg[:request_only].present?
       request_only = true
       last_arg.delete(:request_only)
@@ -58,19 +67,22 @@ module AccountMethods
     request_only ? request : request.response.body
   end
 
+  # Returns an ApiResponse indicating whether or not a username is available
+  #
   def get_username_available(username, *args)
-    # HTTP Method
     http_method = :get
-
-    # Path
     path = '/account/usernameAvailable/{username}'
     path.sub!('{username}', username)
 
-    # args
+    # Ruby turns all key-value arguments at the end into a single hash
+    # e.g. Wordnik.word.get_examples('dingo', :limit => 10, :part_of_speech => 'verb')
+    # becomes {:limit => 10, :part_of_speech => 'verb'}
     last_arg = args.pop if args.last.is_a?(Hash)
     last_arg = args.pop if args.last.is_a?(Array)
     last_arg ||= {}
 
+    # Look for a kwarg called :request_only, whose presence indicates
+    # that we want the request itself back, not the response body
     if last_arg.is_a?(Hash) && last_arg[:request_only].present?
       request_only = true
       last_arg.delete(:request_only)
@@ -88,17 +100,20 @@ module AccountMethods
     request_only ? request : request.response.body
   end
 
+  # Regenerates an API Token.  Currently not supported or tested.
+  #
   def create_api_account(*args)
-    # HTTP Method
     http_method = :get
-
-    # Path
     path = '/account/regenerateApiToken'
-    # args
+    # Ruby turns all key-value arguments at the end into a single hash
+    # e.g. Wordnik.word.get_examples('dingo', :limit => 10, :part_of_speech => 'verb')
+    # becomes {:limit => 10, :part_of_speech => 'verb'}
     last_arg = args.pop if args.last.is_a?(Hash)
     last_arg = args.pop if args.last.is_a?(Array)
     last_arg ||= {}
 
+    # Look for a kwarg called :request_only, whose presence indicates
+    # that we want the request itself back, not the response body
     if last_arg.is_a?(Hash) && last_arg[:request_only].present?
       request_only = true
       last_arg.delete(:request_only)
@@ -116,19 +131,22 @@ module AccountMethods
     request_only ? request : request.response.body
   end
 
+  # Authenticates a user
+  #
   def authenticate_post(username, *args)
-    # HTTP Method
     http_method = :post
-
-    # Path
     path = '/account/authenticate/{username}'
     path.sub!('{username}', username)
 
-    # args
+    # Ruby turns all key-value arguments at the end into a single hash
+    # e.g. Wordnik.word.get_examples('dingo', :limit => 10, :part_of_speech => 'verb')
+    # becomes {:limit => 10, :part_of_speech => 'verb'}
     last_arg = args.pop if args.last.is_a?(Hash)
     last_arg = args.pop if args.last.is_a?(Array)
     last_arg ||= {}
 
+    # Look for a kwarg called :request_only, whose presence indicates
+    # that we want the request itself back, not the response body
     if last_arg.is_a?(Hash) && last_arg[:request_only].present?
       request_only = true
       last_arg.delete(:request_only)
@@ -146,17 +164,21 @@ module AccountMethods
     request_only ? request : request.response.body
   end
 
+  # Returns the logged-in User
+  # Requires a valid auth_token to be set.
+  #
   def get_logged_in_user(*args)
-    # HTTP Method
     http_method = :get
-
-    # Path
     path = '/account/user'
-    # args
+    # Ruby turns all key-value arguments at the end into a single hash
+    # e.g. Wordnik.word.get_examples('dingo', :limit => 10, :part_of_speech => 'verb')
+    # becomes {:limit => 10, :part_of_speech => 'verb'}
     last_arg = args.pop if args.last.is_a?(Hash)
     last_arg = args.pop if args.last.is_a?(Array)
     last_arg ||= {}
 
+    # Look for a kwarg called :request_only, whose presence indicates
+    # that we want the request itself back, not the response body
     if last_arg.is_a?(Hash) && last_arg[:request_only].present?
       request_only = true
       last_arg.delete(:request_only)
@@ -174,17 +196,20 @@ module AccountMethods
     request_only ? request : request.response.body
   end
 
+  # Fetches WordList objects for the logged-in user.
+  #
   def get_word_lists_for_current_user(*args)
-    # HTTP Method
     http_method = :get
-
-    # Path
     path = '/account/wordLists'
-    # args
+    # Ruby turns all key-value arguments at the end into a single hash
+    # e.g. Wordnik.word.get_examples('dingo', :limit => 10, :part_of_speech => 'verb')
+    # becomes {:limit => 10, :part_of_speech => 'verb'}
     last_arg = args.pop if args.last.is_a?(Hash)
     last_arg = args.pop if args.last.is_a?(Array)
     last_arg ||= {}
 
+    # Look for a kwarg called :request_only, whose presence indicates
+    # that we want the request itself back, not the response body
     if last_arg.is_a?(Hash) && last_arg[:request_only].present?
       request_only = true
       last_arg.delete(:request_only)

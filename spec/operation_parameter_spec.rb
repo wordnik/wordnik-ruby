@@ -4,7 +4,7 @@ describe Wordnik::OperationParameter do
 
   before(:each) do
     VCR.use_cassette('words', :record => :new_episodes) do
-      @response = Typhoeus::Request.get("http://api.wordnik.com/v4/word.json")
+      @response = Typhoeus::Request.get("http://beta.wordnik.com/v4/word.json")
     end
 
     @operation_parameter = Wordnik::OperationParameter.new(JSON.parse(@response.body)['endPoints'].first['operations'].first['parameters'].first)

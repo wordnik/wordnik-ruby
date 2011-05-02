@@ -61,23 +61,19 @@ Put this somewhere in your app's initialization process:
 Usage
 -----
 
-	# The simple version..
-	examples = Wordnik.word.get_examples('monkey', :limit => 50, :part_of_speech => 'verb')
+	# The clean version..
 	examples = Wordnik.word.get_examples('monkey', :limit => 50, :part_of_speech => 'verb')
 	
 	# ..and its low-level equivalent
 	request = Wordnik::Request.new(:get, '/word/{word}/examples', :params => {:word => 'monkey', :limit => 50, :part_of_speech => 'verb'})
 	examples = request.response.body
 
-For a full list of convenience methods, checkout [USAGE.md](https://github.com/wordnik/wordnik-ruby/blob/master/USAGE.md). The wordnik gem automatically generates its convenience methods by parsing the [Wordnik API documentation](http://developer.wordnik.com/docs).
+For a full list of methods, checkout [USAGE.md](https://github.com/wordnik/wordnik-ruby/blob/master/USAGE.md). The wordnik gem automatically generates its convenience methods by parsing the [Wordnik API documentation](http://developer.wordnik.com/docs).
 
 Specs
 -----
 
-The wordnik gem uses rspec 2. To run the test suite, you have to pass in your API 
-key as an environment variable, like so:
-
-	KEY=12345 rake spec
+The wordnik gem uses rspec 2. To run the test suite, just type `rake` or `rake spec` in the gem's base directory.
 	
 Contributing
 ------------
@@ -92,8 +88,8 @@ Contributing
 Wishlist
 --------
 
-* Allow boolean params to really party like booleans (instead of 'true')
-* Remove the now-antiquated method_missing approach
+* Go Kart
+* Helicopter
 
 Props
 -----

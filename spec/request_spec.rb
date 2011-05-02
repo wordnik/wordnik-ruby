@@ -162,7 +162,11 @@ describe Wordnik::Request do
       @request.query_string.should == "?badDog=bud&goodDog=dud"
     end
     
-    it "converts boolean values to their string representation"
+    it "converts boolean values to their string representation" do
+      params = {:stringy => "fish", :truthy => true, :falsey => false}
+      @request = Wordnik::Request.new(:get, 'fakeMethod', :params => params)
+      @request.query_string.should == "?falsey=false&stringy=fish&truthy=true"
+    end
     
   end
   

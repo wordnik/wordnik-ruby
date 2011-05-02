@@ -5,7 +5,7 @@ describe Wordnik::Response do
   before(:each) do
 
     VCR.use_cassette('default_response_request', :record => :new_episodes) do
-      @raw = Typhoeus::Request.get("http://api.wordnik.com/v4/word.json")
+      @raw = Typhoeus::Request.get("http://beta.wordnik.com/v4/word.json")
     end
 
     @response = Wordnik::Response.new(@raw)
@@ -37,7 +37,7 @@ describe Wordnik::Response do
 
     it "recognizes xml" do
       VCR.use_cassette('xml_response_request', :record => :new_episodes) do
-        @raw = Typhoeus::Request.get("http://api.wordnik.com/v4/word.xml/help")
+        @raw = Typhoeus::Request.get("http://beta.wordnik.com/v4/word.xml/help")
       end
       @response = Wordnik::Response.new(@raw)
       @response.format.should == :xml
@@ -63,7 +63,7 @@ describe Wordnik::Response do
     
     it "has a pretty xml body" do
       VCR.use_cassette('xml_response_request', :record => :new_episodes) do
-        @raw = Typhoeus::Request.get("http://api.wordnik.com/v4/word.xml/help")
+        @raw = Typhoeus::Request.get("http://beta.wordnik.com/v4/word.xml/help")
       end
       @response = Wordnik::Response.new(@raw)
       @response.pretty_body.should =~ /\?xml/

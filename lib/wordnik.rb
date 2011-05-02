@@ -48,6 +48,13 @@ module Wordnik
       end
     end
 
+    # The names of all the resources (in the production API).
+    # This is used by Wordnik.build_resources and the rake task that fetches remote API docs
+    #
+    def resource_names
+      %w(account corpus document partners system tag user users word words wordList wordLists)
+    end
+
     def authenticated?
       Wordnik.configuration.user_id.present? && Wordnik.configuration.auth_token.present?
     end
@@ -81,19 +88,7 @@ module Wordnik
         raise ApiServerError, response_body.to_s
       end
     end
-    
-    # The names of all the resources (in the production API).
-    # This is used by Wordnik.build_resources and the rake task that fetches remote API docs
-    #
-    def resource_names
-      %w(account corpus document partners system tag user users word words wordList wordLists wordoftheday)
-    end
-    
-    
-    Wordnik.word.get_definitions('wonker')
-    
-    Wordnik.resources[:word]
-    
+            
     # Aliases. For convenience.
     #
     def account; Wordnik.resources[:account]; end
@@ -109,8 +104,7 @@ module Wordnik
     def words; Wordnik.resources[:words]; end
     def word_list; Wordnik.resources[:word_list]; end
     def word_lists; Wordnik.resources[:word_lists]; end
-    def wordoftheday; Wordnik.resources[:wordoftheday]; end
-        
+
   end
   
 end

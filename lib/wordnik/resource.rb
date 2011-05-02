@@ -26,7 +26,15 @@ module Wordnik
         self.endpoints = self.raw_data['endPoints'].map do |endpointData|
           Endpoint.new(self, endpointData)
         end
+      end 
+      
+      # Attach module containing metaprogramatticaly generated operations.
+      module_filename = File.join(File.dirname(__FILE__), "./resource_modules/#{self.name}.rb")
+      if File.exist? module_filename
+        self.class.send(:require, "wordnik/resource_modules/#{self.name}")
+        self.class.send(:include, "#{self.name.to_s.camelize}Methods".constantize)
       end
+      
     end
 
     # It's an ActiveModel thing..
