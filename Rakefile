@@ -35,7 +35,7 @@ task :fetch_api_docs do
   
 end
 
-desc 'Iterate over resource>endpoint>operation nicknames, generating markdown documentation.'
+desc 'Iterate over resource > endpoint > operation nicknames, generating markdown documentation.'
 task :generate_usage_docs do
   Wordnik.configure
   filename = "USAGE.md"

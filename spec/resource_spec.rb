@@ -90,6 +90,16 @@ describe Wordnik::Resource do
        
     end
     
+    context "response transmogrification" do
+      
+      it "converts definitions response into an array of definition objects" # do
+        # defs = Wordnik.word.get_definitions('boogaloo')
+        # defs.should be_an(Array)
+        # defs.first.should be_a(Wordnik::Definition)
+      # end
+      
+    end
+    
   end
   
   context "wordlists" do

@@ -67,6 +67,8 @@ Usage
 	# ..and its low-level equivalent
 	request = Wordnik::Request.new(:get, '/word/{word}/examples', :params => {:word => 'monkey', :limit => 50, :part_of_speech => 'verb'})
 	examples = request.response.body
+	
+      request1 = Wordnik.word_list.get_word_list_by_id('dog', :request_only => true)
 
 For a full list of methods, checkout [USAGE.md](https://github.com/wordnik/wordnik-ruby/blob/master/USAGE.md). The wordnik gem automatically generates its convenience methods by parsing the [Wordnik API documentation](http://developer.wordnik.com/docs).
 

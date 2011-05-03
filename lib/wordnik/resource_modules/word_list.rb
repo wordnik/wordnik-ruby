@@ -66,7 +66,14 @@ module WordListMethods
     end
 
     request = Wordnik::Request.new(http_method, path, :params => params, :body => body)
-    request_only ? request : request.response.body
+    
+    
+    operation = self.operations.find_by_nickname('get_word_list_words')
+    response_value_type = operation.response.value_type
+    
+    Massage(response.body)
+    
+    
   end
 
   # Adds words to a WordList
