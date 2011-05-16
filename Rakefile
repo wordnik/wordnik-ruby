@@ -140,6 +140,16 @@ task :write_resource_methods do
         lines << "    request = Wordnik::Request.new(http_method, path, :params => params, :body => body)"
         lines << "    request_only ? request : request.response.body"
         lines << "  end\n"
+        
+        # case response.valueType
+        # when 'wordObject'
+        #   Wordnik::Word.new(response.body)
+        # when 'List[definition]'
+        #   response.body.map do |definition_data|
+        #     Wordnik::Definition.new(definition_data)
+        #   end
+        # end
+        
       end      
     end
 

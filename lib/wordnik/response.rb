@@ -25,9 +25,9 @@ module Wordnik
     # TODO: If body is XML, parse it
     # Otherwise return raw string
     def body
-      JSON.parse raw.body.encode(::Encoding::UTF_8, undef: :replace)
+      JSON.parse raw.body#.encode(::Encoding::UTF_8, undef: :replace)
     rescue
-      raw.body.encode(::Encoding::UTF_8, undef: :replace)
+      raw.body#.encode(::Encoding::UTF_8, undef: :replace)
     end
 
     def headers
