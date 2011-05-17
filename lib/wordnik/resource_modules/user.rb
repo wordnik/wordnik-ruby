@@ -9,7 +9,6 @@ module UserMethods
     http_method = :get
     path = '/user/{username}/wordOfTheDay/{date}'
     path.sub!('{username}', username)
-
     path.sub!('{date}', date)
 
     # Ruby turns all key-value arguments at the end into a single hash
@@ -144,7 +143,6 @@ module UserMethods
     http_method = :put
     path = '/user/{username}/wordOfTheDayList/{permalink}'
     path.sub!('{username}', username)
-
     path.sub!('{permalink}', permalink)
 
     # Ruby turns all key-value arguments at the end into a single hash
@@ -179,7 +177,6 @@ module UserMethods
     http_method = :delete
     path = '/user/{username}/wordOfTheDayList/{permalink}'
     path.sub!('{username}', username)
-
     path.sub!('{permalink}', permalink)
 
     # Ruby turns all key-value arguments at the end into a single hash
@@ -214,9 +211,7 @@ module UserMethods
     http_method = :delete
     path = '/user/{username}/wordOfTheDayList/{permalink}/{wordToDelete}'
     path.sub!('{username}', username)
-
     path.sub!('{permalink}', permalink)
-
     path.sub!('{wordToDelete}', wordToDelete)
 
     # Ruby turns all key-value arguments at the end into a single hash
@@ -251,7 +246,6 @@ module UserMethods
     http_method = :put
     path = '/user/{username}/wordOfTheDayList/{permalink}/add'
     path.sub!('{username}', username)
-
     path.sub!('{permalink}', permalink)
 
     # Ruby turns all key-value arguments at the end into a single hash

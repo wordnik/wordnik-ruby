@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    wordnik (0.4.6)
+    wordnik (0.4.7)
       activemodel (>= 3.0.3)
       addressable (>= 2.2.4)
       htmlentities (>= 4.2.4)
@@ -12,11 +12,11 @@ PATH
 GEM
   remote: http://rubygems.org/
   specs:
-    activemodel (3.0.6)
-      activesupport (= 3.0.6)
+    activemodel (3.0.7)
+      activesupport (= 3.0.7)
       builder (~> 2.1.2)
       i18n (~> 0.5.0)
-    activesupport (3.0.6)
+    activesupport (3.0.7)
     addressable (2.2.4)
     builder (2.1.2)
     crack (0.1.8)

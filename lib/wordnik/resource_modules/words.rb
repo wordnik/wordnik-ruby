@@ -8,6 +8,7 @@ module WordsMethods
   def get_random_word(*args)
     http_method = :get
     path = '/words/randomWord'
+
     # Ruby turns all key-value arguments at the end into a single hash
     # e.g. Wordnik.word.get_examples('dingo', :limit => 10, :part_of_speech => 'verb')
     # becomes {:limit => 10, :part_of_speech => 'verb'}
@@ -39,6 +40,7 @@ module WordsMethods
   def get_random_words(*args)
     http_method = :get
     path = '/words/randomWords'
+
     # Ruby turns all key-value arguments at the end into a single hash
     # e.g. Wordnik.word.get_examples('dingo', :limit => 10, :part_of_speech => 'verb')
     # becomes {:limit => 10, :part_of_speech => 'verb'}
@@ -70,6 +72,7 @@ module WordsMethods
   def search_words(*args)
     http_method = :get
     path = '/words/search'
+
     # Ruby turns all key-value arguments at the end into a single hash
     # e.g. Wordnik.word.get_examples('dingo', :limit => 10, :part_of_speech => 'verb')
     # becomes {:limit => 10, :part_of_speech => 'verb'}
@@ -101,6 +104,7 @@ module WordsMethods
   def get_word_of_the_day_lists_containing_word(*args)
     http_method = :get
     path = '/words/wordOfTheDayLists'
+
     # Ruby turns all key-value arguments at the end into a single hash
     # e.g. Wordnik.word.get_examples('dingo', :limit => 10, :part_of_speech => 'verb')
     # becomes {:limit => 10, :part_of_speech => 'verb'}
@@ -198,6 +202,7 @@ module WordsMethods
   def search_definitions(*args)
     http_method = :get
     path = '/words/searchDefinitions'
+
     # Ruby turns all key-value arguments at the end into a single hash
     # e.g. Wordnik.word.get_examples('dingo', :limit => 10, :part_of_speech => 'verb')
     # becomes {:limit => 10, :part_of_speech => 'verb'}
@@ -229,6 +234,7 @@ module WordsMethods
   def search_entries(*args)
     http_method = :get
     path = '/words/searchEntries'
+
     # Ruby turns all key-value arguments at the end into a single hash
     # e.g. Wordnik.word.get_examples('dingo', :limit => 10, :part_of_speech => 'verb')
     # becomes {:limit => 10, :part_of_speech => 'verb'}
@@ -260,6 +266,7 @@ module WordsMethods
   def get_surface_forms(*args)
     http_method = :get
     path = '/words/surfaceForms'
+
     # Ruby turns all key-value arguments at the end into a single hash
     # e.g. Wordnik.word.get_examples('dingo', :limit => 10, :part_of_speech => 'verb')
     # becomes {:limit => 10, :part_of_speech => 'verb'}
@@ -291,6 +298,7 @@ module WordsMethods
   def get_word_of_the_day(*args)
     http_method = :get
     path = '/words/wordOfTheDay'
+
     # Ruby turns all key-value arguments at the end into a single hash
     # e.g. Wordnik.word.get_examples('dingo', :limit => 10, :part_of_speech => 'verb')
     # becomes {:limit => 10, :part_of_speech => 'verb'}
@@ -322,6 +330,7 @@ module WordsMethods
   def get_word_of_the_day_range(*args)
     http_method = :get
     path = '/words/wordOfTheDay/range'
+
     # Ruby turns all key-value arguments at the end into a single hash
     # e.g. Wordnik.word.get_examples('dingo', :limit => 10, :part_of_speech => 'verb')
     # becomes {:limit => 10, :part_of_speech => 'verb'}
@@ -387,7 +396,6 @@ module WordsMethods
     http_method = :get
     path = '/words/wordOfTheDayList/{permalink}/{specifier}'
     path.sub!('{permalink}', permalink)
-
     path.sub!('{specifier}', specifier)
 
     # Ruby turns all key-value arguments at the end into a single hash
@@ -421,6 +429,7 @@ module WordsMethods
   def get_recent_word_of_the_day_lists(*args)
     http_method = :get
     path = '/words/wordOfTheDayLists/recent'
+
     # Ruby turns all key-value arguments at the end into a single hash
     # e.g. Wordnik.word.get_examples('dingo', :limit => 10, :part_of_speech => 'verb')
     # becomes {:limit => 10, :part_of_speech => 'verb'}
@@ -453,6 +462,7 @@ module WordsMethods
   def get_word_of_the_day_list_subscription_process_status(*args)
     http_method = :get
     path = '/words/wordOfTheDayLists/subscriptionProcess'
+
     # Ruby turns all key-value arguments at the end into a single hash
     # e.g. Wordnik.word.get_examples('dingo', :limit => 10, :part_of_speech => 'verb')
     # becomes {:limit => 10, :part_of_speech => 'verb'}

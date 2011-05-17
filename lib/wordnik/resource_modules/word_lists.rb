@@ -8,6 +8,7 @@ module WordListsMethods
   def get_help(*args)
     http_method = :get
     path = '/wordLists'
+
     # Ruby turns all key-value arguments at the end into a single hash
     # e.g. Wordnik.word.get_examples('dingo', :limit => 10, :part_of_speech => 'verb')
     # becomes {:limit => 10, :part_of_speech => 'verb'}
@@ -39,6 +40,7 @@ module WordListsMethods
   def create_word_list(*args)
     http_method = :post
     path = '/wordLists'
+
     # Ruby turns all key-value arguments at the end into a single hash
     # e.g. Wordnik.word.get_examples('dingo', :limit => 10, :part_of_speech => 'verb')
     # becomes {:limit => 10, :part_of_speech => 'verb'}

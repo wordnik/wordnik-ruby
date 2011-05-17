@@ -41,6 +41,7 @@ module AccountMethods
   def get_api_token_status(*args)
     http_method = :get
     path = '/account/apiTokenStatus'
+
     # Ruby turns all key-value arguments at the end into a single hash
     # e.g. Wordnik.word.get_examples('dingo', :limit => 10, :part_of_speech => 'verb')
     # becomes {:limit => 10, :part_of_speech => 'verb'}
@@ -105,6 +106,7 @@ module AccountMethods
   def create_api_account(*args)
     http_method = :get
     path = '/account/regenerateApiToken'
+
     # Ruby turns all key-value arguments at the end into a single hash
     # e.g. Wordnik.word.get_examples('dingo', :limit => 10, :part_of_speech => 'verb')
     # becomes {:limit => 10, :part_of_speech => 'verb'}
@@ -170,6 +172,7 @@ module AccountMethods
   def get_logged_in_user(*args)
     http_method = :get
     path = '/account/user'
+
     # Ruby turns all key-value arguments at the end into a single hash
     # e.g. Wordnik.word.get_examples('dingo', :limit => 10, :part_of_speech => 'verb')
     # becomes {:limit => 10, :part_of_speech => 'verb'}
@@ -201,6 +204,7 @@ module AccountMethods
   def get_word_lists_for_current_user(*args)
     http_method = :get
     path = '/account/wordLists'
+
     # Ruby turns all key-value arguments at the end into a single hash
     # e.g. Wordnik.word.get_examples('dingo', :limit => 10, :part_of_speech => 'verb')
     # becomes {:limit => 10, :part_of_speech => 'verb'}

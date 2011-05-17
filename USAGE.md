@@ -41,6 +41,14 @@ system
     :max_results                     Maximum number of routes to return
     :destination                     Destination to route to (VERY inefficient)
     :use_graph_ml                    Return is GraphML format
+    :goal                            Selection goal
+
+[Wordnik.system.get_related_words(word)](http://developer.wordnik.com/docs/#!/system/get_related_words)
+    :use_literal                     Use exact word
+
+[Wordnik.system.get_related_words(word)](http://developer.wordnik.com/docs/#!/system/get_related_words)
+    :limit                           Maximum number of results to return
+    :type                            Relationship type
 
 
 user
