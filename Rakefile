@@ -112,10 +112,10 @@ task :write_resource_methods do
         # Path
         lines << "    path = '#{endpoint.path.sub(".{format}", "")}'"
         operation.positional_parameter_names.each do |param|
-          lines << "    path.sub!('\{#{param}\}', #{param})\n"
+          lines << "    path.sub!('\{#{param}\}', #{param})"
         end
 
-        lines << "    # Ruby turns all key-value arguments at the end into a single hash"
+        lines << "\n    # Ruby turns all key-value arguments at the end into a single hash"
         lines << "    # e.g. Wordnik.word.get_examples('dingo', :limit => 10, :part_of_speech => 'verb')"
         lines << "    # becomes {:limit => 10, :part_of_speech => 'verb'}"
         lines << "    last_arg = args.pop if args.last.is_a?(Hash)"
