@@ -23,5 +23,19 @@ describe Wordnik::OperationParameter do
     end
 
   end
+  
+  describe "convenience methods" do
+    
+    it "has a human name"
+    
+    it "detects if its allowable values are delimited as an array"
+    
+    it "is required if it's part of the path"
+    
+    it "is positional is required or part of the path"
+  
+  end
+  
+
 
 end
