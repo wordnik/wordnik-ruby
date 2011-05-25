@@ -103,9 +103,3 @@ module Wordnik
   end
   
 end
-
-class ConfigurationError < StandardError
-end
-
-class ApiServerError < StandardError
-end
