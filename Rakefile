@@ -22,17 +22,23 @@ task :fetch_api_docs do
   puts "\nFetch API Docs"
   puts "--------------\n"
 
-  puts "\nEnter base path (leave blank to default to beta.wordnik.com/v4): "
+  puts "\nEnter the base path (leave blank to default to beta.wordnik.com/v4): "
   base_uri = STDIN.gets.chomp.sub('http://', '').sub('https://', '')
   base_uri = 'beta.wordnik.com/v4' if base_uri.blank?
   
+  puts "\nEnter a space-delimited list of resource names (optional): "
+  resource_names = STDIN.gets.chomp.split(" ")
+  
   puts "\nEnter API key (leave blank to fetch publically available resources): "
   api_key = STDIN.gets.chomp
-  
+    
   Wordnik.configure(false) do |c|
     c.base_uri = base_uri
+    c.resource_names = resource_names unless resource_names.blank?
     c.api_key = api_key unless api_key.blank?
   end
+
+  system "rm api_docs/*.rb"
   
   Wordnik.configuration.resource_names.each do |resource_name|
     request = Wordnik::Request.new(:get, "#{resource_name}.json")
