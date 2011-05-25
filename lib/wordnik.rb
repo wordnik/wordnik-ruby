@@ -37,7 +37,7 @@ module Wordnik
     # 
     def build_resources
       self.resources = {}
-      self.resource_names.map do |resource_name|
+      self.configuration.resource_names.map do |resource_name|
         
         name = resource_name.underscore.to_sym # 'fooBar' => :foo_bar
         filename = File.join(File.dirname(__FILE__), "../api_docs/#{resource_name}.json")
@@ -48,13 +48,6 @@ module Wordnik
         )
         self.resources[name] = resource
       end
-    end
-
-    # The names of all the resources (in the production API).
-    # This is used by Wordnik.build_resources and the rake task that fetches remote API docs
-    #
-    def resource_names
-      %w(account corpus document partners system tag user users word words wordList wordLists)
     end
 
     def authenticated?

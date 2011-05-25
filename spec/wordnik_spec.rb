@@ -19,7 +19,7 @@ describe Wordnik do
       end
       
       it "has as many resources as there are resource names" do
-        Wordnik.resources.size.should == Wordnik.resource_names.size
+        Wordnik.resources.size.should == Wordnik.configuration.gs.size
       end
 
       it "assigns resource keys that match the resource names" do
