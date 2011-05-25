@@ -16,10 +16,22 @@ task :build do
   # Rake::Task['generate_usage_docs'].invoke  
 end
 
+
 desc 'Download the API docs to disk'
-task :fetch_api_docs do
+task :fetch_api_docs, :api_key do |t, args|
   
-  Wordnik.configure {|c| c.base_uri = 'beta.wordnik.com/v4' }
+  if args[:api_key].blank?
+    puts "\nFetching PUBLIC resources..."
+    puts "\nTo fetch the admin-only resources, you gotta include the API key:\n\n"
+    puts "rake fetch_api_docs['123abc']\n\n"
+  else
+    puts "\nFetching PRIVILEGED resources..."
+  end
+  
+  Wordnik.configure do |c|
+    c.base_uri = 'beta.wordnik.com/v4'
+    c.api_key = args[:api_key]
+  end
   
   Wordnik.resource_names.each do |resource_name|
 
