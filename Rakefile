@@ -10,36 +10,32 @@ RSpec::Core::RakeTask.new('spec')
 task :default => :spec
 
 desc 'Download the latest API docs and build out resource methods'
-task :build do
-  Rake::Task['fetch_api_docs'].execute
-  Rake::Task['write_resource_methods'].execute
-  # Rake::Task['generate_usage_docs'].invoke  
+task :abracadabra do
+  Rake::Task['fetch_api_docs'].invoke
+  Rake::Task['write_resource_methods'].invoke
+  Rake::Task['generate_usage_docs'].invoke  
 end
 
-
 desc 'Download the API docs to disk'
-task :fetch_api_docs, :api_key do |t, args|
+task :fetch_api_docs do
   
-  if args[:api_key].blank?
-    puts "\nFetching PUBLIC resources..."
-    puts "\nTo fetch the admin-only resources, you gotta include the API key:\n\n"
-    puts "rake fetch_api_docs['123abc']\n\n"
-  else
-    puts "\nFetching PRIVILEGED resources..."
-  end
+  puts "\nFetch API Docs"
+  puts "--------------\n"
+
+  puts "\nEnter base path (leave blank to default to beta.wordnik.com/v4): "
+  base_uri = STDIN.gets.chomp.sub('http://', '').sub('https://', '')
+  base_uri = 'beta.wordnik.com/v4' if base_uri.blank?
   
-  Wordnik.configure do |c|
-    c.base_uri = 'beta.wordnik.com/v4'
-    c.api_key = args[:api_key]
+  puts "\nEnter API key (leave blank to fetch publically available resources): "
+  api_key = STDIN.gets.chomp
+  
+  Wordnik.configure(false) do |c|
+    c.base_uri = base_uri
+    c.api_key = api_key unless api_key.blank?
   end
   
   Wordnik.resource_names.each do |resource_name|
-
-    # Roll in API key
-    headers = {}
-    # headers[:api_key] = params[:api_key] if params[:api_key].present?
-
-    request = Wordnik::Request.new(:get, "#{resource_name}.json", :headers => headers)
+    request = Wordnik::Request.new(:get, "#{resource_name}.json")
     filename = "api_docs/#{resource_name}.json"
     File.open(filename, 'w') {|f| f.write(request.response.raw.body) }
     puts filename
@@ -53,6 +49,9 @@ task :generate_usage_docs do
   filename = "USAGE.md"
   file = File.new(filename, "w")
   
+  puts "\nGenerate Documentation"
+  puts "----------------------\n"
+  
   Wordnik.resources.each_pair do |resource_name, resource|
 
     next unless resource.endpoints.present?
@@ -62,6 +61,8 @@ task :generate_usage_docs do
       endpoint.operations.each do |operation|
         
         docs_url = "http://developer.wordnik.com/docs/#!/#{resource.name}/#{operation.nickname}"
+        
+        puts "Wordnik.#{resource_name}.#{operation.nickname}"
         
         # Method name
         file.write "[Wordnik.#{resource_name}.#{operation.nickname}(#{operation.positional_parameter_names.join(', ')})](#{docs_url})\n"
@@ -88,6 +89,9 @@ end
 desc 'Iterate over each resource, generating a ruby module with operation methods for each.'
 task :write_resource_methods do
   
+  puts "\nWrite Resource Methods"
+  puts "----------------------\n"
+  
   # Remove old shit
   system "rm lib/wordnik/resource_modules/*.rb"
   
@@ -97,6 +101,7 @@ task :write_resource_methods do
     next unless resource.endpoints.present?
     
     filename = "lib/wordnik/resource_modules/#{resource_name}.rb"
+    puts filename
     file = File.new(filename, "w")
     lines = []
 
