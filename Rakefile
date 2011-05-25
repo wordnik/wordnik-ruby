@@ -61,7 +61,7 @@ task :generate_usage_docs do
   Wordnik.resources.each_pair do |resource_name, resource|
 
     next unless resource.endpoints.present?
-    file.write "\n#{resource_name}\n#{"=" * resource_name.size}\n\n"
+    file.write "\n#{resource_name}\n#{"=" * resource_name.to_s.size}\n\n"
     
     resource.endpoints.each do |endpoint|
       endpoint.operations.each do |operation|
