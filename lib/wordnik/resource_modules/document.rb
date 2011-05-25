@@ -1,13 +1,47 @@
 # HEY HACKER! THIS IS AN AUTO-GENERATED FILE.
 # So don't bother editing it. To see how it's built, take a look at the Rakefile
 
-module SystemMethods
+module DocumentMethods
 
-  # Returns all defined ContentProviders.
+  # Fetches Document objects by Content Provider code.
   #
-  def get_providers(*args)
+  def get_word_frequencies(document_id, *args)
     http_method = :get
-    path = '/system/providers'
+    path = '/document/id/{document_id}/words'
+    path.sub!('{document_id}', document_id)
+
+    # Ruby turns all key-value arguments at the end into a single hash
+    # e.g. Wordnik.word.get_examples('dingo', :limit => 10, :part_of_speech => 'verb')
+    # becomes {:limit => 10, :part_of_speech => 'verb'}
+    last_arg = args.pop if args.last.is_a?(Hash)
+    last_arg = args.pop if args.last.is_a?(Array)
+    last_arg ||= {}
+
+    # Look for a kwarg called :request_only, whose presence indicates
+    # that we want the request itself back, not the response body
+    if last_arg.is_a?(Hash) && last_arg[:request_only].present?
+      request_only = true
+      last_arg.delete(:request_only)
+    end
+
+    if [:post, :put].include?(http_method)
+      params = nil
+      body = last_arg
+    else
+      params = last_arg
+      body = nil
+    end
+
+    request = Wordnik::Request.new(http_method, path, :params => params, :body => body)
+    request_only ? request : request.response.body
+  end
+
+  # Fetches examples for a specific provider matching a criteria.
+  #
+  def get_glossaries(contentProvider, *args)
+    http_method = :get
+    path = '/document/{contentProvider}/documents'
+    path.sub!('{contentProvider}', contentProvider)
 
     # Ruby turns all key-value arguments at the end into a single hash
     # e.g. Wordnik.word.get_examples('dingo', :limit => 10, :part_of_speech => 'verb')
@@ -39,7 +73,7 @@ module SystemMethods
   #
   def get_help(*args)
     http_method = :get
-    path = '/system'
+    path = '/document'
 
     # Ruby turns all key-value arguments at the end into a single hash
     # e.g. Wordnik.word.get_examples('dingo', :limit => 10, :part_of_speech => 'verb')
@@ -67,12 +101,12 @@ module SystemMethods
     request_only ? request : request.response.body
   end
 
-  # Returns weighted terms related to the input word
+  # Fetches Document objects by Content Provider code.
   #
-  def get_related_words(word, *args)
+  def get_documents_by_content_provider(provider, *args)
     http_method = :get
-    path = '/system/{word}/related'
-    path.sub!('{word}', word)
+    path = '/document/provider/{provider}'
+    path.sub!('{provider}', provider)
 
     # Ruby turns all key-value arguments at the end into a single hash
     # e.g. Wordnik.word.get_examples('dingo', :limit => 10, :part_of_speech => 'verb')
@@ -100,12 +134,12 @@ module SystemMethods
     request_only ? request : request.response.body
   end
 
-  # Returns a word with attributes
+  # Fetches Document objects by document identifier.
   #
-  def get_related_words(word, *args)
+  def get_metadata_by_id(id, *args)
     http_method = :get
-    path = '/system/{word}'
-    path.sub!('{word}', word)
+    path = '/document/{id}/metadata'
+    path.sub!('{id}', id)
 
     # Ruby turns all key-value arguments at the end into a single hash
     # e.g. Wordnik.word.get_examples('dingo', :limit => 10, :part_of_speech => 'verb')
@@ -133,75 +167,12 @@ module SystemMethods
     request_only ? request : request.response.body
   end
 
-  # Returns a graph response for the supplied terms
+  # Fetches Document objects by id.
   #
-  def get_word_by_id(*args)
+  def get_model_by_id(id, *args)
     http_method = :get
-    path = '/system/graph'
-
-    # Ruby turns all key-value arguments at the end into a single hash
-    # e.g. Wordnik.word.get_examples('dingo', :limit => 10, :part_of_speech => 'verb')
-    # becomes {:limit => 10, :part_of_speech => 'verb'}
-    last_arg = args.pop if args.last.is_a?(Hash)
-    last_arg = args.pop if args.last.is_a?(Array)
-    last_arg ||= {}
-
-    # Look for a kwarg called :request_only, whose presence indicates
-    # that we want the request itself back, not the response body
-    if last_arg.is_a?(Hash) && last_arg[:request_only].present?
-      request_only = true
-      last_arg.delete(:request_only)
-    end
-
-    if [:post, :put].include?(http_method)
-      params = nil
-      body = last_arg
-    else
-      params = last_arg
-      body = nil
-    end
-
-    request = Wordnik::Request.new(http_method, path, :params => params, :body => body)
-    request_only ? request : request.response.body
-  end
-
-  # Gets an Audio File ID for recording.
-  #
-  def get_audio_record_id(*args)
-    http_method = :get
-    path = '/system/audioRecordId'
-
-    # Ruby turns all key-value arguments at the end into a single hash
-    # e.g. Wordnik.word.get_examples('dingo', :limit => 10, :part_of_speech => 'verb')
-    # becomes {:limit => 10, :part_of_speech => 'verb'}
-    last_arg = args.pop if args.last.is_a?(Hash)
-    last_arg = args.pop if args.last.is_a?(Array)
-    last_arg ||= {}
-
-    # Look for a kwarg called :request_only, whose presence indicates
-    # that we want the request itself back, not the response body
-    if last_arg.is_a?(Hash) && last_arg[:request_only].present?
-      request_only = true
-      last_arg.delete(:request_only)
-    end
-
-    if [:post, :put].include?(http_method)
-      params = nil
-      body = last_arg
-    else
-      params = last_arg
-      body = nil
-    end
-
-    request = Wordnik::Request.new(http_method, path, :params => params, :body => body)
-    request_only ? request : request.response.body
-  end
-
-  # Returns system-wide statistics for the platform.
-  #
-  def get_stats(*args)
-    http_method = :get
-    path = '/system/stats'
+    path = '/document/{id}/model'
+    path.sub!('{id}', id)
 
     # Ruby turns all key-value arguments at the end into a single hash
     # e.g. Wordnik.word.get_examples('dingo', :limit => 10, :part_of_speech => 'verb')

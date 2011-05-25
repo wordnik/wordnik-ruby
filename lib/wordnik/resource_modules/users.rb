@@ -1,13 +1,13 @@
 # HEY HACKER! THIS IS AN AUTO-GENERATED FILE.
 # So don't bother editing it. To see how it's built, take a look at the Rakefile
 
-module SystemMethods
+module UsersMethods
 
-  # Returns all defined ContentProviders.
+  # Fetches recent AudioPron objects
   #
-  def get_providers(*args)
+  def get_recent_pronunciations(*args)
     http_method = :get
-    path = '/system/providers'
+    path = '/users/pronunciations'
 
     # Ruby turns all key-value arguments at the end into a single hash
     # e.g. Wordnik.word.get_examples('dingo', :limit => 10, :part_of_speech => 'verb')
@@ -39,7 +39,7 @@ module SystemMethods
   #
   def get_help(*args)
     http_method = :get
-    path = '/system'
+    path = '/users'
 
     # Ruby turns all key-value arguments at the end into a single hash
     # e.g. Wordnik.word.get_examples('dingo', :limit => 10, :part_of_speech => 'verb')
@@ -67,12 +67,11 @@ module SystemMethods
     request_only ? request : request.response.body
   end
 
-  # Returns weighted terms related to the input word
+  # Creates a User
   #
-  def get_related_words(word, *args)
-    http_method = :get
-    path = '/system/{word}/related'
-    path.sub!('{word}', word)
+  def create_user(*args)
+    http_method = :post
+    path = '/users'
 
     # Ruby turns all key-value arguments at the end into a single hash
     # e.g. Wordnik.word.get_examples('dingo', :limit => 10, :part_of_speech => 'verb')
@@ -100,12 +99,12 @@ module SystemMethods
     request_only ? request : request.response.body
   end
 
-  # Returns a word with attributes
+  # Fetches a User by ID
   #
-  def get_related_words(word, *args)
+  def get_user_by_id(id, *args)
     http_method = :get
-    path = '/system/{word}'
-    path.sub!('{word}', word)
+    path = '/users/id/{id}'
+    path.sub!('{id}', id)
 
     # Ruby turns all key-value arguments at the end into a single hash
     # e.g. Wordnik.word.get_examples('dingo', :limit => 10, :part_of_speech => 'verb')
@@ -133,11 +132,12 @@ module SystemMethods
     request_only ? request : request.response.body
   end
 
-  # Returns a graph response for the supplied terms
+  # Fetches a User by Facebook ID
   #
-  def get_word_by_id(*args)
+  def get_by_facebook_id(facebookId, *args)
     http_method = :get
-    path = '/system/graph'
+    path = '/users/facebook/{facebookId}'
+    path.sub!('{facebookId}', facebookId)
 
     # Ruby turns all key-value arguments at the end into a single hash
     # e.g. Wordnik.word.get_examples('dingo', :limit => 10, :part_of_speech => 'verb')
@@ -165,11 +165,11 @@ module SystemMethods
     request_only ? request : request.response.body
   end
 
-  # Gets an Audio File ID for recording.
+  # Fetches recent Favorite Word objects.
   #
-  def get_audio_record_id(*args)
+  def get_recent_favorites(*args)
     http_method = :get
-    path = '/system/audioRecordId'
+    path = '/users/favorites'
 
     # Ruby turns all key-value arguments at the end into a single hash
     # e.g. Wordnik.word.get_examples('dingo', :limit => 10, :part_of_speech => 'verb')
@@ -197,11 +197,43 @@ module SystemMethods
     request_only ? request : request.response.body
   end
 
-  # Returns system-wide statistics for the platform.
+  # Fetches recent Comment objects
   #
-  def get_stats(*args)
+  def get_recent_comments(*args)
     http_method = :get
-    path = '/system/stats'
+    path = '/users/comments'
+
+    # Ruby turns all key-value arguments at the end into a single hash
+    # e.g. Wordnik.word.get_examples('dingo', :limit => 10, :part_of_speech => 'verb')
+    # becomes {:limit => 10, :part_of_speech => 'verb'}
+    last_arg = args.pop if args.last.is_a?(Hash)
+    last_arg = args.pop if args.last.is_a?(Array)
+    last_arg ||= {}
+
+    # Look for a kwarg called :request_only, whose presence indicates
+    # that we want the request itself back, not the response body
+    if last_arg.is_a?(Hash) && last_arg[:request_only].present?
+      request_only = true
+      last_arg.delete(:request_only)
+    end
+
+    if [:post, :put].include?(http_method)
+      params = nil
+      body = last_arg
+    else
+      params = last_arg
+      body = nil
+    end
+
+    request = Wordnik::Request.new(http_method, path, :params => params, :body => body)
+    request_only ? request : request.response.body
+  end
+
+  # Fetches info on Users who listed most words
+  #
+  def get_users_who_listed_most_words(*args)
+    http_method = :get
+    path = '/users/listedMostWords'
 
     # Ruby turns all key-value arguments at the end into a single hash
     # e.g. Wordnik.word.get_examples('dingo', :limit => 10, :part_of_speech => 'verb')
