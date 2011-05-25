@@ -25,6 +25,8 @@ module Wordnik
         self.parameters = self.parameters.map do |parameterData|
           OperationParameter.new(parameterData)
         end
+      else
+        self.parameters = []
       end
       
       self.nickname = self.suggested_name.underscore

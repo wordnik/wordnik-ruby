@@ -34,5 +34,15 @@ describe Wordnik::Operation do
       @operation.get?.should == true
     end
   end
+  
+  describe "positional parameter names" do
+    
+    it "returns an empty array if there are no parameters" do
+      @operation.positional_parameter_names.should == ['word']
+      @operation.parameters = []
+      @operation.positional_parameter_names.should == []
+    end
+    
+  end
 
 end
