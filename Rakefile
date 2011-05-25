@@ -34,7 +34,7 @@ task :fetch_api_docs do
     c.api_key = api_key unless api_key.blank?
   end
   
-  Wordnik.resource_names.each do |resource_name|
+  Wordnik.configuration.resource_names.each do |resource_name|
     request = Wordnik::Request.new(:get, "#{resource_name}.json")
     filename = "api_docs/#{resource_name}.json"
     File.open(filename, 'w') {|f| f.write(request.response.raw.body) }

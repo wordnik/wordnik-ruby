@@ -1,3 +1,6 @@
 pkg/*
 *.gem
 .bundle
+USAGE.md
+api_docs/*
+lib/wordnik/resource_modules/*
