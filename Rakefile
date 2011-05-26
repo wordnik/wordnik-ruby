@@ -32,6 +32,8 @@ task :fetch_api_docs do
   puts "\nEnter API key (leave blank to fetch publically available resources): "
   api_key = STDIN.gets.chomp
     
+  # Configure Wordnik, but tell it not to attempt to build resources
+  # (there aren't any JSON docs yet.. a chicken/egg thing.)
   Wordnik.configure(false) do |c|
     c.base_uri = base_uri
     c.resource_names = resource_names unless resource_names.blank?
