@@ -7,6 +7,13 @@ require 'wordnik/response'
 require 'wordnik/configuration'
 require 'wordnik/version'
 
+# http://blog.jayfields.com/2007/10/ruby-defining-class-methods.html
+class Object
+  def meta_def name, &blk
+    (class << self; self; end).instance_eval { define_method name, &blk }
+  end
+end
+
 module Wordnik
     
   class << self
@@ -30,7 +37,16 @@ module Wordnik
       self.configuration ||= Configuration.new
       yield(configuration) if block_given?
 
-      self.build_resources if build
+      if build
+        self.build_resources
+        self.configuration.resource_names.each do |resource_name|
+          method_name = resource_name.underscore.to_sym
+          meta_def method_name do
+            Wordnik.resources[method_name]
+          end
+        end  
+      end
+
     end
 
     # Iterate over each disk-cached JSON resource documentation file
@@ -83,23 +99,13 @@ module Wordnik
         raise ApiServerError, response_body.to_s
       end
     end
-            
-    # Aliases. For convenience.
-    #
-    def account; Wordnik.resources[:account]; end
-    def analytics; Wordnik.resources[:analytics]; end
-    def corpus; Wordnik.resources[:corpus]; end
-    def document; Wordnik.resources[:document]; end
-    def partners; Wordnik.resources[:partners]; end
-    def system; Wordnik.resources[:system]; end
-    def tag; Wordnik.resources[:tag]; end
-    def user; Wordnik.resources[:user]; end
-    def users; Wordnik.resources[:users]; end
-    def word; Wordnik.resources[:word]; end
-    def words; Wordnik.resources[:words]; end
-    def word_list; Wordnik.resources[:word_list]; end
-    def word_lists; Wordnik.resources[:word_lists]; end
 
   end
   
+end
+
+class ConfigurationError < StandardError
+end
+
+class ApiServerError < StandardError
 end
