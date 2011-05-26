@@ -90,6 +90,8 @@ task :fetch_api_docs do
         # Path
         lines << "    path = '#{endpoint.path.sub(".{format}", "")}'"
         operation.positional_parameter_names.each do |param|
+          # `body` positional params don't get injected into the path will be dealt with separately
+          next if param.to_s == 'body' 
           lines << "    path.sub!('\{#{param}\}', #{param}.to_s)"
         end
 
@@ -107,13 +109,8 @@ task :fetch_api_docs do
         lines << "      last_arg.delete(:request_only)"
         lines << "    end\n"
         
-        lines << "    if [:post, :put].include?(http_method)"
-        lines << "      params = nil"
-        lines << "      body = last_arg"
-        lines << "    else"
-        lines << "      params = last_arg"
-        lines << "      body = nil"
-        lines << "    end\n"
+        lines << "    params = last_arg"
+        lines << "    body ||= {}"
         
         lines << "    request = Wordnik::Request.new(http_method, path, :params => params, :body => body)"
         lines << "    request_only ? request : request.response.body"
