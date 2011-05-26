@@ -90,7 +90,7 @@ task :fetch_api_docs do
         # Path
         lines << "    path = '#{endpoint.path.sub(".{format}", "")}'"
         operation.positional_parameter_names.each do |param|
-          lines << "    path.sub!('\{#{param}\}', #{param})"
+          lines << "    path.sub!('\{#{param}\}', #{param}.to_s)"
         end
 
         lines << "\n    # Ruby turns all key-value arguments at the end into a single hash"
