@@ -81,7 +81,7 @@ describe Wordnik::Resource do
            :user_id => Wordnik.configuration.user_id,
            :request_only => true
          }
-         @request = Wordnik.word_lists.create_word_list(body)
+         @request = Wordnik.word_lists.create_word_list(body, :request_only => true)
          @request.body.should have_key(:name)
          @request.body.should have_key(:description)
          @request.body.should have_key(:type)
