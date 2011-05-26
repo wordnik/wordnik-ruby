@@ -26,12 +26,12 @@ module Wordnik
       @base_uri = 'api.wordnik.com/v4'
       
       # Build the default set of resource names from the filenames of the API documentation
-      resource_files = `find ../../api_docs -name '*.json'`
-      if resource_files.empty?
-        @resource_names = []
-      else
-        @resource_names = resource_files.map {|f| f.split("/").last.sub('.json', '') }
+      begin
+        @resource_names = `find api_docs -name '*.json'`.split("\n").map {|f| f.split("/").last.sub('.json', '') }
+      rescue
+        raise "Problem loading the resource files in ./api_docs/"
       end
+      
     end
 
   end

@@ -40,6 +40,7 @@ def configure_wordnik
     config.username = CREDENTIALS[:username]
     config.password = CREDENTIALS[:password]
     config.base_uri = "beta.wordnik.com/v4"
+    # config.resource_names = %w(account corpus document partners system tag user users word words wordList wordLists)
   end
 end
 
