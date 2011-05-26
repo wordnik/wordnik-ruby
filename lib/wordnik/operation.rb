@@ -52,9 +52,7 @@ module Wordnik
     end
 
     def positional_parameter_names
-      self.parameters.map do |parameter|
-        parameter.name if parameter.positional?
-      end.compact
+      self.parameters.select(&:positional?).compact.map(&:name)
     end
     
     def required_kwargs
