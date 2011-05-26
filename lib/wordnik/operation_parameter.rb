@@ -32,7 +32,7 @@ module Wordnik
     
     # Is this a required positional param used in a convenience method?
     def positional?
-      self.param_type == "path" && self.name.to_sym != :format
+      %w(path body).include?(self.param_type) && self.name.to_sym != :format
     end
 
     # It's an ActiveModel thing..
