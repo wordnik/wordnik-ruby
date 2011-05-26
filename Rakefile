@@ -12,8 +12,8 @@ task :default => :spec
 desc 'Download the latest API docs and build out resource methods'
 task :abracadabra do
   Rake::Task['fetch_api_docs'].invoke
-  Rake::Task['write_resource_methods'].invoke
-  Rake::Task['generate_usage_docs'].invoke  
+  # Rake::Task['write_resource_methods'].invoke
+  # Rake::Task['generate_usage_docs'].invoke  
 end
 
 desc 'Download the API docs to disk'
@@ -40,70 +40,23 @@ task :fetch_api_docs do
     c.api_key = api_key unless api_key.blank?
   end
 
-  system "rm api_docs/*.rb"
+  puts "\nCleanup"
+  puts "-------\n"
+  
+  `rm api_docs/*.json`
+  `rm lib/wordnik/resource_modules/*.rb`
   
   Wordnik.configuration.resource_names.each do |resource_name|
     request = Wordnik::Request.new(:get, "#{resource_name}.json")
     filename = "api_docs/#{resource_name}.json"
     File.open(filename, 'w') {|f| f.write(request.response.raw.body) }
-    puts filename
   end
-  
-end
-
-desc 'Iterate over resource > endpoint > operation nicknames, generating markdown documentation.'
-task :generate_usage_docs do
-  Wordnik.configure
-  filename = "USAGE.md"
-  file = File.new(filename, "w")
-  
-  puts "\nGenerate Documentation"
-  puts "----------------------\n"
-  
-  Wordnik.resources.each_pair do |resource_name, resource|
-
-    next unless resource.endpoints.present?
-    file.write "\n#{resource_name}\n#{"=" * resource_name.size}\n\n"
-    
-    resource.endpoints.each do |endpoint|
-      endpoint.operations.each do |operation|
-        
-        docs_url = "http://developer.wordnik.com/docs/#!/#{resource.name}/#{operation.nickname}"
-        
-        puts "Wordnik.#{resource_name}.#{operation.nickname}"
-        
-        # Method name
-        file.write "[Wordnik.#{resource_name}.#{operation.nickname}(#{operation.positional_parameter_names.join(', ')})](#{docs_url})\n"
-        
-        # Required kwargs
-        operation.required_kwargs.each do |parameter|
-          file.write "    :#{parameter.name.to_s.underscore}* #{' ' * (29-parameter.name.to_s.underscore.size)} #{parameter.description}\n"
-        end
-
-        # Optional kwargs
-        operation.optional_kwargs.each do |parameter|
-          file.write "    :#{parameter.name.to_s.underscore} #{' ' * (30-parameter.name.to_s.underscore.size)} #{parameter.description}\n"
-        end
-      end
-      
-      file.write "\n"
-    end
-  end
-
-  file.close
-end
-
-
-desc 'Iterate over each resource, generating a ruby module with operation methods for each.'
-task :write_resource_methods do
   
   puts "\nWrite Resource Methods"
   puts "----------------------\n"
   
-  # Remove old shit
-  system "rm lib/wordnik/resource_modules/*.rb"
+  Wordnik.build_resources
   
-  Wordnik.configure  
   Wordnik.resources.each_pair do |resource_name, resource|
 
     next unless resource.endpoints.present?
@@ -183,5 +136,54 @@ task :write_resource_methods do
     file.close
     
   end
-
+  
+  
 end
+
+desc 'Iterate over resource > endpoint > operation nicknames, generating markdown documentation.'
+task :generate_usage_docs do
+  Wordnik.configure
+  filename = "USAGE.md"
+  file = File.new(filename, "w")
+  
+  puts "\nGenerate Documentation"
+  puts "----------------------\n"
+  
+  Wordnik.resources.each_pair do |resource_name, resource|
+
+    next unless resource.endpoints.present?
+    file.write "\n#{resource_name}\n#{"=" * resource_name.size}\n\n"
+    
+    resource.endpoints.each do |endpoint|
+      endpoint.operations.each do |operation|
+        
+        docs_url = "http://developer.wordnik.com/docs/#!/#{resource.name}/#{operation.nickname}"
+        
+        puts "Wordnik.#{resource_name}.#{operation.nickname}"
+        
+        # Method name
+        file.write "[Wordnik.#{resource_name}.#{operation.nickname}(#{operation.positional_parameter_names.join(', ')})](#{docs_url})\n"
+        
+        # Required kwargs
+        operation.required_kwargs.each do |parameter|
+          file.write "    :#{parameter.name.to_s.underscore}* #{' ' * (29-parameter.name.to_s.underscore.size)} #{parameter.description}\n"
+        end
+
+        # Optional kwargs
+        operation.optional_kwargs.each do |parameter|
+          file.write "    :#{parameter.name.to_s.underscore} #{' ' * (30-parameter.name.to_s.underscore.size)} #{parameter.description}\n"
+        end
+      end
+      
+      file.write "\n"
+    end
+  end
+
+  file.close
+end
+
+
+# desc 'Iterate over each resource, generating a ruby module with operation methods for each.'
+# task :write_resource_methods do
+# 
+# end
