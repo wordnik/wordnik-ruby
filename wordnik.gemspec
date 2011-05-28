@@ -3,7 +3,7 @@ $:.push File.expand_path("../lib", __FILE__)
 require "wordnik/version"
 
 Gem::Specification.new do |s|
-  s.name        = "wordnik-admin"
+  s.name        = "wordrabbit"
   s.version     = Wordnik::VERSION
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Zeke Sikelianos", "John McGrath"]
