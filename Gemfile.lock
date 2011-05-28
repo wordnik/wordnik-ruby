@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    wordnik (0.4.8)
+    wordnik-admin (0.4.8)
       activemodel (>= 3.0.3)
       addressable (>= 2.2.4)
       htmlentities (>= 4.2.4)
@@ -49,4 +49,4 @@ DEPENDENCIES
   rspec (>= 2.5.0)
   vcr (>= 1.5.1)
   webmock (>= 1.6.2)
-  wordnik!
+  wordnik-admin!
