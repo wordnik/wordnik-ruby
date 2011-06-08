@@ -19,8 +19,8 @@ Gem::Specification.new do |s|
   s.add_dependency 'addressable', '>=2.2.4'
   s.add_dependency 'nokogiri'
   s.add_dependency 'json', '>=1.4.6'
-  s.add_dependency 'active_support'
-  s.add_dependency 'i18n'
+  # s.add_dependency 'active_support'
+  # s.add_dependency 'i18n'
 
   s.add_development_dependency 'rspec', '>=2.5.0'
   s.add_development_dependency 'vcr', '>=1.5.1'

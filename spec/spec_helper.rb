@@ -6,7 +6,6 @@ require 'typhoeus'
 require 'json'
 require 'yaml'
 require 'rspec'
-require 'active_support/all' # to get methods like blank? and starts_with?
 
 RSpec.configure do |config|
   # some (optional) config here

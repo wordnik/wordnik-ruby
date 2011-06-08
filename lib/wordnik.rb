@@ -1,3 +1,4 @@
+require 'monkeys'
 require 'wordnik/endpoint'
 require 'wordnik/operation'
 require 'wordnik/operation_parameter'
