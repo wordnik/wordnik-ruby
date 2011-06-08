@@ -1,11 +1,7 @@
 module Wordnik
 
   class OperationParameter
-    require 'active_model'
-    include ActiveModel::Validations
-    include ActiveModel::Conversion
-    extend ActiveModel::Naming
-
+    
     attr_accessor :name, :description, :required, :param_type, :default_value, :allowable_values, :param_access, :internal_description, :wrapper_name, :data_type
 
     def initialize(attributes = {})
@@ -35,10 +31,6 @@ module Wordnik
       %w(path body).include?(self.param_type) && self.name.to_sym != :format
     end
 
-    # It's an ActiveModel thing..
-    def persisted?
-      false
-    end
 
   end
 

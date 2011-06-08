@@ -2,15 +2,7 @@
 
 module Wordnik
   class Resource
-    
-    require 'active_model'
-    include ActiveModel::Validations
-    include ActiveModel::Conversion
-    extend ActiveModel::Naming
-  
     attr_accessor :name, :raw_data, :endpoints, :models
-  
-    validates_presence_of :name, :raw_data, :endpoints, :models
     
     class << self
         public :define_method
@@ -37,10 +29,6 @@ module Wordnik
       
     end
 
-    # It's an ActiveModel thing..
-    def persisted?
-      false
-    end
 
   end
   

@@ -1,14 +1,8 @@
 module Wordnik
 
   class Endpoint
-    require 'active_model'
-    include ActiveModel::Validations
-    include ActiveModel::Conversion
-    extend ActiveModel::Naming
 
     attr_accessor :path, :description, :operations, :resource
-
-    validates_presence_of :path, :description, :operations
 
     def initialize(resource, attributes = {})
       self.resource = resource
@@ -25,10 +19,6 @@ module Wordnik
       end
     end
 
-    # It's an ActiveModel thing..
-    def persisted?
-      false
-    end
 
   end
 

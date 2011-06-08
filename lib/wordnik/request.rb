@@ -4,15 +4,9 @@ module Wordnik
     require 'uri'
     require 'addressable/uri'
     require 'typhoeus'
-    require 'active_model'
     require "wordnik/version"
-    include ActiveModel::Validations
-    include ActiveModel::Conversion
-    extend ActiveModel::Naming
 
     attr_accessor :host, :path, :format, :params, :body, :http_method, :headers
-
-    validates_presence_of :host, :path, :format, :http_method
 
     # All requests must have an HTTP method and a path
     # Optionals parameters are :params, :headers, :body, :format, :host
@@ -183,10 +177,6 @@ module Wordnik
       @response.headers.gsub(/\n/, '<br/>') # <- This is for Typhoeus
     end
 
-    # It's an ActiveModel thing..
-    def persisted?
-      false
-    end
 
   end
 end

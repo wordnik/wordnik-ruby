@@ -1,17 +1,11 @@
 module Wordnik
 
   class Response
-    require 'active_model'
     require 'json'
     require 'nokogiri'
     require 'htmlentities'
-    include ActiveModel::Validations
-    include ActiveModel::Conversion
-    extend ActiveModel::Naming
 
     attr_accessor :raw
-
-    validates_presence_of :raw
 
     def initialize(raw)
       self.raw = raw
@@ -67,10 +61,6 @@ module Wordnik
       JSON.pretty_generate(headers).gsub(/\n/, '<br/>')
     end
 
-    # It's an ActiveModel thing..
-    def persisted?
-      false
-    end
 
   end
 end

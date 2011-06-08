@@ -3,6 +3,7 @@ Bundler::GemHelper.install_tasks
 
 require 'rspec/core/rake_task'
 require 'wordnik'
+require 'active_support/all' # to get methods like blank? and starts_with?
 
 RSpec::Core::RakeTask.new('spec')
 

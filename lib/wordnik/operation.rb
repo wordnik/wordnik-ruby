@@ -1,14 +1,8 @@
 module Wordnik
   
-  class Operation
-    require 'active_model'
-    include ActiveModel::Validations
-    include ActiveModel::Conversion
-    extend ActiveModel::Naming
-  
+  class Operation  
     attr_accessor :endpoint, :http_method, :summary, :notes, :parameters, :response, :open, :nickname, :deprecated, :category, :suggested_name
   
-    validates_presence_of :endpoint, :http_method, :summary, :notes, :parameters, :response, :open
   
     def initialize(endpoint, attributes = {})
       self.endpoint = endpoint
@@ -46,10 +40,6 @@ module Wordnik
       self.get?
     end
 
-    # It's an ActiveModel thing..
-    def persisted?
-      false
-    end
 
     def positional_parameter_names
       self.parameters.select(&:positional?).compact.map(&:name)

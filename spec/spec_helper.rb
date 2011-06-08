@@ -6,6 +6,7 @@ require 'typhoeus'
 require 'json'
 require 'yaml'
 require 'rspec'
+require 'active_support/all' # to get methods like blank? and starts_with?
 
 RSpec.configure do |config|
   # some (optional) config here
@@ -25,11 +26,11 @@ def help
 end
 
 # Parse ~/.wordnik.yml for user credentials
-begin
+# begin
   CREDENTIALS = YAML::load_file(File.join(ENV['HOME'], ".wordnik.yml")).symbolize_keys
-rescue
-  help
-end
+# rescue
+  # help
+# end
 
 help unless Object.const_defined? 'CREDENTIALS'
 help unless [:api_key, :username, :password].all? {|key| CREDENTIALS[key].present? }
