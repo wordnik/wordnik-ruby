@@ -1,4 +1,4 @@
-module Wordnik
+module Wordrabbit
 
   class Endpoint
 

@@ -1,10 +1,10 @@
-module Wordnik
+module Wordrabbit
 
   class Request
     require 'uri'
     require 'addressable/uri'
     require 'typhoeus'
-    require "wordnik/version"
+    require "wordrabbit/version"
 
     attr_accessor :host, :path, :format, :params, :body, :http_method, :headers
 
@@ -13,14 +13,14 @@ module Wordnik
     # 
     def initialize(http_method, path, attributes={})
       attributes[:format] ||= "json"
-      attributes[:host] ||= Wordnik.configuration.base_uri
+      attributes[:host] ||= Wordrabbit.configuration.base_uri
       attributes[:params] ||= {}
 
       # Set default headers
       default_headers = {
-        'User-Agent' => "Wordnik Ruby Gem #{Wordnik::VERSION}",
+        'User-Agent' => "Wordrabbit Ruby Gem #{Wordrabbit::VERSION}",
         'Content-Type' => "application/#{attributes[:format].downcase}",
-        :api_key => Wordnik.configuration.api_key
+        :api_key => Wordrabbit.configuration.api_key
       }
 
       # If a nil/blank api_key was passed in, remove it from the headers, even if the override value is nil/blank
@@ -39,8 +39,8 @@ module Wordnik
       attributes[:headers] = default_headers.merge(attributes[:headers] || {})
       
       # Stick in the auth token if there is one
-      if Wordnik.authenticated?
-        attributes[:headers].merge!({:auth_token => Wordnik.configuration.auth_token})
+      if Wordrabbit.authenticated?
+        attributes[:headers].merge!({:auth_token => Wordrabbit.configuration.auth_token})
       end
             
       self.http_method = http_method.to_sym

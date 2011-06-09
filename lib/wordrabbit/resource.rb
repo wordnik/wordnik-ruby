@@ -1,6 +1,6 @@
 # To jog the memory: Resource > Endpoint > Operation > OperationParameter
 
-module Wordnik
+module Wordrabbit
   class Resource
     attr_accessor :name, :raw_data, :endpoints, :models
     
@@ -23,7 +23,7 @@ module Wordnik
       # Attach module containing metaprogramatticaly generated operations.
       module_filename = File.join(File.dirname(__FILE__), "./resource_modules/#{self.name}.rb")
       if File.exist? module_filename
-        self.class.send(:require, "wordnik/resource_modules/#{self.name}")
+        self.class.send(:require, "wordrabbit/resource_modules/#{self.name}")
         self.class.send(:include, "#{self.name.to_s.camelize}Methods".constantize)
       end
       

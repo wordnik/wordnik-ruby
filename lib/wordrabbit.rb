@@ -1,12 +1,12 @@
 require 'monkeys'
-require 'wordnik/endpoint'
-require 'wordnik/operation'
-require 'wordnik/operation_parameter'
-require 'wordnik/request'
-require 'wordnik/resource'
-require 'wordnik/response'
-require 'wordnik/configuration'
-require 'wordnik/version'
+require 'wordrabbit/configuration'
+require 'wordrabbit/endpoint'
+require 'wordrabbit/operation'
+require 'wordrabbit/operation_parameter'
+require 'wordrabbit/request'
+require 'wordrabbit/resource'
+require 'wordrabbit/response'
+require 'wordrabbit/version'
 
 # http://blog.jayfields.com/2007/10/ruby-defining-class-methods.html
 class Object
@@ -15,12 +15,12 @@ class Object
   end
 end
 
-module Wordnik
+module Wordrabbit
     
   class << self
     
-    # A Wordnik configuration object. Must act like a hash and return sensible
-    # values for all Wordnik configuration options. See Wordnik::Configuration.
+    # A Wordrabbit configuration object. Must act like a hash and return sensible
+    # values for all Wordrabbit configuration options. See Wordrabbit::Configuration.
     attr_accessor :configuration
 
     attr_accessor :resources
@@ -28,7 +28,7 @@ module Wordnik
     # Call this method to modify defaults in your initializers.
     #
     # @example
-    #   Wordnik.configure do |config|
+    #   Wordrabbit.configure do |config|
     #     config.api_key = '1234567890abcdef'     # required
     #     config.username = 'wordlover'           # optional, but needed for user-related functions
     #     config.password = 'i<3words'            # optional, but needed for user-related functions
@@ -43,7 +43,7 @@ module Wordnik
         self.configuration.resource_names.each do |resource_name|
           method_name = resource_name.underscore.to_sym
           meta_def method_name do
-            Wordnik.resources[method_name]
+            Wordrabbit.resources[method_name]
           end
         end  
       end
@@ -68,34 +68,34 @@ module Wordnik
     end
 
     def authenticated?
-      Wordnik.configuration.user_id.present? && Wordnik.configuration.auth_token.present?
+      Wordrabbit.configuration.user_id.present? && Wordrabbit.configuration.auth_token.present?
     end
     
     def de_authenticate
-      Wordnik.configuration.user_id = nil
-      Wordnik.configuration.auth_token = nil
+      Wordrabbit.configuration.user_id = nil
+      Wordrabbit.configuration.auth_token = nil
     end
     
     def authenticate
-      return if Wordnik.authenticated?
+      return if Wordrabbit.authenticated?
       
-      if Wordnik.configuration.username.blank? || Wordnik.configuration.password.blank?
+      if Wordrabbit.configuration.username.blank? || Wordrabbit.configuration.password.blank?
         raise ConfigurationError, "Username and password are required to authenticate."
       end
       
-      # response_body = Wordnik.account.get_authenticate(Wordnik.configuration.username, :password => Wordnik.configuration.password)
+      # response_body = Wordrabbit.account.get_authenticate(Wordrabbit.configuration.username, :password => Wordrabbit.configuration.password)
       
-      request = Wordnik::Request.new(
+      request = Wordrabbit::Request.new(
         :get, 
         "account/authenticate/{username}", 
-        :params => {:username => Wordnik.configuration.username, :password => Wordnik.configuration.password}
+        :params => {:username => Wordrabbit.configuration.username, :password => Wordrabbit.configuration.password}
       )
       
       response_body = request.response.body
       
       if response_body.is_a?(Hash) && response_body['userId'].present? && response_body['token'].present?
-        Wordnik.configuration.user_id = response_body['userId']
-        Wordnik.configuration.auth_token = response_body['token']
+        Wordrabbit.configuration.user_id = response_body['userId']
+        Wordrabbit.configuration.auth_token = response_body['token']
       else
         raise ApiServerError, response_body.to_s
       end

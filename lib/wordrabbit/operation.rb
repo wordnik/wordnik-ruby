@@ -1,4 +1,4 @@
-module Wordnik
+module Wordrabbit
   
   class Operation  
     attr_accessor :endpoint, :http_method, :summary, :notes, :parameters, :response, :open, :nickname, :deprecated, :category, :suggested_name

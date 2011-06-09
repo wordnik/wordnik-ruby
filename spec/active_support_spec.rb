@@ -6,8 +6,16 @@ describe String do
     "thisIsATest".underscore.should == "this_is_a_test"
   end
   
-  it "camelizes" do
-    "camel_toe".camelize.should == "CamelToe"
+  describe "camelize" do
+    
+    it "supports uppercase first letter" do
+      "camel_toe".camelize.should == "CamelToe"
+    end
+
+    it "supports lowercase first letter" do
+      "camel_toe".camelize(:lower).should == "camelToe"
+    end
+    
   end
   
 end

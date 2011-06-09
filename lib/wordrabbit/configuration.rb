@@ -1,8 +1,8 @@
-module Wordnik
+module Wordrabbit
 
   class Configuration
 
-    # Wordnik credentials
+    # Wordrabbit credentials
     attr_accessor :api_key
     attr_accessor :username
     attr_accessor :password

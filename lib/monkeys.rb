@@ -32,13 +32,10 @@ class String
   
   unless method_defined? :camelize
     # File activesupport/lib/active_support/inflector/methods.rb, line 28
-    def camelize(first_letter_in_uppercase = true)
-      lower_case_and_underscored_word = self.dup
-      if first_letter_in_uppercase
-        lower_case_and_underscored_word.to_s.gsub(/\/(.?)/) { "::#{$1.upcase}" }.gsub(/(?:^|_)(.)/) { $1.upcase }
-      else
-        lower_case_and_underscored_word.to_s[0].chr.downcase + camelize(lower_case_and_underscored_word)[1..-1]
-      end
+    def camelize(first_letter = :upper)
+      parts = self.split(/[^a-z0-9]/i).map{|w| w.capitalize}
+      parts[0].downcase! unless first_letter == :upper
+      parts.join
     end
   end
   

@@ -1,10 +1,10 @@
 # require 'spec_helper'
 require File.dirname(__FILE__) + '/spec_helper'
 
-describe Wordnik do
+describe Wordrabbit do
 
   before(:each) do
-    configure_wordnik
+    configure_wordrabbit
   end
   
   after(:each) do
@@ -14,16 +14,16 @@ describe Wordnik do
 
     context "resources" do
       it "instantiates resources from cached JSON" do
-        Wordnik.resources.class.should == Hash
-        Wordnik.resources[:word].class.should == Wordnik::Resource
+        Wordrabbit.resources.class.should == Hash
+        Wordrabbit.resources[:word].class.should == Wordrabbit::Resource
       end
       
       it "has as many resources as there are resource names" do
-        Wordnik.resources.size.should == Wordnik.configuration.resource_names.size
+        Wordrabbit.resources.size.should == Wordrabbit.configuration.resource_names.size
       end
 
       it "assigns resource keys that match the resource names" do
-        Wordnik.resources[:word].name.should == :word 
+        Wordrabbit.resources[:word].name.should == :word 
       end
 
     end
@@ -36,48 +36,48 @@ describe Wordnik do
       it "auto-authenticates at load time if username and password are present"
       
       it "succeeds if a username and password are present in the configuration" do
-        Wordnik.authenticate
-        Wordnik.authenticated?.should == true
+        Wordrabbit.authenticate
+        Wordrabbit.authenticated?.should == true
       end
       
       it "de_authenticates" do
-        Wordnik.authenticate
-        Wordnik.authenticated?.should == true
-        Wordnik.de_authenticate
-        Wordnik.authenticated?.should == false
+        Wordrabbit.authenticate
+        Wordrabbit.authenticated?.should == true
+        Wordrabbit.de_authenticate
+        Wordrabbit.authenticated?.should == false
       end
       
       it "fails if credentials are invalid" do
-        Wordnik.de_authenticate
-        Wordnik.configure do |config|
+        Wordrabbit.de_authenticate
+        Wordrabbit.configure do |config|
           config.api_key = CREDENTIALS[:api_key]
           config.username = CREDENTIALS[:username]
           config.password = 'wrong!'
           config.base_uri = "beta.wordnik.com/v4"
         end
-        lambda { Wordnik.authenticate }.should raise_error(ApiServerError)
-        Wordnik.authenticated?.should == false
+        lambda { Wordrabbit.authenticate }.should raise_error(ApiServerError)
+        Wordrabbit.authenticated?.should == false
       end
       
       it "fails if username and/or password are absent" do
-        Wordnik.de_authenticate
-        Wordnik.configure do |config|
+        Wordrabbit.de_authenticate
+        Wordrabbit.configure do |config|
           config.api_key = CREDENTIALS[:api_key]
           config.username = nil
           config.password = nil
           config.base_uri = "beta.wordnik.com/v4"
         end
-        lambda { Wordnik.authenticate }.should raise_error(ConfigurationError, /username and password are required/i)
-        Wordnik.authenticated?.should == false
+        lambda { Wordrabbit.authenticate }.should raise_error(ConfigurationError, /username and password are required/i)
+        Wordrabbit.authenticated?.should == false
       end
       
     end
     
   end
   
-  it "maps shorthand Wordnik.resource calls to their resources" do
-    Wordnik.word.class.should == Wordnik::Resource
-    Wordnik.word.name.should == :word
+  it "maps shorthand Wordrabbit.resource calls to their resources" do
+    Wordrabbit.word.class.should == Wordrabbit::Resource
+    Wordrabbit.word.name.should == :word
   end  
   
 end

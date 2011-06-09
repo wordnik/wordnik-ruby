@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Wordnik::Response do
+describe Wordrabbit::Response do
 
   before(:each) do
 
@@ -8,7 +8,7 @@ describe Wordnik::Response do
       @raw = Typhoeus::Request.get("http://beta.wordnik.com/v4/word.json")
     end
 
-    @response = Wordnik::Response.new(@raw)
+    @response = Wordrabbit::Response.new(@raw)
   end
 
   describe "initialization" do
@@ -23,7 +23,7 @@ describe Wordnik::Response do
 
     it "converts header string into a hash" do
       @response.headers.class.should == Hash
-      @response.headers['Wordnik-Api-Version'].to_s.should =~ /4\.0/
+      @response.headers['Wordrabbit-Api-Version'].to_s.should =~ /4\.0/
     end
 
   end
@@ -39,7 +39,7 @@ describe Wordnik::Response do
       VCR.use_cassette('xml_response_request', :record => :new_episodes) do
         @raw = Typhoeus::Request.get("http://beta.wordnik.com/v4/word.xml/help")
       end
-      @response = Wordnik::Response.new(@raw)
+      @response = Wordrabbit::Response.new(@raw)
       @response.format.should == :xml
       @response.xml?.should == true
     end
@@ -53,10 +53,10 @@ describe Wordnik::Response do
     end
     
     it "has a pretty XML body even in the face of adverse characters" do
-      configure_wordnik
+      configure_wordrabbit
       VCR.use_cassette('crazier_json_request', :record => :new_episodes) do
-        # @request = Wordnik::Request.new(:get, "word.xml/cat/definitions", :params => {:source_dictionaries => "century"})
-        @request = Wordnik::Request.new(:get, "word.xml/hero/pronunciations", :params => {:limit => 1})
+        # @request = Wordrabbit::Request.new(:get, "word.xml/cat/definitions", :params => {:source_dictionaries => "century"})
+        @request = Wordrabbit::Request.new(:get, "word.xml/hero/pronunciations", :params => {:limit => 1})
       end
       @request.response.pretty_body.should =~ /\?xml/
     end    
@@ -65,7 +65,7 @@ describe Wordnik::Response do
       VCR.use_cassette('xml_response_request', :record => :new_episodes) do
         @raw = Typhoeus::Request.get("http://beta.wordnik.com/v4/word.xml/help")
       end
-      @response = Wordnik::Response.new(@raw)
+      @response = Wordrabbit::Response.new(@raw)
       @response.pretty_body.should =~ /\?xml/
     end
     

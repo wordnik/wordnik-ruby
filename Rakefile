@@ -2,7 +2,7 @@ require 'bundler'
 Bundler::GemHelper.install_tasks
 
 require 'rspec/core/rake_task'
-require 'wordnik'
+require 'wordrabbit'
 
 RSpec::Core::RakeTask.new('spec')
 
@@ -32,9 +32,9 @@ task :fetch_api_docs do
   puts "\nEnter API key (leave blank to fetch publically available resources): "
   api_key = STDIN.gets.chomp
     
-  # Configure Wordnik, but tell it not to attempt to build resources
+  # Configure Wordrabbit, but tell it not to attempt to build resources
   # (there aren't any JSON docs yet.. a chicken/egg thing.)
-  Wordnik.configure(false) do |c|
+  Wordrabbit.configure(false) do |c|
     c.base_uri = base_uri
     c.resource_names = resource_names unless resource_names.blank?
     c.api_key = api_key unless api_key.blank?
@@ -44,10 +44,10 @@ task :fetch_api_docs do
   puts "-------\n"
   
   `rm api_docs/*.json`
-  `rm lib/wordnik/resource_modules/*.rb`
+  `rm lib/wordrabbit/resource_modules/*.rb`
   
-  Wordnik.configuration.resource_names.each do |resource_name|
-    request = Wordnik::Request.new(:get, "#{resource_name}.json")
+  Wordrabbit.configuration.resource_names.each do |resource_name|
+    request = Wordrabbit::Request.new(:get, "#{resource_name}.json")
     filename = "api_docs/#{resource_name}.json"
     File.open(filename, 'w') {|f| f.write(request.response.raw.body) }
   end
@@ -55,13 +55,13 @@ task :fetch_api_docs do
   puts "\nWrite Resource Methods"
   puts "----------------------\n"
   
-  Wordnik.build_resources
+  Wordrabbit.build_resources
   
-  Wordnik.resources.each_pair do |resource_name, resource|
+  Wordrabbit.resources.each_pair do |resource_name, resource|
 
     next unless resource.endpoints.present?
     
-    filename = "lib/wordnik/resource_modules/#{resource_name}.rb"
+    filename = "lib/wordrabbit/resource_modules/#{resource_name}.rb"
     puts filename
     file = File.new(filename, "w")
     lines = []
@@ -96,7 +96,7 @@ task :fetch_api_docs do
         end
 
         lines << "\n    # Ruby turns all key-value arguments at the end into a single hash"
-        lines << "    # e.g. Wordnik.word.get_examples('dingo', :limit => 10, :part_of_speech => 'verb')"
+        lines << "    # e.g. Wordrabbit.word.get_examples('dingo', :limit => 10, :part_of_speech => 'verb')"
         lines << "    # becomes {:limit => 10, :part_of_speech => 'verb'}"
         lines << "    last_arg = args.pop if args.last.is_a?(Hash)"
         lines << "    last_arg = args.pop if args.last.is_a?(Array)"
@@ -112,16 +112,16 @@ task :fetch_api_docs do
         lines << "    params = last_arg"
         lines << "    body ||= {}"
         
-        lines << "    request = Wordnik::Request.new(http_method, path, :params => params, :body => body)"
+        lines << "    request = Wordrabbit::Request.new(http_method, path, :params => params, :body => body)"
         lines << "    request_only ? request : request.response.body"
         lines << "  end\n"
         
         # case response.valueType
         # when 'wordObject'
-        #   Wordnik::Word.new(response.body)
+        #   Wordrabbit::Word.new(response.body)
         # when 'List[definition]'
         #   response.body.map do |definition_data|
-        #     Wordnik::Definition.new(definition_data)
+        #     Wordrabbit::Definition.new(definition_data)
         #   end
         # end
         
@@ -139,14 +139,14 @@ end
 
 desc 'Iterate over resource > endpoint > operation nicknames, generating markdown documentation.'
 task :generate_usage_docs do
-  Wordnik.configure
+  Wordrabbit.configure
   filename = "USAGE.md"
   file = File.new(filename, "w")
   
   puts "\nGenerate Documentation"
   puts "----------------------\n"
   
-  Wordnik.resources.each_pair do |resource_name, resource|
+  Wordrabbit.resources.each_pair do |resource_name, resource|
 
     next unless resource.endpoints.present?
     file.write "\n#{resource_name}\n#{"=" * resource_name.size}\n\n"
@@ -156,10 +156,10 @@ task :generate_usage_docs do
         
         docs_url = "http://developer.wordnik.com/docs/#!/#{resource.name}/#{operation.nickname}"
         
-        puts "Wordnik.#{resource_name}.#{operation.nickname}"
+        puts "Wordrabbit.#{resource_name}.#{operation.nickname}"
         
         # Method name
-        file.write "[Wordnik.#{resource_name}.#{operation.nickname}(#{operation.positional_parameter_names.join(', ')})](#{docs_url})\n"
+        file.write "[Wordrabbit.#{resource_name}.#{operation.nickname}(#{operation.positional_parameter_names.join(', ')})](#{docs_url})\n"
         
         # Required kwargs
         operation.required_kwargs.each do |parameter|

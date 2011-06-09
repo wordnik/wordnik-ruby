@@ -1,4 +1,4 @@
 source "http://rubygems.org"
 
-# Specify your gem's dependencies in wordnik.gemspec
+# Specify your gem's dependencies in wordrabbit.gemspec
 gemspec

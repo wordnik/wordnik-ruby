@@ -1,7 +1,7 @@
 wordnik rubygem
 ===============
 
-This is the official Wordnik rubygem. It fully wraps Wordnik's v4 API. Refer to 
+This is the official Wordrabbit rubygem. It fully wraps Wordrabbit's v4 API. Refer to 
 [developer.wordnik.com/docs](http://developer.wordnik.com/docs) to play around 
 in the live API sandbox. All the methods you see there are implemented in this 
 ruby gem.
@@ -21,7 +21,7 @@ Then from your project's RAILS_ROOT, run:
 
 Create a file named config/initializers/wordnik.rb and drop this in:
 
-	Wordnik.configure do |config|
+	Wordrabbit.configure do |config|
 		config.api_key = '12345abcde'			# required
 		config.username = 'bozo'					# optional, but needed for user-related functions
 		config.password = 'cl0wnt0wn'			# optional, but needed for user-related functions
@@ -41,7 +41,7 @@ Then from your project's RAILS_ROOT, run:
 
 Create config/initializers/wordnik.rb and drop this in:
 
-	Wordnik.configure do |config|
+	Wordrabbit.configure do |config|
 		config.api_key = '12345abcde'
 		config.response_format = :json # defaults to json, but xml is also supported
 	end
@@ -52,7 +52,7 @@ Create config/initializers/wordnik.rb and drop this in:
 
 Put this somewhere in your app's initialization process:
 
-	Wordnik.configure do |config|
+	Wordrabbit.configure do |config|
 		config.api_key = '12345abcde'
 		config.response_format = :json # defaults to json, but xml is also supported
 	end
@@ -62,15 +62,15 @@ Usage
 -----
 
 	# The clean version..
-	examples = Wordnik.word.get_examples('monkey', :limit => 50, :part_of_speech => 'verb')
+	examples = Wordrabbit.word.get_examples('monkey', :limit => 50, :part_of_speech => 'verb')
 	
 	# ..and its low-level equivalent
-	request = Wordnik::Request.new(:get, '/word/{word}/examples', :params => {:word => 'monkey', :limit => 50, :part_of_speech => 'verb'})
+	request = Wordrabbit::Request.new(:get, '/word/{word}/examples', :params => {:word => 'monkey', :limit => 50, :part_of_speech => 'verb'})
 	examples = request.response.body
 	
-      request1 = Wordnik.word_list.get_word_list_by_id('dog', :request_only => true)
+      request1 = Wordrabbit.word_list.get_word_list_by_id('dog', :request_only => true)
 
-For a full list of methods, checkout [USAGE.md](https://github.com/wordnik/wordnik-ruby/blob/master/USAGE.md). The wordnik gem automatically generates its convenience methods by parsing the [Wordnik API documentation](http://developer.wordnik.com/docs).
+For a full list of methods, checkout [USAGE.md](https://github.com/wordnik/wordnik-ruby/blob/master/USAGE.md). The wordnik gem automatically generates its convenience methods by parsing the [Wordrabbit API documentation](http://developer.wordnik.com/docs).
 
 Specs
 -----

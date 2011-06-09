@@ -1,12 +1,12 @@
 require 'spec_helper'
 
-describe Wordnik::Operation do
+describe Wordrabbit::Operation do
 
   before(:each) do
     VCR.use_cassette('words', :record => :new_episodes) do
       @response = Typhoeus::Request.get("http://beta.wordnik.com/v4/word.json")
     end
-    @resource = Wordnik::Resource.new(:name => "word", :raw_data => JSON.parse(@response.body))
+    @resource = Wordrabbit::Resource.new(:name => "word", :raw_data => JSON.parse(@response.body))
     @endpoint = @resource.endpoints.first
     @operation = @endpoint.operations.first
   end
@@ -19,7 +19,7 @@ describe Wordnik::Operation do
 
     it "sets parameters" do
       @operation.parameters.class.should == Array
-      @operation.parameters.first.class.should == Wordnik::OperationParameter
+      @operation.parameters.first.class.should == Wordrabbit::OperationParameter
     end
 
   end
