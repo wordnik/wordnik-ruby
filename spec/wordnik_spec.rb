@@ -55,7 +55,7 @@ describe Wordnik do
           config.password = 'wrong!'
           config.base_uri = "beta.wordnik.com/v4"
         end
-        lambda { Wordnik.authenticate }.should raise_error(ApiServerError)
+        lambda { Wordnik.authenticate }.should raise_error(AuthorizationError)
         Wordnik.authenticated?.should == false
       end
       

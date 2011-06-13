@@ -4,7 +4,7 @@ describe Wordnik::Response do
 
   before(:each) do
 
-    VCR.use_cassette('default_response_request', :record => :new_episodes) do
+    VCR.use_cassette('default_response', :record => :new_episodes) do
       @raw = Typhoeus::Request.get("http://beta.wordnik.com/v4/word.json")
     end
 
@@ -25,6 +25,26 @@ describe Wordnik::Response do
       @response.headers.class.should == Hash
       @response.headers['Wordnik-Api-Version'].to_s.should =~ /4\.0/
     end
+
+  end
+  
+  describe "unauthorized" do
+    
+    before do
+      VCR.use_cassette('unauthorized_response', :record => :new_episodes) do
+        @unauthorized_raw = Typhoeus::Request.get("http://beta.wordnik.com/v4/word.json/dog/images/flickr")
+      end
+      @response = Wordnik::Response.new(@unauthorized_raw)
+    end
+
+    it "sets a 401 status code" do
+      @response.code.should == 401
+    end
+    
+    it "raises an error when body is called" do
+      expect { @response.body }.to raise_error(AuthorizationError)
+    end
+    
 
   end
 
@@ -63,7 +83,7 @@ describe Wordnik::Response do
     
     it "has a pretty xml body" do
       VCR.use_cassette('xml_response_request', :record => :new_episodes) do
-        @raw = Typhoeus::Request.get("http://beta.wordnik.com/v4/word.xml/help")
+        @raw = Typhoeus::Request.get("http://beta.wordnik.com/v4/word.xml")
       end
       @response = Wordnik::Response.new(@raw)
       @response.pretty_body.should =~ /\?xml/

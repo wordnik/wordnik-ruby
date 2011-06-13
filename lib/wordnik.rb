@@ -82,8 +82,6 @@ module Wordnik
         raise ConfigurationError, "Username and password are required to authenticate."
       end
       
-      # response_body = Wordnik.account.get_authenticate(Wordnik.configuration.username, :password => Wordnik.configuration.password)
-      
       request = Wordnik::Request.new(
         :get, 
         "account/authenticate/{username}", 
@@ -96,7 +94,7 @@ module Wordnik
         Wordnik.configuration.user_id = response_body['userId']
         Wordnik.configuration.auth_token = response_body['token']
       else
-        raise ApiServerError, response_body.to_s
+        raise AuthorizationError, request.response.raw.inspect
       end
     end
 
@@ -104,8 +102,8 @@ module Wordnik
   
 end
 
-class ConfigurationError < StandardError
+class AuthorizationError < StandardError
 end
 
-class ApiServerError < StandardError
+class ConfigurationError < StandardError
 end
