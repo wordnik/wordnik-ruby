@@ -326,7 +326,7 @@ module WordListMethods
     request_only ? request : request.response.body
   end
 
-  # Adds a Tag on a WordList
+  # Deletes a tag on a WordList
   #
   def delete_word_list_tag(wordListId, *args)
     http_method = :delete
