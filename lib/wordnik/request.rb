@@ -96,6 +96,11 @@ module Wordnik
       end
       @body = value
     end
+    
+    def outgoing_body
+      return self.body if self.body.is_a? String
+      self.body.to_json
+    end
   
     # Iterate over all params,
     # .. removing the ones that are part of the path itself.
@@ -147,21 +152,21 @@ module Wordnik
       when :post
         Typhoeus::Request.post(
           self.url_with_query_string,
-          :body => self.body.to_json,
+          :body => self.outgoing_body,
           :headers => self.headers.stringify_keys
         )
 
       when :put
         Typhoeus::Request.put(
           self.url_with_query_string,
-          :body => self.body.to_json,
+          :body => self.outgoing_body,
           :headers => self.headers.stringify_keys
         )
       
       when :delete
         Typhoeus::Request.delete(
           self.url_with_query_string,
-          :body => self.body.to_json,
+          :body => self.outgoing_body,
           :headers => self.headers.stringify_keys
         )
       end
