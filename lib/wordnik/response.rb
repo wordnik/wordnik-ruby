@@ -15,27 +15,32 @@ module Wordnik
 
     def initialize(raw)
       self.raw = raw
+
+      case self.code
+      when 500..510 then raise(ServerError, self.error_message)
+      when 299..426 then raise(ClientError, self.error_message)
+      end
     end
 
     def code
       raw.code
+    end
+    
+    def error_message
+      body['message']
+    rescue
+      body
     end
 
     # If body is JSON, parse it
     # TODO: If body is XML, parse it
     # Otherwise return raw string
     def body
-
-      if self.code > 399
-        raise AuthorizationError, raw.inspect
-      end
-
       begin
         JSON.parse raw.body
       rescue
         raw.body
       end
-      
     end
 
     def headers

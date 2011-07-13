@@ -34,18 +34,12 @@ describe Wordnik::Response do
       VCR.use_cassette('unauthorized_response', :record => :new_episodes) do
         @unauthorized_raw = Typhoeus::Request.get("http://beta.wordnik.com/v4/word.json/dog/images/flickr")
       end
-      @response = Wordnik::Response.new(@unauthorized_raw)
-    end
-
-    it "sets a 401 status code" do
-      @response.code.should == 401
     end
     
-    it "raises an error when body is called" do
-      expect { @response.body }.to raise_error(AuthorizationError)
+    it "raises an error when initialized" do
+      expect { Wordnik::Response.new(@unauthorized_raw) }.to raise_error(ClientError)
     end
     
-
   end
 
   describe "format" do
@@ -57,7 +51,7 @@ describe Wordnik::Response do
 
     it "recognizes xml" do
       VCR.use_cassette('xml_response_request', :record => :new_episodes) do
-        @raw = Typhoeus::Request.get("http://beta.wordnik.com/v4/word.xml/help")
+        @raw = Typhoeus::Request.get("http://beta.wordnik.com/v4/word.xml")
       end
       @response = Wordnik::Response.new(@raw)
       @response.format.should == :xml

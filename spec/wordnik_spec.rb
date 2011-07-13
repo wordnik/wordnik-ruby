@@ -55,7 +55,7 @@ describe Wordnik do
           config.password = 'wrong!'
           config.base_uri = "beta.wordnik.com/v4"
         end
-        lambda { Wordnik.authenticate }.should raise_error(AuthorizationError)
+        expect { Wordnik.authenticate }.to raise_error(ClientError)
         Wordnik.authenticated?.should == false
       end
       
@@ -67,7 +67,7 @@ describe Wordnik do
           config.password = nil
           config.base_uri = "beta.wordnik.com/v4"
         end
-        lambda { Wordnik.authenticate }.should raise_error(ConfigurationError, /username and password are required/i)
+        expect { Wordnik.authenticate }.to raise_error(ClientError, /username and password are required/i)
         Wordnik.authenticated?.should == false
       end
       

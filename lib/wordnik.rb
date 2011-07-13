@@ -79,7 +79,7 @@ module Wordnik
       return if Wordnik.authenticated?
       
       if Wordnik.configuration.username.blank? || Wordnik.configuration.password.blank?
-        raise ConfigurationError, "Username and password are required to authenticate."
+        raise ClientError, "Username and password are required to authenticate."
       end
       
       request = Wordnik::Request.new(
@@ -89,21 +89,16 @@ module Wordnik
       )
       
       response_body = request.response.body
-      
-      if response_body.is_a?(Hash) && response_body['userId'].present? && response_body['token'].present?
-        Wordnik.configuration.user_id = response_body['userId']
-        Wordnik.configuration.auth_token = response_body['token']
-      else
-        raise AuthorizationError, request.response.raw.inspect
-      end
+      Wordnik.configuration.user_id = response_body['userId']
+      Wordnik.configuration.auth_token = response_body['token']
     end
 
   end
   
 end
 
-class AuthorizationError < StandardError
+class ServerError < StandardError
 end
 
-class ConfigurationError < StandardError
+class ClientError < StandardError
 end
