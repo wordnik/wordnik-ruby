@@ -9,73 +9,73 @@ ruby gem.
 Installation
 ------------
 
-### Rails 3.x
+```bash
+gem install wordnik
+```
 
-Add the wordnik gem to your Gemfile.rb:
+Or, add the wordnik gem to your project's Gemfile.rb:
 
-    gem 'wordnik'
+```ruby
+gem 'wordnik'
+```
 
-Then from your project's RAILS_ROOT, run:
+Then from your project's root, run:
 
-    bundle install
+```bash
+bundle
+```
 
-Create a file named config/initializers/wordnik.rb and drop this in:
+If you're using Wordnik in a rails app, drop this into `config/initializers/wordnik.rb`:
 
-	Wordnik.configure do |config|
-		config.api_key = '12345abcde'			# required
-		config.username = 'bozo'					# optional, but needed for user-related functions
-		config.password = 'cl0wnt0wn'			# optional, but needed for user-related functions
-		config.response_format = :json		# defaults to json, but xml is also supported
-	end
-
-### Rails 2.x
-
-Add the wordnik gem to your app. In config/environment.rb:
-
-    config.gem 'wordnik'
-
-Then from your project's RAILS_ROOT, run:
-
-    rake gems:install
-    rake gems:unpack GEM=wordnik
-
-Create config/initializers/wordnik.rb and drop this in:
-
-	Wordnik.configure do |config|
-		config.api_key = '12345abcde'
-		config.response_format = :json # defaults to json, but xml is also supported
-	end
+```ruby
+Wordnik.configure do |config|
+	config.api_key = '12345abcde'			# required
+	config.username = 'bozo'					# optional, but needed for user-related functions
+	config.password = 'cl0wnt0wn'			# optional, but needed for user-related functions
+	config.response_format = :json		# defaults to json, but xml is also supported
+end
+```
 	
-### Sinatra/Padrino/Other
+Example Usage
+-------------
 
-	gem install wordnik
+```ruby
+%w(rubygems wordnik).each do {|lib| require lib}
 
-Put this somewhere in your app's initialization process:
+Wordnik.configure do |config|
+	config.api_key = '12345abcde'
+	config.response_format = :json # defaults to json, but xml is also supported
+end
 
-	Wordnik.configure do |config|
-		config.api_key = '12345abcde'
-		config.response_format = :json # defaults to json, but xml is also supported
-	end
-	
-	
-Usage
------
+# Definitions
+Wordnik.word.get_definitions('hysterical')
+Wordnik.word.get_definitions('lemurs', :use_canonical => true)
+Wordnik.word.get_definitions('fish', :part_of_speech => 'verb,noun')
+Wordnik.word.get_definitions('scoundrel', :limit => 20, :source_dictionaries => "ahd,wiktionary,wordnet")
 
-	# The clean version..
-	examples = Wordnik.word.get_examples('monkey', :limit => 50, :part_of_speech => 'verb')
-	
-	# ..and its low-level equivalent
-	request = Wordnik::Request.new(:get, '/word/{word}/examples', :params => {:word => 'monkey', :limit => 50, :part_of_speech => 'verb'})
-	examples = request.response.body
-	
-      request1 = Wordnik.word_list.get_word_list_by_id('dog', :request_only => true)
+# Examples
+Wordnik.word.get_examples('slovenly')
+Wordnik.word.get_examples('wrangle', :limit => 10, :skip => 10) # pagination
 
-For a full list of methods, checkout [USAGE.md](https://github.com/wordnik/wordnik-ruby/blob/master/USAGE.md). The wordnik gem automatically generates its convenience methods by parsing the [Wordnik API documentation](http://developer.wordnik.com/docs).
+# Related Words
+Wordnik.word.get_related_words('sad', :type => 'synonym')
+Wordnik.word.get_related_words('bowls', :type => 'hypernym', :use_canonical => true)
+
+# Search
+Wordnik.words.search_words(:query => 'dog')
+Wordnik.words.search_words(:query => 'cal*', :min_dictionary_count => 3)
+Wordnik.words.search_words(:query => '*tin*', :include_part_of_speech => 'verb', :min_length => 5, :max_length => 20)
+
+```
+
+For a full list of available methods, check out the [Wordnik API documentation](http://developer.wordnik.com/docs).
+When you make a request using our web-based API sandbox, the response output will show you how to make the 
+[equivalent ruby request](http://cl.ly/9FQY). w00t!
 
 Specs
 -----
 
-The wordnik gem uses rspec 2. To run the test suite, just type `rake` or `rake spec` in the gem's base directory.
+The wordnik gem uses rspec 2. To run the test suite, just type `rake` or `bundle exec rake spec` in the gem's base directory.
 	
 Contributing
 ------------
