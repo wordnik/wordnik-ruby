@@ -40,11 +40,10 @@ Example Usage
 -------------
 
 ```ruby
-%w(rubygems wordnik).each do {|lib| require lib}
+%w(rubygems wordnik).each {|lib| require lib}
 
 Wordnik.configure do |config|
-	config.api_key = '12345abcde'
-	config.response_format = :json # defaults to json, but xml is also supported
+	config.api_key = 'YOUR_API_KEY_HERE'
 end
 
 # Definitions
