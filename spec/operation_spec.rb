@@ -14,7 +14,7 @@ describe Wordnik::Operation do
   describe "initialization" do
 
     it "successfully initializes" do
-      @operation.summary.should =~ /returns the WordObject/i
+      @operation.summary.should_not be_nil
     end
 
     it "sets parameters" do

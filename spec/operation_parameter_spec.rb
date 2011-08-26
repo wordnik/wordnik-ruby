@@ -7,7 +7,7 @@ describe Wordnik::OperationParameter do
       @response = Typhoeus::Request.get("http://beta.wordnik.com/v4/word.json")
     end
 
-    @operation_parameter = Wordnik::OperationParameter.new(JSON.parse(@response.body)['endPoints'].first['operations'].first['parameters'].first)
+    @operation_parameter = Wordnik::OperationParameter.new(JSON.parse(@response.body)['apis'].first['operations'].first['parameters'].first)
   end
 
   it "initializes" do
@@ -18,14 +18,39 @@ describe Wordnik::OperationParameter do
     @operation_parameter.should respond_to(:default_value)
     @operation_parameter.should respond_to(:allowable_values)
     @operation_parameter.should respond_to(:param_access)
+  end    
+
+  context "human_name" do
+    it "is inferred from name" do
+      @operation_parameter.should_receive(:param_type).and_return('path')
+      @operation_parameter.human_name.should == @operation_parameter.name
+    end
+  
+    it "is made more descriptive when it's the actual body of the request" do
+      @operation_parameter.should_receive(:param_type).and_return('body')
+      @operation_parameter.human_name.should == 'request body'
+    end
   end
-    
-  it "has a human name"
   
-  it "detects if its allowable values are delimited as an array"
+  it "has an array of allowable values" do
+    @operation_parameter.allowable_values.should be_an(Array)
+  end
   
-  it "is required if it's part of the path"
-  
-  it "is positional if it's part of the path"
+  it "is required if it's a path param" do
+    @operation_parameter.should_receive(:required).and_return(false)
+    @operation_parameter.should_receive(:param_type).and_return('path')
+    @operation_parameter.required?.should == true
+  end
+
+  it "is positional if it's a body param" do
+    @operation_parameter.should_receive(:param_type).and_return('body')
+    @operation_parameter.positional?.should == true
+  end
+
+  it "is positional if it's a path param (except for 'format')" do
+    @operation_parameter.should_receive(:param_type).at_least(:once).and_return('path')
+    @operation_parameter.should_receive(:name).and_return('coolness')
+    self.positional?.should == true
+  end
 
 end

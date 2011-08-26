@@ -14,7 +14,7 @@ describe Wordnik::Response do
   describe "initialization" do
     it "sets body" do
       @response.body.class.should == Hash
-      @response.body.has_key?('endPoints').should == true
+      @response.body.has_key?('apis').should == true
     end
 
     it "sets code" do

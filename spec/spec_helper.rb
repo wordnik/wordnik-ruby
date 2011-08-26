@@ -39,7 +39,9 @@ def configure_wordnik
     config.api_key = CREDENTIALS[:api_key]
     config.username = CREDENTIALS[:username]
     config.password = CREDENTIALS[:password]
-    config.base_uri = "beta.wordnik.com/v4"
+    config.scheme = 'http'
+    config.host = 'beta.wordnik.com'
+    config.base_path = '/v4'
     # config.resource_names = %w(account corpus document partners system tag user users word words wordList wordLists)
   end
 end

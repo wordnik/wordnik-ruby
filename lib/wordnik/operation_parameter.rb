@@ -6,7 +6,7 @@ module Wordnik
     include ActiveModel::Conversion
     extend ActiveModel::Naming
 
-    attr_accessor :name, :description, :required, :param_type, :default_value, :allowable_values, :param_access, :internal_description, :wrapper_name, :data_type
+    attr_accessor :name, :description, :required, :param_type, :default_value, :allowable_values, :param_access, :internal_description, :wrapper_name, :data_type, :allow_multiple
 
     def initialize(attributes = {})
       attributes.each do |name, value|
@@ -22,17 +22,15 @@ module Wordnik
       self.name.to_s
     end
 
-    def has_allowable_array?
-      self.allowable_values.present? && self.allowable_values.include?(",")
-    end
-
     def required?
       self.required || self.param_type == "path"
     end
     
     # Is this a required positional param used in a convenience method?
     def positional?
-      %w(path body).include?(self.param_type) && self.name.to_sym != :format
+      return true if self.param_type == 'body'
+      return true if self.param_type == 'path' && self.name.to_s != 'format'
+      false
     end
 
     # It's an ActiveModel thing..

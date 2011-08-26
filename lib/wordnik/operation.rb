@@ -6,7 +6,8 @@ module Wordnik
     include ActiveModel::Conversion
     extend ActiveModel::Naming
   
-    attr_accessor :endpoint, :http_method, :summary, :notes, :parameters, :response, :open, :nickname, :deprecated, :category, :suggested_name
+    attr_accessor :endpoint, :http_method, :summary, :notes, :parameters, :response, :open, 
+      :nickname, :deprecated, :category, :error_responses, :response_class
   
     validates_presence_of :endpoint, :http_method, :summary, :notes, :parameters, :response, :open
   
@@ -29,7 +30,7 @@ module Wordnik
         self.parameters = []
       end
       
-      self.nickname = self.suggested_name.underscore
+      self.nickname = self.nickname.underscore
     end
     
     # A globally unique identifier for the operation

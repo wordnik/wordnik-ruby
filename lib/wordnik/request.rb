@@ -18,8 +18,8 @@ module Wordnik
     # Optionals parameters are :params, :headers, :body, :format, :host
     # 
     def initialize(http_method, path, attributes={})
-      attributes[:format] ||= "json"
-      attributes[:host] ||= Wordnik.configuration.base_uri
+      attributes[:format] ||= Wordnik.configuration.response_format
+      attributes[:host] ||= Wordnik.configuration.host
       attributes[:params] ||= {}
 
       # Set default headers
@@ -59,7 +59,7 @@ module Wordnik
     # Construct a base URL
     def url
       u = Addressable::URI.new
-      u.host = self.host.sub(/\/$/, '') # Remove trailing slash
+      u.host = self.host
       u.path = self.interpreted_path
       u.scheme = "http" # For some reason this must be set _after_ host, otherwise Addressable gets upset
       u.to_s
@@ -68,7 +68,9 @@ module Wordnik
     # Iterate over the params hash, injecting any path values into the path string
     # e.g. /word.{format}/{word}/entries => /word.json/cat/entries
     def interpreted_path
-      p = self.path
+      p = self.path.dup
+
+      # Fill in the path params
       self.params.each_pair do |key, value|
         p = p.gsub("{#{key}}", value.to_s)
       end
@@ -80,8 +82,9 @@ module Wordnik
         p = p.sub(/^(\/?\w+)/, "\\1.#{format}")
       end
 
-      p = p.sub("{format}", self.format)
-      URI.encode(p)
+      p = p.sub("{format}", self.format.to_s)
+      
+      URI.encode [Wordnik.configuration.base_path, p].join("/").gsub(/\/+/, '/')
     end
   
     # Massage the request body into a state of readiness

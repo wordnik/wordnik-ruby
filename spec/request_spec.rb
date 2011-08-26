@@ -13,11 +13,11 @@ describe Wordnik::Request do
 
   describe "initialization" do
     it "sets default response format to json" do
-      @request.format.should == "json"
+      @request.format.should == :json
     end
 
     it "gets default host from Wordnik.configuration" do
-      @request.host.should == Wordnik.configuration.base_uri
+      @request.host.should == Wordnik.configuration.host
     end
     
     it "allows params to be nil" do
@@ -30,7 +30,7 @@ describe Wordnik::Request do
   describe "attr_accessors" do
 
     it "has working attributes" do
-      @request.host.should == Wordnik.configuration.base_uri
+      @request.host.should == Wordnik.configuration.host
       @request.path.should == "words/fancy"
     end
 
@@ -54,13 +54,6 @@ describe Wordnik::Request do
 
     it "constructs a full url" do
       @request.url_with_query_string.should == "http://beta.wordnik.com/v4/words.json/fancy?bar=2&foo=1"
-    end
-
-    it "accounts for excessive slashes" do
-      @request = Wordnik::Request.new(:get, "andBurn", @default_params.merge({
-        :host => "slash.com/"
-      }))
-      @request.url.should == "http://slash.com/andBurn.json"
     end
 
   end

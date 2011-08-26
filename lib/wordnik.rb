@@ -36,6 +36,17 @@ module Wordnik
     def configure(build=true)
       self.configuration ||= Configuration.new
       yield(configuration) if block_given?
+      
+      # remove :// from scheme
+      configuration.scheme.sub!(/:\/\//, '')
+      
+      # remove http(s):// and anything after a slash
+      configuration.host.sub!(/https?:\/\//, '')
+      configuration.host = configuration.host.split('/').first
+      
+      # Add leading and trailing slashes to base_path
+      configuration.base_path = "/#{configuration.base_path}".gsub(/\/+/, '/')
+      configuration.base_path = "" if configuration.base_path == "/"
 
       if build
         self.build_resources
@@ -49,15 +60,14 @@ module Wordnik
 
     end
 
-    # Iterate over each disk-cached JSON resource documentation file
+    # Iterate over each disk-cached JSON resource documentation file,
+    # and assemble Resource objects by parsing it.
     # 
     def build_resources
       self.resources = {}
       self.configuration.resource_names.map do |resource_name|
-        
         name = resource_name.underscore.to_sym # 'fooBar' => :foo_bar
-        filename = File.join(File.dirname(__FILE__), "../api_docs/#{resource_name}.json")
-        
+        filename = File.join(File.dirname(__FILE__), "../api_docs/#{resource_name}.json")        
         resource = Resource.new(
           :name => name,
           :raw_data => JSON.parse(File.read(filename))

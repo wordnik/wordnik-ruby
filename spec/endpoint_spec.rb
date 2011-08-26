@@ -13,7 +13,7 @@ describe Wordnik::Endpoint do
   describe "initialization" do
 
     it "successfully initializes" do
-      @endpoint.path.should == "/word.{format}/{word}"
+      @endpoint.path.should =~ /word\.{format}\/{word}/i
     end
 
     it "sets operations" do

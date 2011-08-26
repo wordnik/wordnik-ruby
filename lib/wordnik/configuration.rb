@@ -18,12 +18,16 @@ module Wordnik
     attr_accessor :resource_names
     
     # The URL of the API server
-    attr_accessor :base_uri
+    attr_accessor :scheme
+    attr_accessor :host
+    attr_accessor :base_path
     
     # Defaults go in here..
     def initialize
       @response_format = :json
-      @base_uri = 'api.wordnik.com/v4'
+      @scheme = 'http'
+      @host = 'api.wordnik.com'
+      @base_path = '/v4'
       
       # Build the default set of resource names from the filenames of the API documentation
       begin
@@ -31,8 +35,17 @@ module Wordnik
         @resource_names = `find #{api_docs_path} -name '*.json'`.split("\n").map {|f| f.split("/").last.sub('.json', '') }
       rescue
         raise "Problem loading the resource files in ./api_docs/"
+      end      
+    end
+    
+    def base_url
+      @base_url ||= begin
+        u = Addressable::URI.new
+        u.host = self.host
+        u.path = self.base_path
+        u.scheme = self.scheme # For some reason this must be set _after_ host, otherwise Addressable gets upset
+        u.to_s
       end
-      
     end
 
   end

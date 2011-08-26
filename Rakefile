@@ -21,23 +21,28 @@ task :fetch_api_docs do
   
   puts "\nFetch API Docs"
   puts "--------------\n"
+  
+  settings = {
+    :scheme => 'http',
+    :host => 'beta.wordnik.com',
+    :base_path => "/v4",
+    :api_key => nil,
+  }
 
-  puts "\nEnter the base path (leave blank to default to beta.wordnik.com/v4): "
-  base_uri = STDIN.gets.chomp.sub('http://', '').sub('https://', '')
-  base_uri = 'beta.wordnik.com/v4' if base_uri.blank?
+  # Ask user for each setting, using the defaults where user input is blank
+  settings.each do |name, default_value|
+    puts "\nEnter the #{name} (default is #{default_value || 'nil'}): "
+    input = STDIN.gets.chomp
+    settings[name.to_sym] = input unless input.blank?
+  end
   
-  puts "\nEnter a space-delimited list of resource names (optional): "
-  resource_names = STDIN.gets.chomp.split(" ")
-  
-  puts "\nEnter API key (leave blank to fetch publically available resources): "
-  api_key = STDIN.gets.chomp
-    
   # Configure Wordnik, but tell it not to attempt to build resources
   # (there aren't any JSON docs yet.. a chicken/egg thing.)
-  Wordnik.configure(false) do |c|
-    c.base_uri = base_uri
-    c.resource_names = resource_names unless resource_names.blank?
-    c.api_key = api_key unless api_key.blank?
+  Wordnik.configure(false) do |config|
+    config.scheme = settings[:scheme]
+    config.host = settings[:host]
+    config.base_bath = settings[:host]
+    config.api_key = settings[:api_key] unless settings[:api_key].blank?
   end
 
   puts "\nCleanup"
