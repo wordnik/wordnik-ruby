@@ -12,30 +12,27 @@ module Wordnik
 
     attr_accessor :host, :path, :format, :params, :body, :http_method, :headers
 
-    validates_presence_of :host, :path, :format, :http_method
+    validates_presence_of :format, :http_method
 
     # All requests must have an HTTP method and a path
     # Optionals parameters are :params, :headers, :body, :format, :host
     # 
     def initialize(http_method, path, attributes={})
       attributes[:format] ||= Wordnik.configuration.response_format
-      attributes[:host] ||= Wordnik.configuration.host
       attributes[:params] ||= {}
 
       # Set default headers
       default_headers = {
-        'User-Agent' => "Wordnik Ruby Gem #{Wordnik::VERSION}",
         'Content-Type' => "application/#{attributes[:format].downcase}",
         :api_key => Wordnik.configuration.api_key
       }
 
-      # If a nil/blank api_key was passed in, remove it from the headers, even if the override value is nil/blank
+      # api_key from headers hash trumps the default, even if its value is blank
       if attributes[:headers].present? && attributes[:headers].has_key?(:api_key)
         default_headers.delete(:api_key)
       end
       
-      # If nil/blank api_key was passed in in the params, it overrides both the default
-      # headers and the argument headers
+      # api_key from params hash trumps all others (headers and default_headers)
       if attributes[:params].present? && attributes[:params].has_key?(:api_key)
         default_headers.delete(:api_key)
         attributes[:headers].delete(:api_key) if attributes[:headers].present?
@@ -57,12 +54,22 @@ module Wordnik
     end
 
     # Construct a base URL
-    def url
-      u = Addressable::URI.new
-      u.host = self.host
-      u.path = self.interpreted_path
-      u.scheme = "http" # For some reason this must be set _after_ host, otherwise Addressable gets upset
-      u.to_s
+    #
+    def url(options = {})  
+      u = Addressable::URI.new(
+        :scheme => Wordnik.configuration.scheme,
+        :host => Wordnik.configuration.host,
+        :path => self.interpreted_path,
+        :query => self.query_string.sub(/\?/, '')
+      ).to_s
+      
+      # Drop trailing question mark, if present
+      u.sub! /\?$/, ''
+      
+      # Obfuscate API key?
+      u.sub! /api\_key=\w+/, 'api_key=YOUR_API_KEY' if options[:obfuscated]
+      
+      u
     end
 
     # Iterate over the params hash, injecting any path values into the path string
@@ -100,77 +107,67 @@ module Wordnik
       @body = value
     end
     
+    # If body is an object, JSONify it before making the actual request.
+    # 
     def outgoing_body
-      return self.body if self.body.is_a? String
-      self.body.to_json
+      body.is_a?(String) ? body : body.to_json
     end
-  
-    # Iterate over all params,
-    # .. removing the ones that are part of the path itself.
-    # .. stringifying values so Addressable doesn't blow up.
-    # .. obfuscating the API key if needed.
-    def query_string_params(obfuscated=false)
-      qsp = {}
+    
+    # Construct a query string from the query-string-type params
+    def query_string
+
+      # Iterate over all params,
+      # .. removing the ones that are part of the path itself.
+      # .. stringifying values so Addressable doesn't blow up.
+      query_values = {}
       self.params.each_pair do |key, value|
         next if self.path.include? "{#{key}}"                                   # skip path params
         next if value.blank? && value.class != FalseClass                       # skip empties
-        value = "YOUR_API_KEY" if key.to_sym == :api_key && obfuscated          # obscure the API key
         key = key.to_s.camelize(:lower).to_sym unless key.to_sym == :api_key    # api_key is not a camelCased param
-        qsp[key] = value.to_s
+        query_values[key] = value.to_s
       end
-      qsp
-    end
-  
-    # Construct a query string from the query-string-type params
-    def query_string(options={})
     
       # We don't want to end up with '?' as our query string
       # if there aren't really any params
-      return "" if query_string_params.blank?
+      return "" if query_values.blank?
     
-      default_options = {:obfuscated => false}
-      options = default_options.merge(options)
-    
+      # Addressable requires query_values to be set after initialization..
       qs = Addressable::URI.new
-      qs.query_values = self.query_string_params(options[:obfuscated])
+      qs.query_values = query_values
       qs.to_s
-    end
-  
-    # Returns full request URL with query string included
-    def url_with_query_string(options={})
-      default_options = {:obfuscated => false}
-      options = default_options.merge(options)
-    
-      [url, query_string(options)].join('')
     end
   
     def make
       response = case self.http_method.to_sym
       when :get
         Typhoeus::Request.get(
-          self.url_with_query_string,
-          :headers => self.headers.stringify_keys
+          self.url,
+          :headers => self.headers.stringify_keys,
+          :user_agent => Wordnik.configuration.user_agent
         )
 
       when :post
         Typhoeus::Request.post(
-          self.url_with_query_string,
+          self.url,
           :body => self.outgoing_body,
-          :headers => self.headers.stringify_keys
+          :headers => self.headers.stringify_keys,
+          :user_agent => Wordnik.configuration.user_agent
         )
 
       when :put
         Typhoeus::Request.put(
-          self.url_with_query_string,
+          self.url,
           :body => self.outgoing_body,
-          :headers => self.headers.stringify_keys
+          :headers => self.headers.stringify_keys,
+          :user_agent => Wordnik.configuration.user_agent
         )
       
       when :delete
         Typhoeus::Request.delete(
-          self.url_with_query_string,
+          self.url,
           :body => self.outgoing_body,
-          :headers => self.headers.stringify_keys
+          :headers => self.headers.stringify_keys,
+          :user_agent => Wordnik.configuration.user_agent
         )
       end
       Response.new(response)

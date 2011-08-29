@@ -15,10 +15,6 @@ describe Wordnik::Request do
     it "sets default response format to json" do
       @request.format.should == :json
     end
-
-    it "gets default host from Wordnik.configuration" do
-      @request.host.should == Wordnik.configuration.host
-    end
     
     it "allows params to be nil" do
       @request = Wordnik::Request.new(@default_http_method, @default_path, :params => nil)
@@ -30,8 +26,7 @@ describe Wordnik::Request do
   describe "attr_accessors" do
 
     it "has working attributes" do
-      @request.host.should == Wordnik.configuration.host
-      @request.path.should == "words/fancy"
+      @request.format.to_s.should == 'json'
     end
 
     it "allows attributes to be overwritten" do
@@ -44,16 +39,12 @@ describe Wordnik::Request do
 
   describe "url" do
 
-    it "constructs a base URL" do
-      @request.url.should == "http://beta.wordnik.com/v4/words.json/fancy"
-    end
-
     it "constructs a query string" do
       @request.query_string.should == "?bar=2&foo=1"
     end
 
     it "constructs a full url" do
-      @request.url_with_query_string.should == "http://beta.wordnik.com/v4/words.json/fancy?bar=2&foo=1"
+      @request.url.should == "http://localhost:8001/admin/api/words.json/fancy?bar=2&foo=1"
     end
 
   end
@@ -81,7 +72,7 @@ describe Wordnik::Request do
           :word => "cat"
         }
       }))
-      @request.url.should == "http://beta.wordnik.com/v4/word.xml/cat/entries"
+      @request.url.should == "http://localhost:8001/admin/api/word.xml/cat/entries"
     end
 
     it "does string substitution on path params" do
@@ -91,7 +82,7 @@ describe Wordnik::Request do
           :word => "cat"
         }
       }))
-      @request.url.should == "http://beta.wordnik.com/v4/word.xml/cat/entries"
+      @request.url.should == "http://localhost:8001/admin/api/word.xml/cat/entries"
     end
 
     it "leaves path-bound params out of the query string" do
@@ -142,7 +133,7 @@ describe Wordnik::Request do
 
       @request.interpreted_path.should_not be_nil
       @request.query_string.should =~ /\?limit=100/
-      @request.url_with_query_string.should =~ /\?limit=100/
+      @request.url.should =~ /\?limit=100/
     end
     
     it "camelCases parameters" do
@@ -170,21 +161,16 @@ describe Wordnik::Request do
       Wordnik::Request.new(:get, "word/json").headers[:api_key].should == "xyz"
     end
     
-    it "gets obfuscated for public display" do
+    it "can be obfuscated for public display" do
       @request = Wordnik::Request.new(:get, "words/fancy", @default_params.merge({
         :params => {
           :word => "dog",
           :api_key => "123456"
         }
       }))
-      @request.query_string_params.should == {:word => "dog", :api_key => "123456"}
-      @request.query_string_params(true).should == {:word => "dog", :api_key => "YOUR_API_KEY"}
 
-      @request.query_string.should == "?api_key=123456&word=dog"
-      @request.query_string(:obfuscated => true).should == "?api_key=YOUR_API_KEY&word=dog"
-
-      @request.url_with_query_string.should =~ /123456/
-      @request.url_with_query_string(:obfuscated => true).should =~ /YOUR\_API\_KEY/
+      @request.url.should =~ /api\_key=123456/
+      @request.url(:obfuscated => true).should =~ /api\_key=YOUR\_API\_KEY/
     end
 
     it "allows a key in the params to override the configuration-level key, even if it's blank" do

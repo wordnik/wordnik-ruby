@@ -97,6 +97,7 @@ describe Wordnik do
         end
         expect { Wordnik.authenticate }.to raise_error(ClientError)
         Wordnik.authenticated?.should == false
+        configure_wordnik
       end
       
       it 'fails if username and/or password are absent' do
@@ -110,6 +111,7 @@ describe Wordnik do
         end
         expect { Wordnik.authenticate }.to raise_error(ClientError, /username and password are required/i)
         Wordnik.authenticated?.should == false
+        configure_wordnik
       end
       
     end

@@ -1,6 +1,7 @@
 module Wordnik
 
   class Configuration
+    require 'wordnik/version'
 
     # Wordnik credentials
     attr_accessor :api_key
@@ -22,30 +23,31 @@ module Wordnik
     attr_accessor :host
     attr_accessor :base_path
     
+    attr_accessor :user_agent
+    
     # Defaults go in here..
     def initialize
       @response_format = :json
       @scheme = 'http'
       @host = 'api.wordnik.com'
       @base_path = '/v4'
-      
+      @user_agent = "ruby-#{Wordnik::VERSION}"
       # Build the default set of resource names from the filenames of the API documentation
       begin
         api_docs_path = File.join(File.dirname(__FILE__), "../../api_docs")
         @resource_names = `find #{api_docs_path} -name '*.json'`.split("\n").map {|f| f.split("/").last.sub('.json', '') }
+        true
       rescue
         raise "Problem loading the resource files in ./api_docs/"
       end      
     end
     
     def base_url
-      @base_url ||= begin
-        u = Addressable::URI.new
-        u.host = self.host
-        u.path = self.base_path
-        u.scheme = self.scheme # For some reason this must be set _after_ host, otherwise Addressable gets upset
-        u.to_s
-      end
+      Addressable::URI.new(
+        :scheme => self.scheme,
+        :host => self.host,
+        :path => self.base_path
+      )
     end
 
   end

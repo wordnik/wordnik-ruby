@@ -4,7 +4,7 @@ describe Wordnik::Resource do
 
   before(:each) do
     VCR.use_cassette('words', :record => :new_episodes) do
-      @response = Typhoeus::Request.get("http://beta.wordnik.com/v4/word.json")
+      @response = Typhoeus::Request.get("http://localhost:8001/admin/api/word.json")
     end
 
     @default_params = {

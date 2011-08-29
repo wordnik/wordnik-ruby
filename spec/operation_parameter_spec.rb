@@ -4,7 +4,7 @@ describe Wordnik::OperationParameter do
 
   before(:each) do
     VCR.use_cassette('words', :record => :new_episodes) do
-      @response = Typhoeus::Request.get("http://beta.wordnik.com/v4/word.json")
+      @response = Typhoeus::Request.get("http://localhost:8001/admin/api/word.json")
     end
 
     @operation_parameter = Wordnik::OperationParameter.new(JSON.parse(@response.body)['apis'].first['operations'].first['parameters'].first)
@@ -50,7 +50,7 @@ describe Wordnik::OperationParameter do
   it "is positional if it's a path param (except for 'format')" do
     @operation_parameter.should_receive(:param_type).at_least(:once).and_return('path')
     @operation_parameter.should_receive(:name).and_return('coolness')
-    self.positional?.should == true
+    @operation_parameter.positional?.should == true
   end
 
 end
