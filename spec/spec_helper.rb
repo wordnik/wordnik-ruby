@@ -52,6 +52,12 @@ end
 
 configure_wordnik
 
+def sample_resource_body
+  @sample_resource_body ||= begin
+    File.open(File.join(File.dirname(__FILE__), "./swagger/word.json"), "r").read
+  end
+end
+
 # A random string to tack onto stuff to ensure we're not seeing 
 # data from a previous test run
 RAND = ("a".."z").to_a.sample(8).join

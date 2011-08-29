@@ -4,7 +4,7 @@ describe Wordnik::Response do
 
   before(:each) do
 
-    VCR.use_cassette('default_response', :record => :new_episodes) do
+    VCR.use_cassette('word_resource', :record => :new_episodes) do
       @raw = Typhoeus::Request.get("http://localhost:8001/admin/api/word.json")
     end
 
@@ -25,21 +25,15 @@ describe Wordnik::Response do
       @response.headers.class.should == Hash
       @response.headers['Wordnik-Api-Version'].to_s.should =~ /4\.0/
     end
-
   end
   
-  describe "unauthorized" do
-    
-    before do
-      VCR.use_cassette('unauthorized_response', :record => :new_episodes) do
-        @unauthorized_raw = Typhoeus::Request.get("http://localhost:8001/admin/api/word.json/dog/images/flickr")
-      end
-    end
-    
+  describe "unauthorized" do 
     it "raises an error when initialized" do
-      expect { Wordnik::Response.new(@unauthorized_raw) }.to raise_error(ClientError)
-    end
-    
+      VCR.use_cassette('get_dog_images', :record => :new_episodes) do
+        @unauthorized_raw = Typhoeus::Request.get("http://localhost:8001/admin/api/word.json/dog/images/flickr")
+        expect { Wordnik::Response.new(@unauthorized_raw) }.to raise_error(ClientError)
+      end
+    end    
   end
 
   describe "format" do
@@ -69,10 +63,10 @@ describe Wordnik::Response do
     it "has a pretty XML body even in the face of adverse characters" do
       configure_wordnik
       VCR.use_cassette('crazier_json_request', :record => :new_episodes) do
-        # @request = Wordnik::Request.new(:get, "word.xml/cat/definitions", :params => {:source_dictionaries => "century"})
         @request = Wordnik::Request.new(:get, "word.xml/hero/pronunciations", :params => {:limit => 1})
+        @response = @request.response
       end
-      @request.response.pretty_body.should =~ /\?xml/
+      @response.pretty_body.should =~ /\?xml/
     end    
     
     it "has a pretty xml body" do

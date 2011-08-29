@@ -36,11 +36,9 @@ module Wordnik
     # TODO: If body is XML, parse it
     # Otherwise return raw string
     def body
-      begin
-        JSON.parse raw.body
-      rescue
-        raw.body
-      end
+      JSON.parse raw.body
+    rescue
+      raw.body
     end
 
     def headers

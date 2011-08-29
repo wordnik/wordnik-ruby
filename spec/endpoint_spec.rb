@@ -3,10 +3,7 @@ require 'spec_helper'
 describe Wordnik::Endpoint do
 
   before(:each) do
-    # VCR.use_cassette('words', :record => :new_episodes) do
-    @response = Wordnik::Request.new(:get, "word.json").response.raw
-    # end
-    @resource = Wordnik::Resource.new(:name => "word", :raw_data => JSON.parse(@response.body))
+    @resource = Wordnik::Resource.new(:name => "word", :raw_data => JSON.parse(sample_resource_body))
     @endpoint = @resource.endpoints.first
   end
 

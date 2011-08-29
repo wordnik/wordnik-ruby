@@ -3,13 +3,9 @@ require 'spec_helper'
 describe Wordnik::Resource do
 
   before(:each) do
-    VCR.use_cassette('words', :record => :new_episodes) do
-      @response = Typhoeus::Request.get("http://localhost:8001/admin/api/word.json")
-    end
-
     @default_params = {
       :name => "word",
-      :raw_data => JSON.parse(@response.body)
+      :raw_data => JSON.parse(sample_resource_body)
     }
 
     @resource = Wordnik::Resource.new(@default_params)
@@ -39,7 +35,9 @@ describe Wordnik::Resource do
     
     before(:each) do
       configure_wordnik
-      Wordnik.authenticate
+      VCR.use_cassette('wordnik_authenticate', :record => :new_episodes) do
+        Wordnik.authenticate
+      end
     end
 
     it "builds requests but doesn't run them if :request_only is passed" do
@@ -48,7 +46,9 @@ describe Wordnik::Resource do
     end
 
     it "runs requests and returns their body if :request_only is absent" do
-      @response_body = Wordnik.word.get_word('dynamo')
+      VCR.use_cassette('get_word_dynamo', :record => :new_episodes) do
+        @response_body = Wordnik.word.get_word('dynamo')
+      end
       @response_body.class.should == Hash
       @response_body.keys.sort.should == %w(canonicalForm word)
     end

@@ -3,11 +3,7 @@ require 'spec_helper'
 describe Wordnik::OperationParameter do
 
   before(:each) do
-    VCR.use_cassette('words', :record => :new_episodes) do
-      @response = Typhoeus::Request.get("http://localhost:8001/admin/api/word.json")
-    end
-
-    @operation_parameter = Wordnik::OperationParameter.new(JSON.parse(@response.body)['apis'].first['operations'].first['parameters'].first)
+    @operation_parameter = Wordnik::OperationParameter.new(JSON.parse(sample_resource_body)['apis'].first['operations'].first['parameters'].first)
   end
 
   it "initializes" do

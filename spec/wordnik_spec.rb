@@ -75,12 +75,16 @@ describe Wordnik do
       it 'auto-authenticates at load time if username and password are present'
       
       it 'succeeds if a username and password are present in the configuration' do
-        Wordnik.authenticate
+        VCR.use_cassette('wordnik_authenticate', :record => :new_episodes) do
+          Wordnik.authenticate
+        end
         Wordnik.authenticated?.should == true
       end
       
       it 'de_authenticates' do
-        Wordnik.authenticate
+        VCR.use_cassette('wordnik_authenticate', :record => :new_episodes) do
+          Wordnik.authenticate
+        end
         Wordnik.authenticated?.should == true
         Wordnik.de_authenticate
         Wordnik.authenticated?.should == false
@@ -95,7 +99,11 @@ describe Wordnik do
           config.host = 'beta.wordnik.com'
           config.base_path = '/v4'
         end
-        expect { Wordnik.authenticate }.to raise_error(ClientError)
+
+        VCR.use_cassette('wordnik_authenticate_fail', :record => :new_episodes) do
+          expect { Wordnik.authenticate }.to raise_error(ClientError)
+        end
+        
         Wordnik.authenticated?.should == false
         configure_wordnik
       end
