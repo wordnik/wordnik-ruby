@@ -6,7 +6,8 @@ module Wordnik
     include ActiveModel::Conversion
     extend ActiveModel::Naming
 
-    attr_accessor :name, :description, :required, :param_type, :default_value, :allowable_values, :param_access, :internal_description, :wrapper_name, :data_type, :allow_multiple
+    attr_accessor :name, :description, :required, :param_type, :default_value, :allowable_values, 
+    :param_access, :internal_description, :wrapper_name, :data_type, :allow_multiple, :value_type_internal
 
     def initialize(attributes = {})
       attributes.each do |name, value|

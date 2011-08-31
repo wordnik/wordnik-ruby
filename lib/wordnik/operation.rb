@@ -7,7 +7,7 @@ module Wordnik
     extend ActiveModel::Naming
   
     attr_accessor :endpoint, :http_method, :summary, :notes, :parameters, :response, :open, 
-      :nickname, :deprecated, :category, :error_responses, :response_class
+      :nickname, :deprecated, :category, :error_responses, :response_class, :response_type_internal
   
     validates_presence_of :endpoint, :http_method, :summary, :notes, :parameters, :response, :open
   
