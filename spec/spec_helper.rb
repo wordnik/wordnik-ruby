@@ -54,7 +54,7 @@ configure_wordnik
 
 def sample_resource_body
   @sample_resource_body ||= begin
-    File.open(File.join(File.dirname(__FILE__), "./swagger/word.json"), "r").read
+    File.open(File.join(File.dirname(__FILE__), "../api_docs/word.json"), "r").read
   end
 end
 
