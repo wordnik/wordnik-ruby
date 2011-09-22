@@ -15,9 +15,9 @@ task :swagger do
   # Configure default input values..
   settings = {
     :scheme => 'http',
-    :host => 'localhost:8001',
-    :base_path => "/admin/api",
-    :api_key => 'b39ee8d5f05d0f566a0080b4c310ceddf5dc5f7606a616f53',
+    :host => 'beta.wordnik.com',
+    :base_path => "/v4",
+    :api_key => '',
   }
 
   # Ask user for each setting, using the defaults where user input is blank
