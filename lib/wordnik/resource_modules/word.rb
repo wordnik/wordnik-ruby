@@ -413,7 +413,7 @@ module WordMethods
 
   # Return related words (thesaurus data) for a word
   #
-  def get_related_words(word, *args)
+  def get_related(word, *args)
     http_method = :get
     path = '/word/{word}/related'
     path.sub!('{word}', word.to_s)
