@@ -18,9 +18,9 @@ end
 
 def help
   puts "\nOh noes! You gotta stuff your wordnik credentials in ~/.wordnik.yml like so:\n\n"
-  puts "api_key: '12345abcdefg'"
-  puts "username: 'fumanchu'"
-  puts "password: 'kalamazoo'\n\n"
+  puts "api_key: '12345abcdefg'   (required)"
+  puts "username: 'fumanchu'      (optional)"
+  puts "password: 'kalamazoo'     (optional)\n\n"
   exit
 end
 

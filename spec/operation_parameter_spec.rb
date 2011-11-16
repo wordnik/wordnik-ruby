@@ -28,8 +28,8 @@ describe Wordnik::OperationParameter do
     end
   end
   
-  it "has an array of allowable values" do
-    @operation_parameter.allowable_values.should be_an(Array)
+  it "has a hash of allowable values" do
+    @operation_parameter.allowable_values.should be_a(Hash)
   end
   
   it "is required if it's a path param" do

@@ -25,6 +25,12 @@ module Wordnik
     
     attr_accessor :user_agent
     
+    attr_accessor :proxy
+    attr_accessor :proxy_username
+    attr_accessor :proxy_password
+
+    attr_accessor :logger
+    
     # Defaults go in here..
     def initialize
       @response_format = :json
@@ -39,7 +45,7 @@ module Wordnik
         true
       rescue
         raise "Problem loading the resource files in ./api_docs/"
-      end      
+      end
     end
     
     def base_url

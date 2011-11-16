@@ -138,39 +138,26 @@ module Wordnik
     end
   
     def make
-      response = case self.http_method.to_sym
-      when :get
-        Typhoeus::Request.get(
-          self.url,
-          :headers => self.headers.stringify_keys,
-          :user_agent => Wordnik.configuration.user_agent
-        )
-
-      when :post
-        Typhoeus::Request.post(
-          self.url,
-          :body => self.outgoing_body,
-          :headers => self.headers.stringify_keys,
-          :user_agent => Wordnik.configuration.user_agent
-        )
-
-      when :put
-        Typhoeus::Request.put(
-          self.url,
-          :body => self.outgoing_body,
-          :headers => self.headers.stringify_keys,
-          :user_agent => Wordnik.configuration.user_agent
-        )
+      request = Typhoeus::Request.new(self.url, 
+        :headers => self.headers.stringify_keys, 
+        :user_agent => Wordnik.configuration.user_agent,
+        :method => self.http_method.to_sym)
       
-      when :delete
-        Typhoeus::Request.delete(
-          self.url,
-          :body => self.outgoing_body,
-          :headers => self.headers.stringify_keys,
-          :user_agent => Wordnik.configuration.user_agent
-        )
+      # Make request proxy-aware 
+      if Wordnik.configuration.proxy.present?
+        request.proxy = Wordnik.configuration.proxy
+        request.proxy_username = Wordnik.configuration.proxy_username if Wordnik.configuration.proxy_username.present?
+        request.proxy_password = Wordnik.configuration.proxy_password if Wordnik.configuration.proxy_password.present?
       end
-      Response.new(response)
+      
+      Wordnik.logger.debug "\n  #{self.http_method.upcase} #{self.url}\n  body: #{self.outgoing_body}\n  headers: #{request.headers}\n\n"
+      
+      request.body = self.outgoing_body unless self.http_method.to_sym == :get
+
+      # Execute the request
+      Typhoeus::Hydra.hydra.queue request
+      Typhoeus::Hydra.hydra.run  
+      Response.new(request.response)
     end
   
     def response

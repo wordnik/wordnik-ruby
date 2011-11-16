@@ -24,6 +24,8 @@ module Wordnik
 
     attr_accessor :resources
     
+    attr_accessor :logger
+    
     # Call this method to modify defaults in your initializers.
     #
     # @example
@@ -37,6 +39,9 @@ module Wordnik
     def configure(build=true)
       self.configuration ||= Configuration.new
       yield(configuration) if block_given?
+
+      # Configure logger.  Default to use Rails
+      self.logger ||= configuration.logger || (Rails ? Rails.logger : Logger.new(STDOUT))
       
       # remove :// from scheme
       configuration.scheme.sub!(/:\/\//, '')

@@ -75,6 +75,14 @@ Specs
 -----
 
 The wordnik gem uses rspec 2. To run the test suite, just type `rake` or `bundle exec rake spec` in the gem's base directory.
+
+Note
+----
+For testing locally, you will need to tunnel into the beta box
+
+  ssh -f -N -L 8001:localhost:8001 beta.wordnik.com
+
+And remember to update the spec_helper
 	
 Contributing
 ------------
