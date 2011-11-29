@@ -24,7 +24,8 @@ module Wordnik
       # Set default headers
       default_headers = {
         'Content-Type' => "application/#{attributes[:format].downcase}",
-        :api_key => Wordnik.configuration.api_key
+        :api_key => Wordnik.configuration.api_key,
+        :user_agent => Wordnik.configuration.user_agent        
       }
 
       # api_key from headers hash trumps the default, even if its value is blank
@@ -140,7 +141,6 @@ module Wordnik
     def make
       request = Typhoeus::Request.new(self.url, 
         :headers => self.headers.stringify_keys, 
-        :user_agent => Wordnik.configuration.user_agent,
         :method => self.http_method.to_sym)
       
       # Make request proxy-aware 
