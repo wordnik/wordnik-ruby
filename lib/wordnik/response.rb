@@ -54,19 +54,19 @@ module Wordnik
     end
 
     def json?
-      format == :json
+      format == 'json'
     end
 
     def xml?
-      format == :xml
+      format == 'xml'
     end
 
     def pretty_body
       return unless body.present?
       case format
-      when :json
+      when 'json'
         JSON.pretty_generate(body).gsub(/\n/, '<br/>')
-      when :xml
+      when 'xml'
         xsl = Nokogiri::XSLT(File.open(File.join(File.dirname(__FILE__), "../../config/pretty_print.xsl")))
         xml = Nokogiri(body)
         coder = HTMLEntities.new

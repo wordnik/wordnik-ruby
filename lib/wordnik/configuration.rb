@@ -12,7 +12,7 @@ module Wordnik
     attr_accessor :auth_token
     attr_accessor :user_id
     
-    # Response format can be :json (default) or :xml
+    # Response format can be 'json' (default) or 'xml'
     attr_accessor :response_format
     
     # A comma-delimited list of the API's resources
@@ -33,7 +33,7 @@ module Wordnik
     
     # Defaults go in here..
     def initialize
-      @response_format = :json
+      @response_format = 'json'
       @scheme = 'http'
       @host = 'api.wordnik.com'
       @base_path = '/v4'

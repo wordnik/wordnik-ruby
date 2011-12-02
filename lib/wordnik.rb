@@ -33,7 +33,7 @@ module Wordnik
     #     config.api_key = '1234567890abcdef'     # required
     #     config.username = 'wordlover'           # optional, but needed for user-related functions
     #     config.password = 'i<3words'            # optional, but needed for user-related functions
-    #     config.response_format = :json          # optional, defaults to json
+    #     config.response_format = 'json'         # optional, defaults to json
     #   end
     #
     def configure(build=true)

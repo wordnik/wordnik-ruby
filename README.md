@@ -32,7 +32,7 @@ Wordnik.configure do |config|
   config.api_key = '12345abcde'     # required
   config.username = 'bozo'          # optional, but needed for user-related functions
   config.password = 'cl0wnt0wn'     # optional, but needed for user-related functions
-  config.response_format = :json    # defaults to json, but xml is also supported
+  config.response_format = 'json'   # defaults to json, but xml is also supported
 end
 ```
 	

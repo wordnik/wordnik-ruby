@@ -13,7 +13,7 @@ describe Wordnik::Request do
 
   describe "initialization" do
     it "sets default response format to json" do
-      @request.format.should == :json
+      @request.format.should == 'json'
     end
     
     it "allows params to be nil" do

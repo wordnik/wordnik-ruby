@@ -39,7 +39,7 @@ describe Wordnik::Response do
   describe "format" do
 
     it "recognizes json" do
-      @response.format.should == :json
+      @response.format.should == 'json'
       @response.json?.should == true
     end
 
@@ -48,7 +48,7 @@ describe Wordnik::Response do
         @raw = Typhoeus::Request.get("http://localhost:8001/admin/api/word.xml")
       end
       @response = Wordnik::Response.new(@raw)
-      @response.format.should == :xml
+      @response.format.should == 'xml'
       @response.xml?.should == true
     end
 
