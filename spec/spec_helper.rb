@@ -39,6 +39,7 @@ def configure_wordnik
     config.api_key = CREDENTIALS[:api_key]
     config.username = CREDENTIALS[:username]
     config.password = CREDENTIALS[:password]
+    config.logger = Logger.new('/dev/null')
 
     # Normal..
     # config.host = 'beta.wordnik.com'
