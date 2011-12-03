@@ -139,7 +139,7 @@ module Wordnik
     end
   
     def make
-      request = Typhoeus::Request.new(self.url, 
+      request = Typhoeus::Request.new(self.url,
         :headers => self.headers.stringify_keys,
         :method => self.http_method.to_sym)
       
