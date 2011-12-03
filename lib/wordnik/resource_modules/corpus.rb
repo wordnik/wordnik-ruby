@@ -3,7 +3,7 @@
 
 module CorpusMethods
 
-  # Fetches recent views from the website.
+  # Fetches recent views from the website
   #
   def get_recent_views(*args)
     http_method = :get
@@ -266,7 +266,7 @@ module CorpusMethods
     request_only ? request : request.response.body
   end
 
-  # Fetches views from the website.
+  # Fetches views from the website
   #
   def get_views(*args)
     http_method = :get

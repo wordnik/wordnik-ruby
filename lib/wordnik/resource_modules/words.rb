@@ -239,7 +239,7 @@ module WordsMethods
     request_only ? request : request.response.body
   end
 
-  # Returns an array of random WordObjects, in the format specified by the URL
+  # Returns an array of random WordObjects
   #
   def get_random_words(*args)
     http_method = :get
@@ -265,7 +265,7 @@ module WordsMethods
     request_only ? request : request.response.body
   end
 
-  # Returns a single random WordObject, in the format specified by the URL
+  # Returns a single random WordObject
   #
   def get_random_word(*args)
     http_method = :get
