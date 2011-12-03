@@ -6,6 +6,7 @@ require 'wordnik/resource'
 require 'wordnik/response'
 require 'wordnik/configuration'
 require 'wordnik/version'
+require 'logger'
 
 # http://blog.jayfields.com/2007/10/ruby-defining-class-methods.html
 class Object
@@ -41,7 +42,7 @@ module Wordnik
       yield(configuration) if block_given?
 
       # Configure logger.  Default to use Rails
-      self.logger ||= configuration.logger || (Rails ? Rails.logger : Logger.new(STDOUT))
+      self.logger ||= configuration.logger || (defined?(Rails) ? Rails.logger : Logger.new(STDOUT))
       
       # remove :// from scheme
       configuration.scheme.sub!(/:\/\//, '')
