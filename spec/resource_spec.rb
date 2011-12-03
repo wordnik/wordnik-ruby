@@ -50,7 +50,7 @@ describe Wordnik::Resource do
         @response_body = Wordnik.word.get_word('dynamo')
       end
       @response_body.class.should == Hash
-      @response_body.keys.sort.should == %w(canonicalForm word)
+      @response_body.keys.sort.should == %w(canonicalForm id word)
     end
     
     it "allows the same auto-generated method to be called with different parameters" do

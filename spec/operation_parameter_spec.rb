@@ -28,10 +28,6 @@ describe Wordnik::OperationParameter do
     end
   end
   
-  it "has a hash of allowable values" do
-    @operation_parameter.allowable_values.should be_a(Hash)
-  end
-  
   it "is required if it's a path param" do
     @operation_parameter.should_receive(:required).and_return(false)
     @operation_parameter.should_receive(:param_type).and_return('path')
