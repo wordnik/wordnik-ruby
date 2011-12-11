@@ -150,7 +150,7 @@ module Wordnik
         request.proxy_password = Wordnik.configuration.proxy_password if Wordnik.configuration.proxy_password.present?
       end
       
-      Wordnik.logger.debug "\n  #{self.http_method.upcase} #{self.url}\n  body: #{self.outgoing_body}\n  headers: #{request.headers}\n\n"
+      Wordnik.logger.debug "\n  #{self.http_method.to_s.upcase} #{self.url}\n  body: #{self.outgoing_body}\n  headers: #{request.headers}\n\n"
       
       request.body = self.outgoing_body unless self.http_method.to_sym == :get
 
