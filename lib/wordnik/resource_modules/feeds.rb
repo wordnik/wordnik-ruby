@@ -1,13 +1,13 @@
 # HEY HACKER! THIS IS AN AUTO-GENERATED FILE.
 # So don't bother editing it. To see how it's built, take a look at the Rakefile
 
-module SystemMethods
+module FeedsMethods
 
-  # Returns all defined ContentProviders.
+  # Returns recent pronunciations
   #
-  def get_providers(*args)
+  def get_recent_pronunciations(*args)
     http_method = :get
-    path = '/system/providers'
+    path = '/feeds/pronunciations'
 
     # Ruby turns all key-value arguments at the end into a single hash
     # e.g. Wordnik.word.get_examples('dingo', :limit => 10, :part_of_speech => 'verb')
@@ -29,11 +29,11 @@ module SystemMethods
     request_only ? request : request.response.body
   end
 
-  # Returns system-wide statistics for the platform.
+  # Returns the word-of-the-day
   #
-  def get_stats(*args)
+  def get_word_of_the_day(*args)
     http_method = :get
-    path = '/system/stats'
+    path = '/feeds/wordOfTheDay'
 
     # Ruby turns all key-value arguments at the end into a single hash
     # e.g. Wordnik.word.get_examples('dingo', :limit => 10, :part_of_speech => 'verb')
@@ -55,12 +55,12 @@ module SystemMethods
     request_only ? request : request.response.body
   end
 
-  # Returns weighted terms related to the input word
+  # Returns comments made by the specified user
   #
-  def get_related_words(word, *args)
+  def get_comments_by_user(username, *args)
     http_method = :get
-    path = '/system/{word}/related'
-    path.sub!('{word}', word.to_s)
+    path = '/feeds/people/{username}/commentsBy'
+    path.sub!('{username}', username.to_s)
 
     # Ruby turns all key-value arguments at the end into a single hash
     # e.g. Wordnik.word.get_examples('dingo', :limit => 10, :part_of_speech => 'verb')
@@ -82,12 +82,12 @@ module SystemMethods
     request_only ? request : request.response.body
   end
 
-  # Returns a word with attributes
+  # Returns comments made on the specified user
   #
-  def get_related_words(word, *args)
+  def get_comments_on_user(username, *args)
     http_method = :get
-    path = '/system/{word}'
-    path.sub!('{word}', word.to_s)
+    path = '/feeds/people/{username}/commentsOn'
+    path.sub!('{username}', username.to_s)
 
     # Ruby turns all key-value arguments at the end into a single hash
     # e.g. Wordnik.word.get_examples('dingo', :limit => 10, :part_of_speech => 'verb')
@@ -109,11 +109,11 @@ module SystemMethods
     request_only ? request : request.response.body
   end
 
-  # Returns a graph response for the supplied terms
+  # Returns recently favorited words
   #
-  def get_word_by_id(*args)
+  def get_recent_favorites(*args)
     http_method = :get
-    path = '/system/graph'
+    path = '/feeds/favorites'
 
     # Ruby turns all key-value arguments at the end into a single hash
     # e.g. Wordnik.word.get_examples('dingo', :limit => 10, :part_of_speech => 'verb')
@@ -135,11 +135,12 @@ module SystemMethods
     request_only ? request : request.response.body
   end
 
-  # Gets an Audio File ID for recording.
+  # Returns lists for the specified user
   #
-  def get_audio_record_id(*args)
+  def get_user_lists(username, *args)
     http_method = :get
-    path = '/system/audioRecordId'
+    path = '/feeds/people/{username}/lists'
+    path.sub!('{username}', username.to_s)
 
     # Ruby turns all key-value arguments at the end into a single hash
     # e.g. Wordnik.word.get_examples('dingo', :limit => 10, :part_of_speech => 'verb')
@@ -161,13 +162,118 @@ module SystemMethods
     request_only ? request : request.response.body
   end
 
-  # Sets duration of an Audio File
+  # Returns favorites for the specified user
   #
-  def set_audio_duration(audioFileId, duration, *args)
-    http_method = :post
-    path = '/system/audioDuration'
-    path.sub!('{audioFileId}', audioFileId.to_s)
-    path.sub!('{duration}', duration.to_s)
+  def get_user_favorites(username, *args)
+    http_method = :get
+    path = '/feeds/people/{username}/favorites'
+    path.sub!('{username}', username.to_s)
+
+    # Ruby turns all key-value arguments at the end into a single hash
+    # e.g. Wordnik.word.get_examples('dingo', :limit => 10, :part_of_speech => 'verb')
+    # becomes {:limit => 10, :part_of_speech => 'verb'}
+    last_arg = args.pop if args.last.is_a?(Hash)
+    last_arg = args.pop if args.last.is_a?(Array)
+    last_arg ||= {}
+
+    # Look for a kwarg called :request_only, whose presence indicates
+    # that we want the request itself back, not the response body
+    if last_arg.is_a?(Hash) && last_arg[:request_only].present?
+      request_only = true
+      last_arg.delete(:request_only)
+    end
+
+    params = last_arg
+    body ||= {}
+    request = Wordnik::Request.new(http_method, path, :params => params, :body => body)
+    request_only ? request : request.response.body
+  end
+
+  # Returns recent lookups
+  #
+  def get_recent_lookups(*args)
+    http_method = :get
+    path = '/feeds/lookups'
+
+    # Ruby turns all key-value arguments at the end into a single hash
+    # e.g. Wordnik.word.get_examples('dingo', :limit => 10, :part_of_speech => 'verb')
+    # becomes {:limit => 10, :part_of_speech => 'verb'}
+    last_arg = args.pop if args.last.is_a?(Hash)
+    last_arg = args.pop if args.last.is_a?(Array)
+    last_arg ||= {}
+
+    # Look for a kwarg called :request_only, whose presence indicates
+    # that we want the request itself back, not the response body
+    if last_arg.is_a?(Hash) && last_arg[:request_only].present?
+      request_only = true
+      last_arg.delete(:request_only)
+    end
+
+    params = last_arg
+    body ||= {}
+    request = Wordnik::Request.new(http_method, path, :params => params, :body => body)
+    request_only ? request : request.response.body
+  end
+
+  # Returns recent lists
+  #
+  def get_recent_user_lists(*args)
+    http_method = :get
+    path = '/feeds/lists'
+
+    # Ruby turns all key-value arguments at the end into a single hash
+    # e.g. Wordnik.word.get_examples('dingo', :limit => 10, :part_of_speech => 'verb')
+    # becomes {:limit => 10, :part_of_speech => 'verb'}
+    last_arg = args.pop if args.last.is_a?(Hash)
+    last_arg = args.pop if args.last.is_a?(Array)
+    last_arg ||= {}
+
+    # Look for a kwarg called :request_only, whose presence indicates
+    # that we want the request itself back, not the response body
+    if last_arg.is_a?(Hash) && last_arg[:request_only].present?
+      request_only = true
+      last_arg.delete(:request_only)
+    end
+
+    params = last_arg
+    body ||= {}
+    request = Wordnik::Request.new(http_method, path, :params => params, :body => body)
+    request_only ? request : request.response.body
+  end
+
+  # Returns comments on the specified list
+  #
+  def get_user_list_comments(permalinkId, *args)
+    http_method = :get
+    path = '/feeds/lists/{permalinkId}/comments'
+    path.sub!('{permalinkId}', permalinkId.to_s)
+
+    # Ruby turns all key-value arguments at the end into a single hash
+    # e.g. Wordnik.word.get_examples('dingo', :limit => 10, :part_of_speech => 'verb')
+    # becomes {:limit => 10, :part_of_speech => 'verb'}
+    last_arg = args.pop if args.last.is_a?(Hash)
+    last_arg = args.pop if args.last.is_a?(Array)
+    last_arg ||= {}
+
+    # Look for a kwarg called :request_only, whose presence indicates
+    # that we want the request itself back, not the response body
+    if last_arg.is_a?(Hash) && last_arg[:request_only].present?
+      request_only = true
+      last_arg.delete(:request_only)
+    end
+
+    params = last_arg
+    body ||= {}
+    request = Wordnik::Request.new(http_method, path, :params => params, :body => body)
+    request_only ? request : request.response.body
+  end
+
+  # Returns the specified wordList
+  #
+  def get_user_list(permalinkId, *args)
+    http_method = :get
+    path = '/feeds/lists/{permalinkId}'
+    path.sub!('{permalinkId}', permalinkId.to_s)
 
     # Ruby turns all key-value arguments at the end into a single hash
     # e.g. Wordnik.word.get_examples('dingo', :limit => 10, :part_of_speech => 'verb')
