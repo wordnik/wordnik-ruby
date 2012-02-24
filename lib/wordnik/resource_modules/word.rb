@@ -273,34 +273,6 @@ module WordMethods
     request_only ? request : request.response.body
   end
 
-  # Fetches other forms of a word
-  # Deprecated
-  #
-  def get_punctuation_factor(word, *args)
-    http_method = :get
-    path = '/word/{word}/punctuationFactor'
-    path.sub!('{word}', word.to_s)
-
-    # Ruby turns all key-value arguments at the end into a single hash
-    # e.g. Wordnik.word.get_examples('dingo', :limit => 10, :part_of_speech => 'verb')
-    # becomes {:limit => 10, :part_of_speech => 'verb'}
-    last_arg = args.pop if args.last.is_a?(Hash)
-    last_arg = args.pop if args.last.is_a?(Array)
-    last_arg ||= {}
-
-    # Look for a kwarg called :request_only, whose presence indicates
-    # that we want the request itself back, not the response body
-    if last_arg.is_a?(Hash) && last_arg[:request_only].present?
-      request_only = true
-      last_arg.delete(:request_only)
-    end
-
-    params = last_arg
-    body ||= {}
-    request = Wordnik::Request.new(http_method, path, :params => params, :body => body)
-    request_only ? request : request.response.body
-  end
-
   # Returns definitions for a word based on the sentence in which it is found
   # Use the offset parameter when the word occurs more than once in the sentence
   #
@@ -335,6 +307,33 @@ module WordMethods
   def contextual_lookup_post(word, body, *args)
     http_method = :post
     path = '/word/{word}/contextualLookup'
+    path.sub!('{word}', word.to_s)
+
+    # Ruby turns all key-value arguments at the end into a single hash
+    # e.g. Wordnik.word.get_examples('dingo', :limit => 10, :part_of_speech => 'verb')
+    # becomes {:limit => 10, :part_of_speech => 'verb'}
+    last_arg = args.pop if args.last.is_a?(Hash)
+    last_arg = args.pop if args.last.is_a?(Array)
+    last_arg ||= {}
+
+    # Look for a kwarg called :request_only, whose presence indicates
+    # that we want the request itself back, not the response body
+    if last_arg.is_a?(Hash) && last_arg[:request_only].present?
+      request_only = true
+      last_arg.delete(:request_only)
+    end
+
+    params = last_arg
+    body ||= {}
+    request = Wordnik::Request.new(http_method, path, :params => params, :body => body)
+    request_only ? request : request.response.body
+  end
+
+  # Returns the number of times a word has been viewed
+  #
+  def get_lookup_count(word, *args)
+    http_method = :get
+    path = '/word/{word}/lookupCount'
     path.sub!('{word}', word.to_s)
 
     # Ruby turns all key-value arguments at the end into a single hash
@@ -735,33 +734,6 @@ module WordMethods
     request_only ? request : request.response.body
   end
 
-  # Returns the number of times a word has been viewed
-  #
-  def get_lookup_count(word, *args)
-    http_method = :get
-    path = '/word/{word}/lookupCount'
-    path.sub!('{word}', word.to_s)
-
-    # Ruby turns all key-value arguments at the end into a single hash
-    # e.g. Wordnik.word.get_examples('dingo', :limit => 10, :part_of_speech => 'verb')
-    # becomes {:limit => 10, :part_of_speech => 'verb'}
-    last_arg = args.pop if args.last.is_a?(Hash)
-    last_arg = args.pop if args.last.is_a?(Array)
-    last_arg ||= {}
-
-    # Look for a kwarg called :request_only, whose presence indicates
-    # that we want the request itself back, not the response body
-    if last_arg.is_a?(Hash) && last_arg[:request_only].present?
-      request_only = true
-      last_arg.delete(:request_only)
-    end
-
-    params = last_arg
-    body ||= {}
-    request = Wordnik::Request.new(http_method, path, :params => params, :body => body)
-    request_only ? request : request.response.body
-  end
-
   # Fetches tags for a word
   #
   def get_tags_on_word(word, *args)
@@ -1118,62 +1090,6 @@ module WordMethods
   def get_etymologies(word, *args)
     http_method = :get
     path = '/word/{word}/etymologies'
-    path.sub!('{word}', word.to_s)
-
-    # Ruby turns all key-value arguments at the end into a single hash
-    # e.g. Wordnik.word.get_examples('dingo', :limit => 10, :part_of_speech => 'verb')
-    # becomes {:limit => 10, :part_of_speech => 'verb'}
-    last_arg = args.pop if args.last.is_a?(Hash)
-    last_arg = args.pop if args.last.is_a?(Array)
-    last_arg ||= {}
-
-    # Look for a kwarg called :request_only, whose presence indicates
-    # that we want the request itself back, not the response body
-    if last_arg.is_a?(Hash) && last_arg[:request_only].present?
-      request_only = true
-      last_arg.delete(:request_only)
-    end
-
-    params = last_arg
-    body ||= {}
-    request = Wordnik::Request.new(http_method, path, :params => params, :body => body)
-    request_only ? request : request.response.body
-  end
-
-  # Fetches other forms of a word
-  # Deprecated
-  #
-  def get_other_forms_internal(word, *args)
-    http_method = :get
-    path = '/word/{word}/otherFormsInternal'
-    path.sub!('{word}', word.to_s)
-
-    # Ruby turns all key-value arguments at the end into a single hash
-    # e.g. Wordnik.word.get_examples('dingo', :limit => 10, :part_of_speech => 'verb')
-    # becomes {:limit => 10, :part_of_speech => 'verb'}
-    last_arg = args.pop if args.last.is_a?(Hash)
-    last_arg = args.pop if args.last.is_a?(Array)
-    last_arg ||= {}
-
-    # Look for a kwarg called :request_only, whose presence indicates
-    # that we want the request itself back, not the response body
-    if last_arg.is_a?(Hash) && last_arg[:request_only].present?
-      request_only = true
-      last_arg.delete(:request_only)
-    end
-
-    params = last_arg
-    body ||= {}
-    request = Wordnik::Request.new(http_method, path, :params => params, :body => body)
-    request_only ? request : request.response.body
-  end
-
-  # Adds a word relationship
-  # Deprecated
-  #
-  def add_word_relationship_internal(word, body, *args)
-    http_method = :post
-    path = '/word/{word}/wordRelationshipInternal'
     path.sub!('{word}', word.to_s)
 
     # Ruby turns all key-value arguments at the end into a single hash
