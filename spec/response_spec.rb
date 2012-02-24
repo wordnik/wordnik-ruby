@@ -23,7 +23,7 @@ describe Wordnik::Response do
 
     it "converts header string into a hash" do
       @response.headers.class.should == Hash
-      @response.headers['Wordnik-Api-Version'].to_s.should =~ /4\.0/
+      @response.headers['Wordnik-Api-Version'].to_s.should =~ /^4/
     end
   end
   
