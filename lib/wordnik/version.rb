@@ -1,4 +1,5 @@
 module Wordnik
-  VERSION = "4.06.13"
+  VERSION = "4.06.14"
 end
 
+ 

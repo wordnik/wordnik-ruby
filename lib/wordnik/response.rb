@@ -15,21 +15,18 @@ module Wordnik
 
     def initialize(raw)
       self.raw = raw
-
-      case self.code
-      when 500..510 then raise(ServerError, self.error_message)
-      when 299..426 then raise(ClientError, self.error_message)
-      end
-    end
+      catch_errors
+    end    
 
     def code
       raw.code
     end
-    
-    def error_message
-      body['message']
-    rescue
-      body
+        
+    def catch_errors
+      case self.code
+      when 500..510 then raise(ServerError, self.raw.to_yaml)
+      when 299..426 then raise(ClientError, self.raw.to_yaml)
+      end
     end
 
     # If body is JSON, parse it
