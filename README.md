@@ -37,8 +37,8 @@ Wordnik.configure do |config|
 end
 ```
 
-Example Usage
--------------
+Example Standalone Usage
+------------------------
 
 ```ruby
 %w(rubygems wordnik).each {|lib| require lib}
@@ -58,8 +58,8 @@ Wordnik.word.get_examples('slovenly')
 Wordnik.word.get_examples('wrangle', :limit => 10, :skip => 10) # pagination
 
 # Related Words
-Wordnik.word.get_related_words('sad', :type => 'synonym')
-Wordnik.word.get_related_words('bowls', :type => 'hypernym', :use_canonical => true)
+Wordnik.word.get_related('sad', :type => 'synonym')
+Wordnik.word.get_related('bowls', :type => 'hypernym', :use_canonical => true)
 
 # Search
 Wordnik.words.search_words(:query => 'dog')
