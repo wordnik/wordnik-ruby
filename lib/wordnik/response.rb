@@ -24,9 +24,19 @@ module Wordnik
         
     def catch_errors
       case self.code
-      when 500..510 then raise(ServerError, self.raw.to_yaml)
-      when 299..426 then raise(ClientError, self.raw.to_yaml)
+      when 500..510 then raise(ServerError, error_message)
+      when 299..426 then raise(ClientError, error_message)
       end
+    end
+
+    # If the error message is not helpful, dump the whole response object
+    # 
+    def error_message
+      msg = body['message']
+      return self.raw.to_yaml if msg.blank? || msg =~ /system error/i || msg =~ /ServerError/
+      return msg
+    rescue
+      self.raw.to_yaml
     end
 
     # If body is JSON, parse it
