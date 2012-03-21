@@ -25,7 +25,7 @@ describe Wordnik::Resource do
     it "defines a method for each operation nickname" do
       @resource.public_methods.should include(:get_word)
       @resource.public_methods.should include(:get_definitions)
-      @resource.public_methods.should include(:contextual_lookup_post)
+      @resource.public_methods.should include(:get_word_of_the_day)
       @resource.public_methods.should_not include(:get_busy)
     end
 
