@@ -79,9 +79,11 @@ The wordnik gem uses rspec 2. To run the test suite, just type `rake` or `bundle
 
 Note
 ----
-For testing locally, you will need to tunnel into the beta box
+For testing locally, you will need to tunnel into the beta box:
 
-  ssh -f -N -L 8001:localhost:8001 beta.wordnik.com
+```bash
+alias tunnel='killall ssh; sleep 1; echo "tunneling anew..."; ssh -f -N -L 8001:localhost:8001 beta.wordnik.com'
+```
 
 And remember to update the spec_helper
 	
@@ -95,11 +97,17 @@ Contributing
 * Commit and push until you are happy with your contribution
 * Make sure to add tests for the feature/bugfix. This is important so we don't break it in a future version unintentionally.
 
-Wishlist
---------
+Releasing
+---------
 
-* Go Kart
-* Helicopter
+```bash
+rake swagger
+open lib/version.rb           # bump the version number
+rake spec                     # test
+git commit -am "newness"      # commit
+git push origin master        # push
+rake release                  # release
+```
 
 Props
 -----
