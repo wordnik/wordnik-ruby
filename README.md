@@ -1,9 +1,9 @@
 wordnik rubygem
 ===============
 
-This is the official Wordnik rubygem. It fully wraps Wordnik's v4 API. Refer to 
-[developer.wordnik.com/docs](http://developer.wordnik.com/docs) to play around 
-in the live API sandbox. All the methods you see there are implemented in this 
+This is the official Wordnik rubygem. It fully wraps Wordnik's v4 API. Refer to
+[developer.wordnik.com/docs](http://developer.wordnik.com/docs) to play around
+in the live API sandbox. All the methods you see there are implemented in this
 ruby gem.
 
 Installation
@@ -69,7 +69,7 @@ Wordnik.words.search_words(:query => '*tin*', :include_part_of_speech => 'verb',
 ```
 
 For a full list of available methods, check out the [Wordnik API documentation](http://developer.wordnik.com/docs).
-When you make a request using our web-based API sandbox, the response output will show you how to make the 
+When you make a request using our web-based API sandbox, the response output will show you how to make the
 [equivalent ruby request](http://cl.ly/9FQY). w00t!
 
 Specs
@@ -77,7 +77,7 @@ Specs
 
 The wordnik gem uses rspec 2. To run the test suite, just type `rake` or `bundle exec rake spec` in the gem's base directory.
 
-	
+
 Contributing
 ------------
 
@@ -103,7 +103,14 @@ rake release                  # release
 Props
 -----
 
-* Thanks to [Jason Adams](http://twitter.com/#!/ealdent) for graciously turning 
+* Thanks to [Jason Adams](http://twitter.com/#!/ealdent) for graciously turning
 	over the [wordnik gem name](https://rubygems.org/gems/wordnik).
-* HTTP requests are made using [Typhoeus](https://github.com/dbalatero/typhoeus), 
+* HTTP requests are made using [Typhoeus](https://github.com/dbalatero/typhoeus),
 	a modern code version of the mythical beast with 100 serpent heads.
+
+Notes
+-----
+
+* If you are using the Wordnik gem on [Heroku](http://www.heroku.com/), you'll need
+  to use a stack that is compatible with [Typhoeus](https://github.com/dbalatero/typhoeus).
+  As of 2012-08, this means the Cedar stack.
