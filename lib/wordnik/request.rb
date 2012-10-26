@@ -138,10 +138,11 @@ module Wordnik
       qs.to_s
     end
 
-    def make
+    def make(attempt = 0)
       # url is calculated, so we need to compute it once.
-      url = self.url
-      request = Typhoeus::Request.new(url,
+      u = self.url
+      #Wordnik.logger.debug "Making attempt #{attempt}; now fetching #{u}" if attempt > 0
+      request = Typhoeus::Request.new(u,
         :headers => self.headers.stringify_keys,
         :method => self.http_method.to_sym)
 
@@ -152,14 +153,34 @@ module Wordnik
         request.proxy_password = Wordnik.configuration.proxy_password if Wordnik.configuration.proxy_password.present?
       end
 
-      Wordnik.logger.debug "\n  #{self.http_method.to_s.upcase} #{url}\n  body: #{self.outgoing_body}\n  headers: #{request.headers}\n\n"
+      Wordnik.logger.debug "\n  #{self.http_method.to_s.upcase} #{u}\n  body: #{self.outgoing_body}\n  headers: #{request.headers}\n\n"
 
       request.body = self.outgoing_body unless self.http_method.to_sym == :get
 
-      # Execute the request
+      # Execute the request — blocking call here.
       Typhoeus::Hydra.hydra.queue request
       Typhoeus::Hydra.hydra.run
-      Response.new(request.response)
+
+      # if we are using local load balancing, check for timeouts and connection errors
+      resp = request.response
+
+      if Wordnik.configuration.load_balancer
+        _,_,host,port,_ = URI::split(u)
+        host = "#{host}:#{port}" if port
+        if (resp.timed_out? || resp.code == 0)
+          # Wordnik.logger.debug "informing load balancer about failure at #{host}"
+          Wordnik.configuration.load_balancer.inform_failure(host)
+          if (attempt <= 3)
+            # Wordnik.logger.debug "Trying again after failing #{attempt} times..."
+            return make(attempt + 1) if attempt <= 3 # try three times to get a result...
+          end
+        else
+          # Wordnik.logger.debug "informing load balancer about success at #{host}"
+          Wordnik.configuration.load_balancer.inform_success(host)
+        end
+      end
+
+      Response.new(resp)
     end
 
     def response

@@ -61,12 +61,7 @@ module Wordnik
     end
 
     def host
-      @load_balancer ? load_balanced_host : @host
-    end
-
-    def load_balanced_host
-      host, @load_balancer = @load_balancer.next
-      host
+      @load_balancer ? @load_balancer.host : @host
     end
 
   end

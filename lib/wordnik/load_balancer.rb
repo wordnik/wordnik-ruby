@@ -3,65 +3,64 @@ module Wordnik
   # the simple idea here of a load balancer is to keep a set of hosts
   # around, and use the 'best' one. At Wordnik, we have a set of
   # API hosts available to us (these servers are invisible to the general web)
-  # The class below implements three strategies — least recently used,
-  # random, and least frequently used.
+  # The class below implements least recently used.
   #
   # The Wordnik Configuration object will convert a :hosts specification
-  # into LoadBalancer (which defaults to LRU)
+  # into a LoadBalancer instance
   #
-  # You can also specify an instance of RandomLoadBalancer or LeastFrequentlyUsedLoadBalancer
-  # if you choose, or be picky and specify LeastRecentlyUsedLoadBalancer
+
   #
   # These should be thread safe.
   class LoadBalancer
 
     attr_reader :hosts
-
+    attr_accessor :all_hosts
+    attr_accessor :failed_hosts_table
     def initialize(hosts)
-      @hosts = hosts
+      @all_hosts = hosts
+      @hosts = @all_hosts
+      @failed_hosts_table = {}
     end
 
     def host
-      hosts.first
+      h = hosts.first
+      @hosts.rotate!
+      restore_failed_hosts_maybe
+      h
     end
 
-    def next
-      [host, LoadBalancer.new(@hosts.rotate)]
-    end
-  end
-
-  # default is LRU.
-  class LeastRecentlyUsedLoadBalancer < LoadBalancer
-  end
-
-  class RandomLoadBalancer < LoadBalancer
-
-    def next
-      [host, RandomLoadBalancer.new(@hosts.shuffle)]
-    end
-  end
-
-  # return the least frequently used. this is the most expensive
-  # load balancer.
-  class LeastFrequentlyUsedLoadBalancer < LoadBalancer
-    attr_accessor :counts
-
-    def initialize(hosts)
-      @hosts = hosts
-      @counts = hosts.map{|h| [h,0.0]}
+    def inform_failure(host)
+        #Wordnik.logger.debug "Informing failure about #{host}. table: #{@failed_hosts_table.inspect}"
+      if @failed_hosts_table.include?(host)
+        failures, failed_time = @failed_hosts_table[host]
+        @failed_hosts_table[host] = [failures+1, failed_time]
+      else
+        @failed_hosts_table[host] = [1, Time.now.to_f] # failure count, first failure time
+      end
+      #Wordnik.logger.debug "Informed failure about #{host}. table now: #{@failed_hosts_table.inspect}"
+      @hosts.delete(host)
+      @hosts = [host] if @hosts.size == 0 # got to have something!
     end
 
-    def host
-      @counts.min{|a,b| a[1] <=> b[1]}[0]
+    # success here means just that a successful connection was made
+    # and the website didn't time out.
+    def inform_success(host)
+      @failed_hosts_table.delete(host)
+      @hosts << host unless @hosts.include? host
+      @hosts
     end
 
-    def next
-      h = host
-      n = LeastFrequentlyUsedLoadBalancer.new(@hosts)
-      n.counts = @counts.map{|pr| pr.clone}
-      pr = n.counts.assoc(h)
-      pr[1] += 1.0
-      [h,n]
+    def restore_failed_hosts_maybe
+      @failed_hosts_table.each do |host, pair|
+        failures, failed_time = pair
+        seconds_since_first_failure = (Time.now.to_f - failed_time)
+        #Wordnik.logger.debug "Seconds since #{host}'s first failure: #{seconds_since_first_failure} compared to #{2**(failures-1)}"
+        # exponential backoff, but try every hour...
+        if (seconds_since_first_failure > [3600, 2**(failures-1)].min)
+          @hosts << host # give it a chance to succeed ...
+          #Wordnik.logger.debug "Added #{host} to @hosts; now: #{@hosts}"
+        end
+      end
     end
   end
 
