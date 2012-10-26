@@ -1,7 +1,7 @@
 require 'rubygems'
 require 'bundler/setup'
 require 'wordnik'
-require 'vcr'
+# require 'vcr'
 require 'typhoeus'
 require 'json'
 require 'yaml'
@@ -11,16 +11,17 @@ RSpec.configure do |config|
   # some (optional) config here
 end
 
-VCR.config do |config|
-  config.cassette_library_dir = 'spec/vcr'
-  config.stub_with :webmock # or :fakeweb
-end
+#VCR.config do |config|
+#  config.cassette_library_dir = 'spec/vcr'
+#  config.stub_with :webmock # or :fakeweb
+#end
 
 def help
   puts "\nOh noes! You gotta stuff your wordnik credentials in ~/.wordnik.yml like so:\n\n"
-  puts "api_key: '12345abcdefg'   (required)"
-  puts "username: 'fumanchu'      (optional)"
-  puts "password: 'kalamazoo'     (optional)\n\n"
+  puts "api_key: 12345abcdefg"
+  puts "username: fumanchu"
+  puts "password: kalamazoo\n\n"
+  puts "You can also put host,"
   exit
 end
 
@@ -39,15 +40,12 @@ def configure_wordnik
     config.api_key = CREDENTIALS[:api_key]
     config.username = CREDENTIALS[:username]
     config.password = CREDENTIALS[:password]
-    config.logger = Logger.new('/dev/null')
+    config.logger = CREDENTIALS[:logfile] ? Logger.new(CREDENTIALS[:logfile]) : Logger.new('/dev/null')
 
-    # Normal..
-    # config.host = 'beta.wordnik.com'
-    # config.base_path = '/v4'    
+    config.host = CREDENTIALS[:host] || 'beta.wordnik.com'
+    config.hosts = CREDENTIALS[:hosts] || []
+    config.base_path = CREDENTIALS[:base_path] || '/v4'
 
-    # SSH tunneling...
-    config.host = 'localhost:8001'
-    config.base_path = '/admin/api'
   end
 end
 
@@ -59,6 +57,12 @@ def sample_resource_body
   end
 end
 
-# A random string to tack onto stuff to ensure we're not seeing 
+class Object
+  def has_suffix?(suffix)
+    suffix.respond_to?(:to_str) && self[-suffix.length, suffix.length] == suffix
+  end
+end
+
+# A random string to tack onto stuff to ensure we're not seeing
 # data from a previous test run
 RAND = ("a".."z").to_a.sample(8).join

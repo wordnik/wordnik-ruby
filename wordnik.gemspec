@@ -24,8 +24,9 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rspec', '~> 2.8.0'
   s.add_development_dependency 'vcr', '~> 1.11.3'
   s.add_development_dependency 'webmock', '>=1.6.2'
-  s.add_development_dependency 'autotest'  
+  s.add_development_dependency 'autotest'
   s.add_development_dependency 'autotest-rails-pure'
+  s.add_development_dependency 'rake'
 
   s.files         = [
     `git ls-files`,

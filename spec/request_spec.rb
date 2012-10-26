@@ -15,7 +15,7 @@ describe Wordnik::Request do
     it "sets default response format to json" do
       @request.format.should == 'json'
     end
-    
+
     it "allows params to be nil" do
       @request = Wordnik::Request.new(@default_http_method, @default_path, :params => nil)
       @request.query_string.should == ""
@@ -44,11 +44,11 @@ describe Wordnik::Request do
     end
 
     it "constructs a full url" do
-      @request.url.should == "http://localhost:8001/admin/api/words.json/fancy?bar=2&foo=1"
+      @request.url.has_suffix?("#{Wordnik.configuration.base_path}/words.json/fancy?bar=2&foo=1").should == true
     end
 
   end
-  
+
   describe "body" do
 
     it "camelCases parameters" do
@@ -60,7 +60,7 @@ describe Wordnik::Request do
       }))
       @request.body.keys.should == [:badDog, :goodDog]
     end
-    
+
   end
 
   describe "path" do
@@ -72,7 +72,7 @@ describe Wordnik::Request do
           :word => "cat"
         }
       }))
-      @request.url.should == "http://localhost:8001/admin/api/word.xml/cat/entries"
+      @request.url.has_suffix?("#{Wordnik.configuration.base_path}/word.xml/cat/entries").should == true
     end
 
     it "does string substitution on path params" do
@@ -82,7 +82,7 @@ describe Wordnik::Request do
           :word => "cat"
         }
       }))
-      @request.url.should == "http://localhost:8001/admin/api/word.xml/cat/entries"
+      @request.url.has_suffix?("#{Wordnik.configuration.base_path}/word.xml/cat/entries").should == true
     end
 
     it "leaves path-bound params out of the query string" do
@@ -135,7 +135,7 @@ describe Wordnik::Request do
       @request.query_string.should =~ /\?limit=100/
       @request.url.should =~ /\?limit=100/
     end
-    
+
     it "camelCases parameters" do
       @request = Wordnik::Request.new(@default_http_method, @default_path, @default_params.merge({
         :params => {
@@ -145,22 +145,22 @@ describe Wordnik::Request do
       }))
       @request.query_string.should == "?badDog=bud&goodDog=dud"
     end
-    
+
     it "converts boolean values to their string representation" do
       params = {:stringy => "fish", :truthy => true, :falsey => false}
       @request = Wordnik::Request.new(:get, 'fakeMethod', :params => params)
       @request.query_string.should == "?falsey=false&stringy=fish&truthy=true"
     end
-    
+
   end
-  
+
   describe "API key" do
-    
+
     it "is inferred from the Wordnik base configuration by default" do
       Wordnik.configure {|c| c.api_key = "xyz" }
       Wordnik::Request.new(:get, "word/json").headers[:api_key].should == "xyz"
     end
-    
+
     it "can be obfuscated for public display" do
       @request = Wordnik::Request.new(:get, "words/fancy", @default_params.merge({
         :params => {
@@ -178,7 +178,7 @@ describe Wordnik::Request do
       @request_with_key = Wordnik::Request.new(:get, "word/json", :params => {:api_key => "jkl"})
       @request_with_key.headers[:api_key].should be_nil
       @request_with_key.params[:api_key].should == "jkl"
-      
+
       @request_without_key = Wordnik::Request.new(:get, "word/json", :params => {:api_key => nil})
       @request_without_key.headers[:api_key].should be_nil
       @request_without_key.params[:api_key].should be_nil

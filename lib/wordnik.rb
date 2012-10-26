@@ -6,6 +6,7 @@ require 'wordnik/resource'
 require 'wordnik/response'
 require 'wordnik/configuration'
 require 'wordnik/version'
+require 'wordnik/load_balancer'
 require 'logger'
 
 # http://blog.jayfields.com/2007/10/ruby-defining-class-methods.html
@@ -16,17 +17,17 @@ class Object
 end
 
 module Wordnik
-    
+
   class << self
-    
+
     # A Wordnik configuration object. Must act like a hash and return sensible
     # values for all Wordnik configuration options. See Wordnik::Configuration.
     attr_accessor :configuration
 
     attr_accessor :resources
-    
+
     attr_accessor :logger
-    
+
     # Call this method to modify defaults in your initializers.
     #
     # @example
@@ -43,13 +44,22 @@ module Wordnik
 
       # Configure logger.  Default to use Rails
       self.logger ||= configuration.logger || (defined?(Rails) ? Rails.logger : Logger.new(STDOUT))
-      
+
       # remove :// from scheme
       configuration.scheme.sub!(/:\/\//, '')
 
       # remove http(s):// and anything after a slash
       configuration.host.sub!(/https?:\/\//, '')
       configuration.host = configuration.host.split('/').first
+
+      # do the same if multiple hosts are specified
+      configuration.hosts = configuration.hosts.map{|host| host.sub(/https?:\/\//, '').split('/').first}
+
+      # create a load balancer if no load balancer specified && multiple hosts are specified ...
+      if !configuration.load_balancer && configuration.hosts.size > 0
+        self.logger.debug "Creating a load balancer from #{configuration.hosts.join(', ')}"
+        configuration.load_balancer = LoadBalancer.new(configuration.hosts)
+      end
 
       # Add leading and trailing slashes to base_path
       configuration.base_path = "/#{configuration.base_path}".gsub(/\/+/, '/')
@@ -59,17 +69,17 @@ module Wordnik
       # attach resources because they haven't been downloaded.
       if build
         self.instantiate_resources
-        self.create_resource_shortcuts 
+        self.create_resource_shortcuts
       end
     end
-    
+
     # Remove old JSON documentation and generated modules,
     # then download fresh JSON files.
     #
     def download_resource_descriptions
       system "rm api_docs/*.json"
       system "rm lib/wordnik/resource_modules/*.rb"
-      
+
       Wordnik::Request.new(:get, "resources.json").response.body['apis'].each do |api|
         resource_name = api['path'].split(".").first.gsub(/\//, '')
         description = api['description']
@@ -84,19 +94,19 @@ module Wordnik
     # 1. Instantiate a Resource object
     # 2. Stuff the Resource in Wordnik.resources
     #
-    def instantiate_resources   
+    def instantiate_resources
       self.resources = {}
       self.configuration.resource_names.each do |resource_name|
         name = resource_name.underscore.to_sym # 'fooBar' => :foo_bar
-        filename = File.join(File.dirname(__FILE__), "../api_docs/#{resource_name}.json")        
+        filename = File.join(File.dirname(__FILE__), "../api_docs/#{resource_name}.json")
         resource = Resource.new(
           :name => name,
           :raw_data => JSON.parse(File.read(filename))
         )
         self.resources[name] = resource
-      end      
+      end
     end
-    
+
     # Use some magic ruby dust to make nice method shortcuts.
     # Wordnik.word => Wordnik.resources[:word]
     # Wordnik.users => Wordnik.resources[:user]
@@ -109,39 +119,43 @@ module Wordnik
         end
       end
     end
-    
+
     def authenticated?
       Wordnik.configuration.user_id.present? && Wordnik.configuration.auth_token.present?
     end
-    
+
     def de_authenticate
       Wordnik.configuration.user_id = nil
       Wordnik.configuration.auth_token = nil
     end
-    
+
+    def clear_configuration
+      Wordnik.configuration = Configuration.new
+    end
+
     def authenticate
       return if Wordnik.authenticated?
-      
+
       if Wordnik.configuration.username.blank? || Wordnik.configuration.password.blank?
         raise ClientError, "Username and password are required to authenticate."
       end
-      
+
       request = Wordnik::Request.new(
-        :get, 
-        "account/authenticate/{username}", 
+        :get,
+        "account/authenticate/{username}",
         :params => {
-          :username => Wordnik.configuration.username, 
+          :username => Wordnik.configuration.username,
           :password => Wordnik.configuration.password
         }
       )
-      
+
       response_body = request.response.body
       Wordnik.configuration.user_id = response_body['userId']
       Wordnik.configuration.auth_token = response_body['token']
     end
 
   end
-  
+
 end
 
 class ServerError < StandardError

@@ -7,35 +7,39 @@ module Wordnik
     attr_accessor :api_key
     attr_accessor :username
     attr_accessor :password
-    
+
     # TODO: Steal all the auth stuff from the old gem!
     attr_accessor :auth_token
     attr_accessor :user_id
-    
+
     # Response format can be 'json' (default) or 'xml'
     attr_accessor :response_format
-    
+
     # A comma-delimited list of the API's resources
     attr_accessor :resource_names
-    
+
     # The URL of the API server
     attr_accessor :scheme
     attr_accessor :host
+    attr_accessor :hosts # to do in process load balancing
+    attr_accessor :load_balancer
     attr_accessor :base_path
-    
+
     attr_accessor :user_agent
-    
+
     attr_accessor :proxy
     attr_accessor :proxy_username
     attr_accessor :proxy_password
 
     attr_accessor :logger
-    
+
     # Defaults go in here..
     def initialize
       @response_format = 'json'
       @scheme = 'http'
       @host = 'api.wordnik.com'
+      @hosts = []
+      @load_balancer = nil
       @base_path = '/v4'
       @user_agent = "ruby-#{Wordnik::VERSION}"
       # Build the default set of resource names from the filenames of the API documentation
@@ -47,13 +51,22 @@ module Wordnik
         raise "Problem loading the resource files in ./api_docs/"
       end
     end
-    
+
     def base_url
       Addressable::URI.new(
         :scheme => self.scheme,
         :host => self.host,
         :path => self.base_path
       )
+    end
+
+    def host
+      @load_balancer ? load_balanced_host : @host
+    end
+
+    def load_balanced_host
+      host, @load_balancer = @load_balancer.next
+      host
     end
 
   end
