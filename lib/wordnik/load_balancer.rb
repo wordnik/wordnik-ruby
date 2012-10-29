@@ -16,41 +16,45 @@ module Wordnik
     attr_reader :hosts
     attr_accessor :all_hosts
     attr_accessor :failed_hosts_table
+    attr_accessor :current_host
+
     def initialize(hosts)
       @all_hosts = hosts
       @hosts = @all_hosts
       @failed_hosts_table = {}
+      @current_host = nil
     end
 
     def host
-      h = hosts.first
+      @current_host = hosts.first
       @hosts.rotate!
       restore_failed_hosts_maybe
-      h
+      @current_host
     end
 
-    def inform_failure(host)
-        #Wordnik.logger.debug "Informing failure about #{host}. table: #{@failed_hosts_table.inspect}"
-      if @failed_hosts_table.include?(host)
-        failures, failed_time = @failed_hosts_table[host]
-        @failed_hosts_table[host] = [failures+1, failed_time]
+    def inform_failure
+        #Wordnik.logger.debug "Informing failure about #{@current_host}. table: #{@failed_hosts_table.inspect}"
+      if @failed_hosts_table.include?(@current_host)
+        failures, failed_time = @failed_hosts_table[@current_host]
+        @failed_hosts_table[@current_host] = [failures+1, failed_time]
       else
-        @failed_hosts_table[host] = [1, Time.now.to_f] # failure count, first failure time
+        @failed_hosts_table[@current_host] = [1, Time.now.to_f] # failure count, first failure time
       end
-      #Wordnik.logger.debug "Informed failure about #{host}. table now: #{@failed_hosts_table.inspect}"
-      @hosts.delete(host)
-      @hosts = [host] if @hosts.size == 0 # got to have something!
+      #Wordnik.logger.debug "Informed failure about #{@current_host}. table now: #{@failed_hosts_table.inspect}"
+      @hosts.delete(@current_host)
+      @hosts = [@current_host] if @hosts.size == 0 # got to have something!
     end
 
     # success here means just that a successful connection was made
     # and the website didn't time out.
-    def inform_success(host)
-      @failed_hosts_table.delete(host)
-      @hosts << host unless @hosts.include? host
+    def inform_success
+      @failed_hosts_table.delete(@current_host)
+      @hosts << @current_host unless @hosts.include? @current_host
       @hosts
     end
 
     def restore_failed_hosts_maybe
+      return if @failed_hosts_table.size == 0
       @failed_hosts_table.each do |host, pair|
         failures, failed_time = pair
         seconds_since_first_failure = (Time.now.to_f - failed_time)

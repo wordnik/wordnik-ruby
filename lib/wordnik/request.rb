@@ -165,18 +165,16 @@ module Wordnik
       resp = request.response
 
       if Wordnik.configuration.load_balancer
-        _,_,host,port,_ = URI::split(u)
-        host = "#{host}:#{port}" if port
         if (resp.timed_out? || resp.code == 0)
-          # Wordnik.logger.debug "informing load balancer about failure at #{host}"
-          Wordnik.configuration.load_balancer.inform_failure(host)
+          # Wordnik.logger.debug "informing load balancer about failure"
+          Wordnik.configuration.load_balancer.inform_failure
           if (attempt <= 3)
             # Wordnik.logger.debug "Trying again after failing #{attempt} times..."
             return make(attempt + 1) if attempt <= 3 # try three times to get a result...
           end
         else
-          # Wordnik.logger.debug "informing load balancer about success at #{host}"
-          Wordnik.configuration.load_balancer.inform_success(host)
+          # Wordnik.logger.debug "informing load balancer about success"
+          Wordnik.configuration.load_balancer.inform_success
         end
       end
 

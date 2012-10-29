@@ -60,6 +60,10 @@ module Wordnik
       )
     end
 
+    def clear
+      initialize
+    end
+
     def host
       @load_balancer ? @load_balancer.host : @host
     end
