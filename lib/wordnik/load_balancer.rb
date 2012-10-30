@@ -19,8 +19,8 @@ module Wordnik
     attr_accessor :current_host
 
     def initialize(hosts)
-      @all_hosts = hosts
-      @hosts = @all_hosts
+      @all_hosts = hosts.clone
+      @hosts = @all_hosts.clone
       @failed_hosts_table = {}
       @current_host = nil
     end
@@ -36,7 +36,7 @@ module Wordnik
         #Wordnik.logger.debug "Informing failure about #{@current_host}. table: #{@failed_hosts_table.inspect}"
       if @failed_hosts_table.include?(@current_host)
         failures, failed_time = @failed_hosts_table[@current_host]
-        @failed_hosts_table[@current_host] = [failures+1, failed_time]
+        @failed_hosts_table[@current_host] = [failures+1, Time.now.to_f]
       else
         @failed_hosts_table[@current_host] = [1, Time.now.to_f] # failure count, first failure time
       end
@@ -57,13 +57,23 @@ module Wordnik
       return if @failed_hosts_table.size == 0
       @failed_hosts_table.each do |host, pair|
         failures, failed_time = pair
-        seconds_since_first_failure = (Time.now.to_f - failed_time)
-        #Wordnik.logger.debug "Seconds since #{host}'s first failure: #{seconds_since_first_failure} compared to #{2**(failures-1)}"
+        n = Time.now.to_f
+        seconds_since_last_failure = (n - failed_time)
         # exponential backoff, but try every hour...
-        if (seconds_since_first_failure > [3600, 2**(failures-1)].min)
+        if (seconds_since_last_failure > [3600, 2**(failures-1)].min)
           @hosts << host # give it a chance to succeed ...
-          #Wordnik.logger.debug "Added #{host} to @hosts; now: #{@hosts}"
+          update_failed_time(host, n)
         end
+      end
+    end
+
+    # mostly useful in mock testing...
+    def update_failed_time(host, time=Time.now)
+      if @failed_hosts_table.include? host
+        failures, _ = @failed_hosts_table[host]
+        @failed_hosts_table[host] = [failures, time.to_f]
+      else
+      @failed_hosts_table[host] = [1,time.to_f]
       end
     end
   end
