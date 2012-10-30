@@ -92,8 +92,8 @@ Releasing
 ---------
 
 ```bash
-rake swagger
-open lib/version.rb           # bump the version number
+rake swagger                  # um, don't do this unless the API has changed
+edit lib/wordnik/version.rb   # bump the version number
 rake spec                     # test
 git commit -am "newness"      # commit
 git push origin master        # push
