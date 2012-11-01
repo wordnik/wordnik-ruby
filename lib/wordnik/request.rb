@@ -166,14 +166,14 @@ module Wordnik
 
       if Wordnik.configuration.load_balancer
         if (resp.timed_out? || resp.code == 0)
-          # Wordnik.logger.debug "informing load balancer about failure"
+          Wordnik.logger.info "Wordnik: informing load balancer about failure"
           Wordnik.configuration.load_balancer.inform_failure
           if (attempt <= 3)
-            # Wordnik.logger.debug "Trying again after failing #{attempt} times..."
+            Wordnik.logger.info "Trying again after failing #{attempt} times..."
             return make(attempt + 1) if attempt <= 3 # try three times to get a result...
           end
         else
-          # Wordnik.logger.debug "informing load balancer about success"
+          Wordnik.logger.debug "informing load balancer about success"
           Wordnik.configuration.load_balancer.inform_success
         end
       end

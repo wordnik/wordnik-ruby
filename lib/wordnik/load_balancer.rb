@@ -23,6 +23,7 @@ module Wordnik
       @hosts = @all_hosts.clone
       @failed_hosts_table = {}
       @current_host = nil
+      Wordnik.logger.info "LoadBalancer: Creating a load balancer using the following hosts: #{@hosts.join(', ')}"
     end
 
     def host
@@ -43,6 +44,11 @@ module Wordnik
       #Wordnik.logger.debug "Informed failure about #{@current_host}. table now: #{@failed_hosts_table.inspect}"
       @hosts.delete(@current_host)
       @hosts = [@current_host] if @hosts.size == 0 # got to have something!
+      if @hosts == [@current_host]
+        Wordnik.logger.warn "LoadBalancer: host #{@current_host} failed, but it is the only remaining host. Not removing."
+      else
+        Wordnik.logger.info "LoadBalancer: host #{@current_host} failed. Removed from active hosts, which are now: #{@hosts.join(', ')}"
+      end
     end
 
     # success here means just that a successful connection was made
@@ -50,6 +56,7 @@ module Wordnik
     def inform_success
       @failed_hosts_table.delete(@current_host)
       @hosts << @current_host unless @hosts.include? @current_host
+      Wordnik.logger.info "LoadBalancer: host #{@current_host} is working again, and has been added to active hosts, which are now: #{@hosts.join(', ')}"
       @hosts
     end
 
@@ -62,6 +69,7 @@ module Wordnik
         # exponential backoff, but try every hour...
         if (seconds_since_last_failure > [3600, 2**(failures-1)].min)
           @hosts << host # give it a chance to succeed ...
+          Wordnik.logger.info "LoadBalancer: timeout for host #{host} failure exceeded; returning to active hosts, which are now: #{@hosts.join(', ')}"
           update_failed_time(host, n)
         end
       end
