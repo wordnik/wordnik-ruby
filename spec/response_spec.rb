@@ -4,9 +4,7 @@ describe Wordnik::Response do
 
   before(:each) do
 
-    #VCR.use_cassette('word_resource', :record => :new_episodes) do
-      @raw = Typhoeus::Request.get("http://#{Wordnik.configuration.host}#{Wordnik.configuration.base_path}/word.json")
-    #end
+    @raw = Typhoeus::Request.get("http://#{Wordnik.configuration.host}#{Wordnik.configuration.base_path}/word.json")
 
     @response = Wordnik::Response.new(@raw)
   end
@@ -29,10 +27,8 @@ describe Wordnik::Response do
 
   describe "unauthorized" do
     it "raises an error when initialized" do
-      #VCR.use_cassette('get_dog_images', :record => :new_episodes) do
-        @unauthorized_raw = Typhoeus::Request.get("http://#{Wordnik.configuration.host}#{Wordnik.configuration.base_path}/word.json/dog/images/flickr")
-        expect { Wordnik::Response.new(@unauthorized_raw) }.to raise_error(ClientError)
-      #end
+      @unauthorized_raw = Typhoeus::Request.get("http://#{Wordnik.configuration.host}#{Wordnik.configuration.base_path}/word.json/dog/images/flickr")
+      expect { Wordnik::Response.new(@unauthorized_raw) }.to raise_error(ClientError)
     end
   end
 
@@ -44,9 +40,7 @@ describe Wordnik::Response do
     end
 
     it "recognizes xml" do
-      #VCR.use_cassette('xml_response_request', :record => :new_episodes) do
-        @raw = Typhoeus::Request.get("http://#{Wordnik.configuration.host}#{Wordnik.configuration.base_path}/word.xml")
-      #end
+      @raw = Typhoeus::Request.get("http://#{Wordnik.configuration.host}#{Wordnik.configuration.base_path}/word.xml")
       @response = Wordnik::Response.new(@raw)
       @response.format.should == 'xml'
       @response.xml?.should == true
@@ -62,17 +56,13 @@ describe Wordnik::Response do
 
     it "has a pretty XML body even in the face of adverse characters" do
       configure_wordnik
-      #VCR.use_cassette('crazier_json_request', :record => :new_episodes) do
-        @request = Wordnik::Request.new(:get, "word.xml/hero/pronunciations", :params => {:limit => 1})
-        @response = @request.response
-      #end
+      @request = Wordnik::Request.new(:get, "word.xml/hero/pronunciations", :params => {:limit => 1})
+      @response = @request.response
       @response.pretty_body.should =~ /\?xml/
     end
 
     it "has a pretty xml body" do
-      #VCR.use_cassette('xml_response_request', :record => :new_episodes) do
-        @raw = Typhoeus::Request.get("http://#{Wordnik.configuration.host}#{Wordnik.configuration.base_path}/word.xml")
-      #end
+      @raw = Typhoeus::Request.get("http://#{Wordnik.configuration.host}#{Wordnik.configuration.base_path}/word.xml")
       @response = Wordnik::Response.new(@raw)
       @response.pretty_body.should =~ /\?xml/
     end

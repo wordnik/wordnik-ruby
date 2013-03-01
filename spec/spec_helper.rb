@@ -42,7 +42,7 @@ def configure_wordnik
     config.password = CREDENTIALS[:password]
     config.logger = CREDENTIALS[:logfile] ? Logger.new(CREDENTIALS[:logfile]) : Logger.new('/dev/null')
 
-    config.host = CREDENTIALS[:host] || 'beta.wordnik.com'
+    config.host = CREDENTIALS[:host] || 'beta.api.wordnik.com'
     config.hosts = CREDENTIALS[:hosts] || []
     config.base_path = CREDENTIALS[:base_path] || '/v4'
 
