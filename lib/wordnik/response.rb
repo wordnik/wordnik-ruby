@@ -57,7 +57,7 @@ module Wordnik
     # Extract the response format from the header hash
     # e.g. {'Content-Type' => 'application/json'}
     def format
-      headers['Content-Type'].split(";").first.split("/").last.to_s
+      headers['Content-Type'].split(";").first.strip.split("/").last.to_s
     end
 
     def json?
