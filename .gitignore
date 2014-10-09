@@ -3,3 +3,4 @@ pkg/*
 .bundle
 USAGE.md
 spec/vcr/*
+.idea/*
