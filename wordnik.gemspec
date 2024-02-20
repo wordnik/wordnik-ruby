@@ -11,6 +11,7 @@ Gem::Specification.new do |s|
   s.homepage    = "http://developer.wordnik.com"
   s.summary     = %q{A ruby wrapper for the Wordnik API}
   s.description = %q{This gem provides a simple interface to the entire Wordnik API. Its methods are defined by the documentation that comes from the API itself, so it's guaranteed to be up to date.}
+  s.license     = "MIT"
 
   s.rubyforge_project = "wordnik"
 
