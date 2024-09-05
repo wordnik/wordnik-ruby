@@ -92,7 +92,7 @@ module Wordnik
 
       p = p.sub("{format}", self.format.to_s)
 
-      URI.encode [Wordnik.configuration.base_path, p].join("/").gsub(/\/+/, '/')
+      URI::Parser.new.escape [Wordnik.configuration.base_path, p].join("/").gsub(/\/+/, '/')
     end
 
     # Massage the request body into a state of readiness
