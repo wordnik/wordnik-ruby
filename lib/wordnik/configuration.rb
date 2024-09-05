@@ -36,7 +36,7 @@ module Wordnik
     # Defaults go in here..
     def initialize
       @response_format = 'json'
-      @scheme = 'http'
+      @scheme = 'https'
       @host = 'api.wordnik.com'
       @hosts = []
       @load_balancer = nil
