@@ -11,11 +11,6 @@ RSpec.configure do |config|
   # some (optional) config here
 end
 
-#VCR.config do |config|
-#  config.cassette_library_dir = 'spec/vcr'
-#  config.stub_with :webmock # or :fakeweb
-#end
-
 def help
   puts "\nOh noes! You gotta stuff your wordnik credentials in ~/.wordnik.yml like so:\n\n"
   puts "api_key: 12345abcdefg"
