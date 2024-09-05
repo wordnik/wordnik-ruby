@@ -35,9 +35,6 @@ describe Wordnik::Resource do
 
     before(:each) do
       configure_wordnik
-      #VCR.use_cassette('wordnik_authenticate', :record => :new_episodes) do
-      #  Wordnik.authenticate
-      #end
     end
 
     it "builds requests but doesn't run them if :request_only is passed" do
@@ -46,9 +43,7 @@ describe Wordnik::Resource do
     end
 
     it "runs requests and returns their body if :request_only is absent" do
-      #VCR.use_cassette('get_word_dynamo', :record => :new_episodes) do
-        @response_body = Wordnik.word.get_word('dynamo')
-      #end
+      @response_body = Wordnik.word.get_word('dynamo')
       @response_body.class.should == Hash
       @response_body.keys.sort.should == %w(canonicalForm id lookupCount scrabble word)
     end
