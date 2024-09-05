@@ -12,11 +12,12 @@ RSpec.configure do |config|
 end
 
 def help
-  puts "\nOh noes! You gotta stuff your wordnik credentials in ~/.wordnik.yml like so:\n\n"
+  puts "\n\nIn order to run the specs, you need to have a Wordnik account and an API key."
+  puts "And you need to put your credentials in ~/.wordnik.yml"
+  puts "Here's an example of what that file should look minimally like:\n\n"
   puts "api_key: 12345abcdefg"
   puts "username: fumanchu"
   puts "password: kalamazoo\n\n"
-  puts "You can also put host,"
   exit
 end
 
