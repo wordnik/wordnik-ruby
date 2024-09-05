@@ -3,3 +3,5 @@ pkg/*
 .bundle
 USAGE.md
 spec/vcr/*
+tags
+vendor/
