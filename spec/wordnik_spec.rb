@@ -103,18 +103,14 @@ describe Wordnik do
       it 'succeeds if a username and password are present in the configuration' do
         Wordnik.clear_configuration
         configure_wordnik
-        #VCR.use_cassette('wordnik_authenticate', :record => :new_episodes) do
-          Wordnik.authenticate
-        #end
+        Wordnik.authenticate
         Wordnik.authenticated?.should == true
       end
 
       it 'de_authenticates' do
         Wordnik.clear_configuration
         configure_wordnik
-        #VCR.use_cassette('wordnik_authenticate', :record => :new_episodes) do
-          Wordnik.authenticate
-        #end
+        Wordnik.authenticate
         Wordnik.authenticated?.should == true
         Wordnik.de_authenticate
         Wordnik.authenticated?.should == false
@@ -131,9 +127,7 @@ describe Wordnik do
           config.base_path = c.base_path
         end
 
-        #VCR.use_cassette('wordnik_authenticate_fail', :record => :new_episodes) do
-          expect { Wordnik.authenticate }.to raise_error(ClientError)
-        #end
+        expect { Wordnik.authenticate }.to raise_error(ClientError)
 
         Wordnik.authenticated?.should == false
         configure_wordnik
